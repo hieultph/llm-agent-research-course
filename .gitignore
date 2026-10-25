@@ -1,0 +1,5 @@
+# local experiment outputs (on Colab they go to Google Drive)
+outputs/
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store

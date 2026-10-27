@@ -12,15 +12,27 @@
 > - NLL của ViMMRC chỉ tính trên câu hỏi + đáp án.
 >
 > Chạy khoảng 2–3 giờ trên L4, sau đó chạy notebook phân tích v3 trên CPU.
+>
+> **v4 — bản chuẩn, nên dùng bản này.** Làm lại từ đầu dựa trên mọi lỗi của v1–v3, trong một notebook chạy từng bước:
+> - mỗi bước có kiểm tra tự động; notebook dừng lại nếu có kiểm tra thất bại;
+> - trả lời trắc nghiệm bằng một chữ cái (một token, được kiểm tra trên từng mô hình);
+> - định dạng trả lời và hiệu chỉnh lấy từ tập dev riêng; dùng đúng chat format của từng mô hình;
+> - NLL lấy từ cùng lượt chạy;
+> - cổng hợp lệ được chốt trước khi xem kết quả nhiễu;
+> - có CI bootstrap và hiệu chỉnh Holm;
+> - xuất 10 hình, các bảng LaTeX và phần kết luận tự sinh.
+>
+> Chạy khoảng 3–4 giờ trên L4.
 
 Idea: [[phase-1-ideas]] (1A)
 
 | Notebook | Models | Results on Drive | Open |
 |---|---|---|---|
-| [1A_pilot_v3.ipynb](1A_pilot_v3.ipynb) — **GPU, run first** | re-scores Qwen3 ×3, bloomz ×3, VinaLLaMA-2.7b; adds ViMMRC question + options NLL for all 16 | `MyDrive/llm-research/1A-pilot-v3/` (same layout as v2.1) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v3.ipynb) |
+| [1A_pilot_v4.ipynb](1A_pilot_v4.ipynb) — **use this: clean, step-by-step, GPU then CPU** | 15 open 1.5–8B models (+ Llama-3.2-3B with the `HF_TOKEN` secret) × 5 tasks | `MyDrive/llm-research/1A-pilot-v4/` (figures, LaTeX tables, `conclusions.md`) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v4.ipynb) |
+| [1A_pilot_v3.ipynb](1A_pilot_v3.ipynb) — superseded by v4 | re-scores Qwen3 ×3, bloomz ×3, VinaLLaMA-2.7b; adds ViMMRC question + options NLL for all 16 | `MyDrive/llm-research/1A-pilot-v3/` (same layout as v2.1) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v3.ipynb) |
 | [1A_pilot_v3_analysis.ipynb](1A_pilot_v3_analysis.ipynb) — **CPU, run second** | the v2.2 analysis on the v3 results | `MyDrive/llm-research/1A-pilot-v3-analysis/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v3_analysis.ipynb) |
 | [1A_pilot_v2.2_analysis.ipynb](1A_pilot_v2.2_analysis.ipynb) — **analysis of v2.1, CPU only** | reads v2.1 | `MyDrive/llm-research/1A-pilot-v2.2/` (figures as PNG + PDF, tables as CSV + LaTeX) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.2_analysis.ipynb) |
-| [1A_pilot_v2.1.ipynb](1A_pilot_v2.1.ipynb) — **use this** | 15 open 1.5–8B models (+4 gated) × 5 tasks | `MyDrive/llm-research/1A-pilot-v2.1/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.1.ipynb) |
+| [1A_pilot_v2.1.ipynb](1A_pilot_v2.1.ipynb) — superseded by v4 | 15 open 1.5–8B models (+4 gated) × 5 tasks | `MyDrive/llm-research/1A-pilot-v2.1/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.1.ipynb) |
 | [1A_pilot_v2.ipynb](1A_pilot_v2.ipynb) — kept with its outputs | 7 open 4–8B models, VSFC only | `MyDrive/llm-research/1A-pilot-v2/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.ipynb) |
 | [1A_pilot.ipynb](1A_pilot.ipynb) — v1, kept with its outputs | 6 models, 1.5–2.7B | `MyDrive/llm-research/1A-pilot/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot.ipynb) |
 
@@ -33,6 +45,22 @@ Idea: [[phase-1-ideas]] (1A)
 5. When it finishes: **Runtime → Disconnect and delete runtime**.
 
 If Colab disconnects, run all again. Models already saved in `preds/` are skipped. A model that fails to load is listed and skipped, not a crash.
+
+## v4: the clean protocol
+
+Each design choice fixes a problem found in v1–v3. The full table is at the top of the notebook.
+
+| Step | What it does | What stops the run |
+|---|---|---|
+| 1. Data | Dev = validation split, test = test split. NFC; duplicates, conflicting labels, items under 3 syllables and items with no diacritic are removed. Balanced sample per class | Dev/test overlap; unbalanced test |
+| 2. Noise | 7 conditions on the input fields only | `strip` leaves a diacritic; `partial*` changes anything besides diacritics; noise is not deterministic |
+| 3. Prompts (CPU) | Each model's documented chat format (ChatML for VinaLLaMA-2.7b, plain for bloomz). Options are A/B/C…. Tokenizer stats are computed on the tokens inside the real prompt | An answer letter is not one distinct token; the prompt exceeds the context |
+| 4. Models (GPU) | Answer prefill chosen on dev (label-blind). Calibration prior from clean dev. One forward pass gives both the answer and the per-field NLL. A free-generation check runs on 40+40 items | — |
+| 5. Audit | Files complete and reproducible. **Validity gate** fixed in advance: letter mass ≥ 0.5, generation agreement ≥ 0.7, clean-accuracy CI above chance | Any integrity failure |
+| 6–9. Analysis | RQ1 effect (dose-response, teen code, robustness to scoring choices); RQ2 size within family (Holm) and Vietnamese-adapted models; RQ3 tokenizer vs exposure (same-item two-way FE, same-tokenizer test, ambiguity); prediction shift | — |
+| 10. Conclusions | `conclusions.md` is generated from the numbers, with a *Limitations* list | — |
+
+Figures `fig01`–`fig10` are saved as PNG and PDF with captions in `figures/captions.csv`. Tables are in `tables/` (CSV and LaTeX).
 
 ## What v3 changes
 
@@ -145,3 +173,8 @@ The v3 notebook ends with these tables:
   - **Every path ran:** the format probe, re-scoring, ChatML for VinaLLaMA-2.7b (`<|im_start|>` = one token), NLL-only models, and a gated model without a token (copied without `nll_qo`; the analysis says so and leaves it out).
   - **The analysis notebook** then ran on that output with no errors.
   - **Not yet run on a GPU with the real models.** Which format wins for Qwen3 and bloomz will only be known from that run.
+- **v4** was tested end to end on CPU on full-size real data, with 16 tiny random-weight models that use each model's real tokenizer, chat template and architecture (4 items per class):
+  - **All checks pass,** including single-token answer letters for all 16 real tokenizers and every chat template copying the message verbatim.
+  - **The validity gate stops bad results:** the integrity check stopped the run on a false alarm, which was then fixed.
+  - **The analysis steps were exercised:** synthetic answers with a known signal were used for this, and all 10 figures and the conclusions were produced.
+  - **It has not yet run on a GPU with the real models.**

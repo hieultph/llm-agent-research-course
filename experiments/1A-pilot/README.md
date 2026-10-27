@@ -6,11 +6,19 @@
 > **v2** sửa lỗi đó, dùng mô hình 4–8B và thêm phân tích theo từng câu.
 > **v2.1** sửa lỗi nhãn của Phi, kiểm soát độ dài câu, chạy 15 mô hình (1.5–8B, 5 họ có nhiều cỡ) trên 5 bộ dữ liệu. Khoảng 5–7 giờ trên L4 (15–20 CU), chạy được thành nhiều phiên.
 > **v2.2** không chạy mô hình: kiểm tra lại dữ liệu và output của v2.1, sửa các phân tích còn yếu, và vẽ hình/bảng cho bài báo. Chạy trên CPU, khoảng 5 phút.
+> **v3** sửa 3 điểm v2.2 tìm ra:
+> - chấm lại Qwen3 và bloomz theo định dạng trả lời chúng thích (chọn định dạng mà không nhìn nhãn đúng);
+> - VinaLLaMA-2.7b dùng chung template ChatML với bản 7b;
+> - NLL của ViMMRC chỉ tính trên câu hỏi + đáp án.
+>
+> Chạy khoảng 2–3 giờ trên L4, sau đó chạy notebook phân tích v3 trên CPU.
 
 Idea: [[phase-1-ideas]] (1A)
 
 | Notebook | Models | Results on Drive | Open |
 |---|---|---|---|
+| [1A_pilot_v3.ipynb](1A_pilot_v3.ipynb) — **GPU, run first** | re-scores Qwen3 ×3, bloomz ×3, VinaLLaMA-2.7b; adds ViMMRC question + options NLL for all 16 | `MyDrive/llm-research/1A-pilot-v3/` (same layout as v2.1) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v3.ipynb) |
+| [1A_pilot_v3_analysis.ipynb](1A_pilot_v3_analysis.ipynb) — **CPU, run second** | the v2.2 analysis on the v3 results | `MyDrive/llm-research/1A-pilot-v3-analysis/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v3_analysis.ipynb) |
 | [1A_pilot_v2.2_analysis.ipynb](1A_pilot_v2.2_analysis.ipynb) — **analysis of v2.1, CPU only** | reads v2.1 | `MyDrive/llm-research/1A-pilot-v2.2/` (figures as PNG + PDF, tables as CSV + LaTeX) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.2_analysis.ipynb) |
 | [1A_pilot_v2.1.ipynb](1A_pilot_v2.1.ipynb) — **use this** | 15 open 1.5–8B models (+4 gated) × 5 tasks | `MyDrive/llm-research/1A-pilot-v2.1/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.1.ipynb) |
 | [1A_pilot_v2.ipynb](1A_pilot_v2.ipynb) — kept with its outputs | 7 open 4–8B models, VSFC only | `MyDrive/llm-research/1A-pilot-v2/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.ipynb) |
@@ -25,6 +33,22 @@ Idea: [[phase-1-ideas]] (1A)
 5. When it finishes: **Runtime → Disconnect and delete runtime**.
 
 If Colab disconnects, run all again. Models already saved in `preds/` are skipped. A model that fails to load is listed and skipped, not a crash.
+
+## What v3 changes
+
+| v2.2 finding | v3 |
+|---|---|
+| Qwen3 and bloomz put < 50% of their probability on the label words in 19 (model, task) pairs. Qwen3 answers in markdown; bloomz answers empty or in English | **Answer format chosen per (model, task), label-blind.** Four candidate formats are scored on 40 clean items; the one with the highest median label mass wins: `v21`, `start` (no prefill, optional `**`), `q_last` (instruction after the input, as in bloomz's xP3 training), `q_last_en` (also English label words). `v21` is kept unless another beats it by ≥ 0.02 |
+| `vinallama-2.7b-chat` has no chat template, so it got a plain prompt while the 7b got ChatML | The 2.7b uses the **7b's ChatML template**. `<|im_start|>` is a single token in its vocabulary |
+| ViMMRC ΔNLL was mostly the article (~83% of the syllables) | **`nll_qo`**: NLL of question + options only, for all 16 models |
+
+Everything else is unchanged: same items (checked against the v2.1 file), calibration and tokenizer stats. Unchanged predictions are copied from v2.1. Label variants are scored as continuations of a cached prompt, which gives the same numbers as v2.1's from-scratch scoring (within 1e-5) at a fraction of the cost.
+
+The v3 notebook ends with these tables:
+- the format chosen for each (model, task);
+- a check that the `v21` candidate reproduces v2.1's stored label mass;
+- before/after values for the 7 changed models: accuracy, label mass, tier and strip `norm_drop`;
+- ViMMRC perplexity ratios on the whole item vs on question + options.
 
 ## What v2.2 found (audit and corrected analysis of the v2.1 run)
 
@@ -116,3 +140,8 @@ If Colab disconnects, run all again. Models already saved in `preds/` are skippe
   - **Memory:** the first smoke run ran out of RAM on ViMMRC. Scoring now uses chunked log-probabilities (same values within 1.4e-6) and a 4096-token budget.
 - **v2.1** then ran on Colab L4 with 16 models (outputs are in the notebook).
 - **v2.2** was tested locally on synthetic predictions with real tokenizer stats, then ran on Colab CPU on the real v2.1 results with no errors (outputs are in the notebook).
+- **v3** was tested on CPU, end to end, with tiny random-weight models that use each model's real tokenizer and architecture (16 models, all 5 tasks, full size), on a synthetic v2.1 folder:
+  - **Cached scoring is exact:** label scores from the cached prompt equal scoring (prompt + label) from scratch within 1e-5, for the Qwen3, Bloom and Llama architectures.
+  - **Every path ran:** the format probe, re-scoring, ChatML for VinaLLaMA-2.7b (`<|im_start|>` = one token), NLL-only models, and a gated model without a token (copied without `nll_qo`; the analysis says so and leaves it out).
+  - **The analysis notebook** then ran on that output with no errors.
+  - **Not yet run on a GPU with the real models.** Which format wins for Qwen3 and bloomz will only be known from that run.

@@ -5,11 +5,13 @@
 > **v1** (mô hình 1.5B) cho thấy Qwen2.5 giảm từ 0.72 xuống 0.35 khi bỏ hết dấu, nhưng một nửa số mô hình chạy chưa đúng.
 > **v2** sửa lỗi đó, dùng mô hình 4–8B và thêm phân tích theo từng câu.
 > **v2.1** sửa lỗi nhãn của Phi, kiểm soát độ dài câu, chạy 15 mô hình (1.5–8B, 5 họ có nhiều cỡ) trên 5 bộ dữ liệu. Khoảng 5–7 giờ trên L4 (15–20 CU), chạy được thành nhiều phiên.
+> **v2.2** không chạy mô hình: kiểm tra lại dữ liệu và output của v2.1, sửa các phân tích còn yếu, và vẽ hình/bảng cho bài báo. Chạy trên CPU, khoảng 5 phút.
 
 Idea: [[phase-1-ideas]] (1A)
 
 | Notebook | Models | Results on Drive | Open |
 |---|---|---|---|
+| [1A_pilot_v2.2_analysis.ipynb](1A_pilot_v2.2_analysis.ipynb) — **analysis of v2.1, CPU only** | reads v2.1 | `MyDrive/llm-research/1A-pilot-v2.2/` (figures as PNG + PDF, tables as CSV + LaTeX) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.2_analysis.ipynb) |
 | [1A_pilot_v2.1.ipynb](1A_pilot_v2.1.ipynb) — **use this** | 15 open 1.5–8B models (+4 gated) × 5 tasks | `MyDrive/llm-research/1A-pilot-v2.1/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.1.ipynb) |
 | [1A_pilot_v2.ipynb](1A_pilot_v2.ipynb) — kept with its outputs | 7 open 4–8B models, VSFC only | `MyDrive/llm-research/1A-pilot-v2/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.ipynb) |
 | [1A_pilot.ipynb](1A_pilot.ipynb) — v1, kept with its outputs | 6 models, 1.5–2.7B | `MyDrive/llm-research/1A-pilot/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot.ipynb) |
@@ -23,6 +25,39 @@ Idea: [[phase-1-ideas]] (1A)
 5. When it finishes: **Runtime → Disconnect and delete runtime**.
 
 If Colab disconnects, run all again. Models already saved in `preds/` are skipped. A model that fails to load is listed and skipped, not a crash.
+
+## What v2.2 found (audit and corrected analysis of the v2.1 run)
+
+**The benchmark is sound.**
+
+- **Items:** the rebuilt items match the ones the run used, 9135/9135.
+- **Prediction files:** all 80 (model, task) files are complete. The stored predictions and label mass can be recomputed from the stored log-probs. Every model saw the same items with the same labels.
+- **Noise:**
+  - Partial removal hits its nominal rate (0.25 / 0.50 / 0.75, ±0.003).
+  - `strip` leaves no diacritic.
+  - Partial and strip change nothing except diacritics.
+- **Reused v2 VSFC files:** the label tokens are identical to v2.1's for the 6 reused models (300/300), so reuse was valid.
+- **Label mass under `strip`:** it barely moves (|Δ| ≤ 0.1, except bloomz-1b7). The drop is a change of judgement, not of answer format.
+
+| Question | Result |
+|---|---|
+| Size of the effect | Mean normalised drop under `strip` (reliable pairs): VSFC 0.57, VSMEC 0.56, XNLI 0.52, ViHSD 0.41, ViMMRC 0.36. Teen code ≤ 0.10. |
+| Does calibration hide part of it? | Slightly. Calibrating noisy items with the **clean** prior (what a deployed system knows) gives 0.64 / 0.58 / 0.56 / 0.43 / 0.38. Under `strip`, raw predictions shift toward *tiêu cực* (VSFC), *mâu thuẫn* (XNLI) and *khác* (VSMEC). |
+| Tokenizer or exposure? (model level) | Within each condition, Δfertility has ρ ≈ 0 with the drop, and log perplexity ratio has ρ 0.29–0.45. In OLS with condition and task fixed effects: perplexity ratio +0.12 per SD (p < 0.001), Δfertility n.s., Δbroken n.s. |
+| Tokenizer or exposure? (same noisy item) | With item × condition fixed effects, the model that finds the noisy item more surprising flips more: **+2.2 pp per SD of ΔNLL** (all models, p < 0.001), +3.7 pp on reliable pairs. It holds within one tokenizer (Qwen2.5 / Qwen3 / SeaLLMs: +2.4 pp) and in 4 of 5 tasks (not ViHSD). Δtokens and Δbroken are n.s. everywhere. **This is the cleanest test in the pilot.** |
+| Tokenizer or exposure? (pooled logit) | Without item fixed effects the picture is unstable. Δtokens and Δbroken are collinear (r = 0.86) and take opposite signs, so do not report that model as the main result. |
+| Lexical ambiguity | Among partial/strip items, stripped words with more accented readings predict flips (+0.09 per SD, p = 0.003). |
+| Scale within a family | Larger is more robust on VSFC for Qwen2.5, Qwen3 and SeaLLMs (all CIs exclude 0), and for Qwen2.5 on ViHSD. Most other task × family differences have CIs that include 0. VinaLLaMA 2.7→7B is never more robust, and is significantly worse on VSMEC. |
+| Qwen2.5-3B vs Llama-3.2-3B | Llama loses more on VSFC (+0.44) and XNLI (+0.60), both CIs excluding 0, at a similar Δfertility. Null on the other 3 tasks. |
+| Real noise in ViHSD | **Null** once the label is controlled for (originally unaccented vs fully accented comments: logit −0.30, p = 0.17). Do not claim it. |
+| Agreement across models | Models only weakly agree on *which* items flip (mean r = 0.25). |
+
+**Caveats that remain** (need a GPU run, v3):
+
+- **Low label mass:** Qwen3 and bloomz carry little probability on the labels on several tasks. Their results are shown with a † ("gated" tier), not dropped.
+- **Prompt format confound:** VinaLLaMA-2.7b-chat ships **without a chat template**, so it got a plain prompt, while VinaLLaMA-7b-chat got ChatML. This confounds the VinaLLaMA size comparison.
+- **Prediction collapse:** 16 reliable (model, task, condition) cells still put > 60% of calibrated predictions on one label. Examples: Llama-3.2-3B on VSFC under noise, and Qwen2.5-3B on XNLI.
+- **ViMMRC NLL** is still computed over the whole article.
 
 ## What v2 taught us (and what v2.1 changes)
 
@@ -79,4 +114,5 @@ If Colab disconnects, run all again. Models already saved in `preds/` are skippe
   - **Reuse and skip paths work:** v2 reuse was tested with a simulated v2 folder, and a nonexistent model name is skipped cleanly.
   - **VSFC items are identical to v2 at full size** (2100/2100 rows).
   - **Memory:** the first smoke run ran out of RAM on ViMMRC. Scoring now uses chunked log-probabilities (same values within 1.4e-6) and a 4096-token budget.
-  - **Not run yet:** v2.1 with the real 1.5–8B models on GPU.
+- **v2.1** then ran on Colab L4 with 16 models (outputs are in the notebook).
+- **v2.2** was tested locally on synthetic predictions with real tokenizer stats, then ran on Colab CPU on the real v2.1 results with no errors (outputs are in the notebook).

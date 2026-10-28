@@ -22,19 +22,116 @@
 > - có CI bootstrap và hiệu chỉnh Holm;
 > - xuất 10 hình, các bảng LaTeX và phần kết luận tự sinh.
 >
-> Chạy khoảng 3–4 giờ trên L4.
+> Chạy khoảng 3–4 giờ trên L4. Đã chạy: 16 mô hình × 5 tác vụ, 74/80 cặp hợp lệ.
+>
+> **v4 follow-up** (CPU, vài phút) kiểm tra các điểm lạ trong kết quả v4 mà không chạy lại mô hình.
+>
+> **v5** chỉ chạy phần mới (khoảng 2,5–3,5 giờ trên L4):
+> - thêm điều kiện khôi phục dấu tự động cho bản đã bỏ dấu;
+> - thêm 2 seed cho các mức bỏ dấu 25/50/75%;
+> - ghi file debug theo từng câu.
+>
+> Kết quả chính của cả ba ở mục [Results](#results-v4--follow-up--v5).
 
 Idea: [[phase-1-ideas]] (1A)
 
 | Notebook | Models | Results on Drive | Open |
 |---|---|---|---|
 | [1A_pilot_v4.ipynb](1A_pilot_v4.ipynb) — **use this: clean, step-by-step, GPU then CPU** | 15 open 1.5–8B models (+ Llama-3.2-3B with the `HF_TOKEN` secret) × 5 tasks | `MyDrive/llm-research/1A-pilot-v4/` (figures, LaTeX tables, `conclusions.md`) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v4.ipynb) |
+| [1A_pilot_v5.ipynb](1A_pilot_v5.ipynb) — **new conditions only, GPU; reads v4** | same 16 models × 5 tasks; adds `restored`, `partial25/50/75` seeds 2 and 3 | `MyDrive/llm-research/1A-pilot-v5/` (`debug/` per-item files, `conclusions.md`, fig11–fig12) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v5.ipynb) |
+| [1A_pilot_v4_followup.ipynb](1A_pilot_v4_followup.ipynb) — **CPU checks on the v4 results** | reads v4 | `MyDrive/llm-research/1A-pilot-v4/followup/` (`followup.md`, tables, F1–F3 figures) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v4_followup.ipynb) |
 | [1A_pilot_v3.ipynb](1A_pilot_v3.ipynb) — superseded by v4 | re-scores Qwen3 ×3, bloomz ×3, VinaLLaMA-2.7b; adds ViMMRC question + options NLL for all 16 | `MyDrive/llm-research/1A-pilot-v3/` (same layout as v2.1) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v3.ipynb) |
 | [1A_pilot_v3_analysis.ipynb](1A_pilot_v3_analysis.ipynb) — **CPU, run second** | the v2.2 analysis on the v3 results | `MyDrive/llm-research/1A-pilot-v3-analysis/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v3_analysis.ipynb) |
 | [1A_pilot_v2.2_analysis.ipynb](1A_pilot_v2.2_analysis.ipynb) — **analysis of v2.1, CPU only** | reads v2.1 | `MyDrive/llm-research/1A-pilot-v2.2/` (figures as PNG + PDF, tables as CSV + LaTeX) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.2_analysis.ipynb) |
 | [1A_pilot_v2.1.ipynb](1A_pilot_v2.1.ipynb) — superseded by v4 | 15 open 1.5–8B models (+4 gated) × 5 tasks | `MyDrive/llm-research/1A-pilot-v2.1/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.1.ipynb) |
 | [1A_pilot_v2.ipynb](1A_pilot_v2.ipynb) — kept with its outputs | 7 open 4–8B models, VSFC only | `MyDrive/llm-research/1A-pilot-v2/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.ipynb) |
 | [1A_pilot.ipynb](1A_pilot.ipynb) — v1, kept with its outputs | 6 models, 1.5–2.7B | `MyDrive/llm-research/1A-pilot/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot.ipynb) |
+
+## Results (v4 + follow-up + v5)
+
+Numbers are copied from the generated `conclusions.md`, `followup.md` and `checks/` files on Drive. The result files themselves are not in this repo.
+
+**Normalised drop** = (acc_clean − acc_cond) / (acc_clean − chance). A value of 0 means no loss and 1 means the model falls to chance. 95% CIs come from a paired bootstrap (B = 2000).
+
+### v4 (16 models × 5 tasks, 1835 test items × 7 conditions)
+
+All 80 (model, task) runs finished. The validity gate was fixed in advance and excluded 6 pairs, all because clean accuracy was near chance (0.40–0.42 against a threshold of 0.433):
+- SeaLLMs-v3-1.5B, bloomz-1b7, bloomz-3b, Phi-3.5-mini and vinallama-2.7b on ViHSD;
+- bloomz-1b7 on XNLI.
+
+**RQ1 — removing all diacritics (`strip`)**
+
+| Task | Normalised drop [95% CI] | Valid models |
+|---|---|---|
+| VSFC | 0.67 [0.61, 0.74] | 16 |
+| VSMEC | 0.66 [0.55, 0.76] | 16 |
+| ViHSD | 0.53 [0.44, 0.63] | 11 |
+| XNLI | 0.56 [0.45, 0.64] | 15 |
+| ViMMRC | 0.41 [0.36, 0.46] | 16 |
+
+- Teen code: 0.06.
+- Accuracy falls monotonically with the share of stripped words in 86% of valid pairs.
+- Across scoring choices the strip drop stays between 0.53 and 0.71.
+
+**RQ2 — who is robust**
+- Larger size within a family helps significantly in only 5 of 22 tests after Holm correction.
+- Vietnamese-adapted models lose more. In v4 this was descriptive only; the follow-up (F2 below) tests it.
+
+**RQ3 — why** (same noisy item, two-way fixed effects, clustered by item)
+
+| Predictor (per SD) | Effect on error | p |
+|---|---|---|
+| ΔNLL of the input | +1.8 pp | 2.5e-5 |
+| ΔNLL, same-tokenizer models only | +3.5 pp | 1.8e-8 |
+| Ambiguity (bits) | +2.0 pp | 1.6e-5 |
+| Δ tokens per syllable | — | 0.00039 |
+| Δ broken syllables | negative | 9.3e-6 |
+
+### v4 follow-up (CPU only, no new model runs)
+
+| Check | Result |
+|---|---|
+| **F1** label collapse | 19/74 valid pairs collapse onto one label under `strip`. On VSFC, 7 models shift to "negative". bloomz-1b7/VSFC predicts "negative" 59% of the time and its accuracy (0.30) is below chance; this is why its normalised drop is 1.15 |
+| **F2** Vietnamese-adapted vs general | With size and task controlled, adapted models lose +0.16 [−0.02, 0.34] more (p = 0.086; exact permutation p = 0.091), so this is **not significant**. With the same tokenizer, SeaLLMs-v3 loses more than Qwen2.5 in 8 of 9 matched comparisons, but only VSFC survives Holm (1.5B and 7B). Adapted models also show larger Δtokens/syllable (0.21 vs −0.01) and larger ΔNLL (2.96 vs 1.71) |
+| **F3** teen code at an equal dose | The teen-code generator changes only 6–12% of words. At that same dose, diacritic removal does similar damage (VSFC 0.10 vs 0.06; XNLI 0.11 vs 0.12). So "teen code is harmless" is **not** a fair claim, only "our teen code is light" |
+| **F4** negative Δ broken syllables | corr(Δtokens, Δbroken) = 0.87, but VIF ≈ 4 and Δbroken is negative even on its own (−1.6 pp, p = 0.00014). It is a real sign, not collinearity, and needs an explanation in the paper |
+| **F5** sensitivity | RQ1 barely changes when the 6 excluded pairs are kept (ViHSD 0.53 → 0.59) or when only the 11 models valid on every task are used |
+| **F6** exact p-values | The "p = 0" in v4 was a rounding bug, now fixed in the v4 notebook: ambiguity p = 1.6e-5, z-scored ΔNLL p = 2.8e-9, z-scored Δtokens p = 0.014 |
+
+### v5 (new conditions only, 16 models, 80/80 pairs)
+
+**Checks**
+- v4's clean answers are reproduced on 98.9% of re-scored items (worst pair 88%).
+- The calibration prior matches v4 (Δ < 0.001).
+- The strip drops are identical to v4, on the same 74 valid pairs.
+- One check failed: the target I set for restoration accuracy was ≥ 85%, and the mean was 83.4%. This is reported, not hidden.
+
+**Restoration** uses `peterhung/vietnamese-accent-marker-xlm-roberta`, a token classifier based on XLM-R large (Apache-2.0). It is applied to the `strip` text. *Recovery* = (acc_restored − acc_strip) / (acc_clean − acc_strip).
+
+| Task | Words restored correctly | Drop, `strip` | Drop, `restored` | Recovery [95% CI] |
+|---|---|---|---|---|
+| VSFC | 92.5% | 0.67 | 0.12 | 0.77 [0.68, 0.85] |
+| XNLI | 92.0% | 0.56 | 0.10 | 0.73 [0.62, 0.87] |
+| VSMEC | 76.2% | 0.66 | 0.23 | 0.64 [0.50, 0.78] |
+| ViMMRC | 81.2% | 0.41 | 0.15 | 0.55 [0.40, 0.67] |
+| ViHSD | 75.1% | 0.53 | 0.24 | 0.52 [0.32, 0.66] |
+
+- On average, restoration recovers 64% of the lost accuracy, and the remaining drop is 0.17 instead of 0.57.
+- Restoration is worse on the social-media tasks (VSMEC, ViHSD), which also recover least. One possible reason, **not verified**: their original text is partly unaccented or slang.
+
+**Seed stability.** Across 3 noise seeds for `partial25/50/75`:
+- the normalised drop differs by 0.048 on average, at most 0.121;
+- with accuracies averaged over seeds, the dose-response is monotone in 97% of valid pairs (86% with one seed in v4).
+
+**Debug files.** `1A-pilot-v5/debug/<task>__<model>.csv` has one row per item and condition, with these columns:
+- the text;
+- the ground truth and the prediction, as label names;
+- correct or not;
+- the probability of each option;
+- letter mass;
+- whether the pair passed the gate.
+
+`debug/labels.csv` maps letters to label names.
 
 ## Run it on Colab
 
@@ -178,3 +275,6 @@ The v3 notebook ends with these tables:
   - **The validity gate stops bad results:** the integrity check stopped the run on a false alarm, which was then fixed.
   - **The analysis steps were exercised:** synthetic answers with a known signal were used for this, and all 10 figures and the conclusions were produced.
   - **It has not yet run on a GPU with the real models.**
+- **v4** then ran on Colab L4 with 16 models (results above).
+- **v4 follow-up** ran on Colab CPU on the real v4 results.
+- **v5** was smoke-tested on CPU with tiny models, including a tiny restorer, and then ran on Colab L4 with 16 models. All checks pass except the restoration-accuracy threshold (results above).

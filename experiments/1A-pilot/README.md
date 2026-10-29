@@ -26,6 +26,8 @@
 >
 > **v4 follow-up** (CPU, vài phút) kiểm tra các điểm lạ trong kết quả v4 mà không chạy lại mô hình.
 >
+> **v5 follow-up** (CPU) kiểm tra hai câu hỏi còn mở: vì sao khôi phục dấu kém trên dữ liệu mạng xã hội, và vì sao hệ số Δ broken bị âm.
+>
 > **v5** chỉ chạy phần mới (khoảng 2,5–3,5 giờ trên L4):
 > - thêm điều kiện khôi phục dấu tự động cho bản đã bỏ dấu;
 > - thêm 2 seed cho các mức bỏ dấu 25/50/75%;
@@ -39,6 +41,7 @@ Idea: [[phase-1-ideas]] (1A)
 |---|---|---|---|
 | [1A_pilot_v4.ipynb](1A_pilot_v4.ipynb) — **use this: clean, step-by-step, GPU then CPU** | 15 open 1.5–8B models (+ Llama-3.2-3B with the `HF_TOKEN` secret) × 5 tasks | `MyDrive/llm-research/1A-pilot-v4/` (figures, LaTeX tables, `conclusions.md`) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v4.ipynb) |
 | [1A_pilot_v5.ipynb](1A_pilot_v5.ipynb) — **new conditions only, GPU; reads v4** | same 16 models × 5 tasks; adds `restored`, `partial25/50/75` seeds 2 and 3 | `MyDrive/llm-research/1A-pilot-v5/` (`debug/` per-item files, `conclusions.md`, fig11–fig12) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v5.ipynb) |
+| [1A_pilot_v5_followup.ipynb](1A_pilot_v5_followup.ipynb) — **CPU checks on v4 + v5** | reads v4 and v5 | `MyDrive/llm-research/1A-pilot-v5/followup/` (`followup.md`, tables, G1–G2 figures) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v5_followup.ipynb) |
 | [1A_pilot_v4_followup.ipynb](1A_pilot_v4_followup.ipynb) — **CPU checks on the v4 results** | reads v4 | `MyDrive/llm-research/1A-pilot-v4/followup/` (`followup.md`, tables, F1–F3 figures) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v4_followup.ipynb) |
 | [1A_pilot_v3.ipynb](1A_pilot_v3.ipynb) — superseded by v4 | re-scores Qwen3 ×3, bloomz ×3, VinaLLaMA-2.7b; adds ViMMRC question + options NLL for all 16 | `MyDrive/llm-research/1A-pilot-v3/` (same layout as v2.1) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v3.ipynb) |
 | [1A_pilot_v3_analysis.ipynb](1A_pilot_v3_analysis.ipynb) — **CPU, run second** | the v2.2 analysis on the v3 results | `MyDrive/llm-research/1A-pilot-v3-analysis/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v3_analysis.ipynb) |
@@ -94,7 +97,7 @@ All 80 (model, task) runs finished. The validity gate was fixed in advance and e
 | **F1** label collapse | 19/74 valid pairs collapse onto one label under `strip`. On VSFC, 7 models shift to "negative". bloomz-1b7/VSFC predicts "negative" 59% of the time and its accuracy (0.30) is below chance; this is why its normalised drop is 1.15 |
 | **F2** Vietnamese-adapted vs general | With size and task controlled, adapted models lose +0.16 [−0.02, 0.34] more (p = 0.086; exact permutation p = 0.091), so this is **not significant**. With the same tokenizer, SeaLLMs-v3 loses more than Qwen2.5 in 8 of 9 matched comparisons, but only VSFC survives Holm (1.5B and 7B). Adapted models also show larger Δtokens/syllable (0.21 vs −0.01) and larger ΔNLL (2.96 vs 1.71) |
 | **F3** teen code at an equal dose | The teen-code generator changes only 6–12% of words. At that same dose, diacritic removal does similar damage (VSFC 0.10 vs 0.06; XNLI 0.11 vs 0.12). So "teen code is harmless" is **not** a fair claim, only "our teen code is light" |
-| **F4** negative Δ broken syllables | corr(Δtokens, Δbroken) = 0.87, but VIF ≈ 4 and Δbroken is negative even on its own (−1.6 pp, p = 0.00014). It is a real sign, not collinearity, and needs an explanation in the paper |
+| **F4** negative Δ broken syllables | corr(Δtokens, Δbroken) = 0.87, but VIF ≈ 4 and Δbroken is negative even on its own (−1.6 pp, p = 0.00014). It is a real sign, not collinearity. The v5 follow-up (G2) checks it further |
 | **F5** sensitivity | RQ1 barely changes when the 6 excluded pairs are kept (ViHSD 0.53 → 0.59) or when only the 11 models valid on every task are used |
 | **F6** exact p-values | The "p = 0" in v4 was a rounding bug, now fixed in the v4 notebook: ambiguity p = 1.6e-5, z-scored ΔNLL p = 2.8e-9, z-scored Δtokens p = 0.014 |
 
@@ -117,11 +120,28 @@ All 80 (model, task) runs finished. The validity gate was fixed in advance and e
 | ViHSD | 75.1% | 0.53 | 0.24 | 0.52 [0.32, 0.66] |
 
 - On average, restoration recovers 64% of the lost accuracy, and the remaining drop is 0.17 instead of 0.57.
-- Restoration is worse on the social-media tasks (VSMEC, ViHSD), which also recover least. One possible reason, **not verified**: their original text is partly unaccented or slang.
+- Restoration is worse on the social-media tasks (VSMEC, ViHSD), which also recover least. This is **not** because their original text lacks marks (v5 follow-up, G1): the restorer is weaker on informal text itself.
 
 **Seed stability.** Across 3 noise seeds for `partial25/50/75`:
 - the normalised drop differs by 0.048 on average, at most 0.121;
 - with accuracies averaged over seeds, the dose-response is monotone in 97% of valid pairs (86% with one seed in v4).
+
+### v5 follow-up (CPU only, no new model runs)
+
+**G1: are the restoration "errors" on VSMEC and ViHSD words the original wrote without marks?** No.
+- Each original word was labelled using a vocabulary from formal text (XNLI-vi and ViMMRC, test and validation).
+- Words written without a mark that formal text writes with one, plus slang and foreign words, are 4.5% of the words in VSMEC and 5.7% in ViHSD (VSFC 1.1%, XNLI 0.1%).
+- Leaving these words out barely changes accuracy: VSMEC 0.762 → 0.775, ViHSD 0.751 → 0.749.
+- They explain only about 3% of the 16.6 pp gap between the formal and the social-media tasks. The restorer is simply weaker on informal text.
+- On ViMMRC the restorer gets 80% of article words right, against 86–87% on questions and options. Lines longer than one 120-word window are only slightly worse (0.80 vs 0.84), so windowing is not the main cause.
+
+**G2: where does the negative Δ broken-syllables coefficient come from?** From the change itself.
+- The v4 coefficient is reproduced: −3.9 pp per SD (p = 9.3e-6).
+- It is negative and significant in 6 of 9 v4 samples, and in none is it significantly positive.
+- With the clean break rate as a control, Δ broken stays at −3.8 pp (p = 1.4e-5), and the clean rate itself adds nothing (+0.2 pp, p = 0.83). So it is not a proxy for poor tokenization of the clean text.
+- It stays negative in all 14 leave-one-tokenizer-group and leave-one-family-out refits (−4.6 to −2.3 pp), and with another definition (per clean syllable: −4.1 pp).
+- Tokenizers differ in direction. Phi-3.5 and Mistral already split about 90% of clean Vietnamese syllables and split *fewer* after `strip` (Δ about −0.3). All other tokenizers split more (+0.16 to +0.25).
+- The mechanism is open. In the paper, report it as an unexplained finding and do not claim that broken syllables cause the loss.
 
 **Debug files.** `1A-pilot-v5/debug/<task>__<model>.csv` has one row per item and condition, with these columns:
 - the text;
@@ -277,4 +297,5 @@ The v3 notebook ends with these tables:
   - **It has not yet run on a GPU with the real models.**
 - **v4** then ran on Colab L4 with 16 models (results above).
 - **v4 follow-up** ran on Colab CPU on the real v4 results.
+- **v5 follow-up** was smoke-tested on CPU on the v4/v5 smoke outputs, then ran on Colab CPU on the real results. All checks pass, including reproducing v5's restoration accuracy and v4's Δ broken coefficient.
 - **v5** was smoke-tested on CPU with tiny models, including a tiny restorer, and then ran on Colab L4 with 16 models. All checks pass except the restoration-accuracy threshold (results above).

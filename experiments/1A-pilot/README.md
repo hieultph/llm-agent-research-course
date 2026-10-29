@@ -33,6 +33,8 @@
 > - thêm 2 seed cho các mức bỏ dấu 25/50/75%;
 > - ghi file debug theo từng câu.
 >
+> **v6** (chưa chạy) lấp các khoảng trống trước khi viết bài: 3 mẫu prompt mới (diễn đạt lại, tiếng Anh, có lời nhắc "văn bản có thể không dấu"), 3 mô hình 14B (Qwen2.5-14B, Qwen3-14B, phi-4; cần A100), và các bình luận ViHSD vốn được gõ không dấu. Mô hình nhỏ chạy được trên L4; mô hình 14B cần A100.
+>
 > Kết quả chính của cả ba ở mục [Results](#results-v4--follow-up--v5).
 
 Idea: [[phase-1-ideas]] (1A)
@@ -41,6 +43,7 @@ Idea: [[phase-1-ideas]] (1A)
 |---|---|---|---|
 | [1A_pilot_v4.ipynb](1A_pilot_v4.ipynb) — **use this: clean, step-by-step, GPU then CPU** | 15 open 1.5–8B models (+ Llama-3.2-3B with the `HF_TOKEN` secret) × 5 tasks | `MyDrive/llm-research/1A-pilot-v4/` (figures, LaTeX tables, `conclusions.md`) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v4.ipynb) |
 | [1A_pilot_v5.ipynb](1A_pilot_v5.ipynb) — **new conditions only, GPU; reads v4** | same 16 models × 5 tasks; adds `restored`, `partial25/50/75` seeds 2 and 3 | `MyDrive/llm-research/1A-pilot-v5/` (`debug/` per-item files, `conclusions.md`, fig11–fig12) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v5.ipynb) |
+| [1A_pilot_v6.ipynb](1A_pilot_v6.ipynb) — **prompts, 14B models, natural unaccented text; GPU; reads v4 + v5** | v4's 16 models + Qwen2.5-14B, Qwen3-14B, phi-4 (A100) | `MyDrive/llm-research/1A-pilot-v6/` (`conclusions.md`, fig13–fig16) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v6.ipynb) |
 | [1A_pilot_v5_followup.ipynb](1A_pilot_v5_followup.ipynb) — **CPU checks on v4 + v5** | reads v4 and v5 | `MyDrive/llm-research/1A-pilot-v5/followup/` (`followup.md`, tables, G1–G2 figures) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v5_followup.ipynb) |
 | [1A_pilot_v4_followup.ipynb](1A_pilot_v4_followup.ipynb) — **CPU checks on the v4 results** | reads v4 | `MyDrive/llm-research/1A-pilot-v4/followup/` (`followup.md`, tables, F1–F3 figures) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v4_followup.ipynb) |
 | [1A_pilot_v3.ipynb](1A_pilot_v3.ipynb) — superseded by v4 | re-scores Qwen3 ×3, bloomz ×3, VinaLLaMA-2.7b; adds ViMMRC question + options NLL for all 16 | `MyDrive/llm-research/1A-pilot-v3/` (same layout as v2.1) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v3.ipynb) |
@@ -297,5 +300,6 @@ The v3 notebook ends with these tables:
   - **It has not yet run on a GPU with the real models.**
 - **v4** then ran on Colab L4 with 16 models (results above).
 - **v4 follow-up** ran on Colab CPU on the real v4 results.
+- **v6** was smoke-tested on CPU with tiny models (including tiny 14B architectures and the tiny restorer) on the v4/v5 smoke outputs: all 57 checks pass. Not yet run on Colab.
 - **v5 follow-up** was smoke-tested on CPU on the v4/v5 smoke outputs, then ran on Colab CPU on the real results. All checks pass, including reproducing v5's restoration accuracy and v4's Δ broken coefficient.
 - **v5** was smoke-tested on CPU with tiny models, including a tiny restorer, and then ran on Colab L4 with 16 models. All checks pass except the restoration-accuracy threshold (results above).

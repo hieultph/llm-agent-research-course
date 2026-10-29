@@ -33,9 +33,9 @@
 > - thêm 2 seed cho các mức bỏ dấu 25/50/75%;
 > - ghi file debug theo từng câu.
 >
-> **v6** (chưa chạy) lấp các khoảng trống trước khi viết bài: 3 mẫu prompt mới (diễn đạt lại, tiếng Anh, có lời nhắc "văn bản có thể không dấu"), 3 mô hình 14B (Qwen2.5-14B, Qwen3-14B, phi-4; cần A100), và các bình luận ViHSD vốn được gõ không dấu. Mô hình nhỏ chạy được trên L4; mô hình 14B cần A100.
+> **v6** (đã chạy: L4 + A100, 62/62 kiểm tra đạt) lấp các khoảng trống trước khi viết bài: 3 mẫu prompt mới (diễn đạt lại, tiếng Anh, có lời nhắc "văn bản có thể không dấu"), 3 mô hình 14B (Qwen2.5-14B, Qwen3-14B, phi-4; cần A100), và các bình luận ViHSD vốn được gõ không dấu. Mô hình nhỏ chạy được trên L4; mô hình 14B cần A100.
 >
-> Kết quả chính của cả ba ở mục [Results](#results-v4--follow-up--v5).
+> Kết quả chính của cả ba ở mục [Results](#results-v4--follow-up--v5--v6).
 
 Idea: [[phase-1-ideas]] (1A)
 
@@ -53,7 +53,7 @@ Idea: [[phase-1-ideas]] (1A)
 | [1A_pilot_v2.ipynb](1A_pilot_v2.ipynb) — kept with its outputs | 7 open 4–8B models, VSFC only | `MyDrive/llm-research/1A-pilot-v2/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v2.ipynb) |
 | [1A_pilot.ipynb](1A_pilot.ipynb) — v1, kept with its outputs | 6 models, 1.5–2.7B | `MyDrive/llm-research/1A-pilot/` | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot.ipynb) |
 
-## Results (v4 + follow-up + v5)
+## Results (v4 + follow-up + v5 + v6)
 
 Numbers are copied from the generated `conclusions.md`, `followup.md` and `checks/` files on Drive. The result files themselves are not in this repo.
 
@@ -155,6 +155,39 @@ All 80 (model, task) runs finished. The validity gate was fixed in advance and e
 - whether the pair passed the gate.
 
 `debug/labels.csv` maps letters to label names.
+
+### v6 (prompts, 14B models, naturally unaccented text; 19 models)
+
+Ran on Colab: L4 for v4's 16 models, then A100 80 GB for the three 14B models. All 62 checks pass. v4's answers are reproduced on re-scored clean items (94–100% per pair). The 14B models pass v4's gate on all 5 tasks.
+
+**A. The loss does not depend on the prompt.**
+- On the 85 (model, task) pairs valid under all four prompts, the mean normalised drop under `strip` is v4 0.52 [95% CI 0.48, 0.55], Vietnamese paraphrase 0.52 [0.49, 0.56], English instructions 0.55 [0.51, 0.58], v4 + hint 0.52 [0.48, 0.56].
+- Models rank the same way: Spearman with v4's prompt 0.96 (paraphrase), 0.95 (English), 0.98 (hint).
+- Only one task × template differs significantly: XNLI with English instructions (+0.07).
+
+**A. Telling the model the text may lack diacritics does nothing.**
+- The hint changes clean and strip accuracy by less than 1 point on every task.
+- It recovers −1% of the lost accuracy on average (no task's CI excludes 0 in its favour). Automatic restoration recovers 60% on the same pairs (49–71% per task).
+
+**B. Larger models lose less, and the size trend continues past 8B.**
+
+| model | valid tasks | mean normalised drop, `strip` | restoration recovers |
+|---|---|---|---|
+| Qwen2.5-14B | 5/5 | 0.30 | 23% |
+| Qwen3-14B | 5/5 | 0.24 | 42% |
+| phi-4 (14B) | 5/5 | 0.44 | 50% |
+
+- Size trend (task and family fixed effects, SE clustered by model): −0.090 normalised drop per doubling with ≤ 8B models only (16 models, 74 pairs). With the 14B models it is −0.086 [−0.103, −0.069], p = 9.5e-23 (19 models, 89 pairs).
+- phi-4's tokenizer behaves like Phi-3.5 and Mistral: it splits 81% of clean syllables and 50% after `strip`. That makes three tokenizers where stripping *reduces* broken syllables, the G2 direction.
+
+**C. Naturally unaccented text: restoration does not help.**
+- 226 ViHSD test comments that their authors wrote without diacritics: 313 had no diacritic after v4's cleaning, and comments where the restorer changed < 20% of words were dropped. On the rest, the restorer adds diacritics to 70% of words.
+- Over 14 valid models, restoration changes balanced accuracy by +0.01 [−0.02, 0.04]. On v4's synthetic ViHSD items, the same models gain +0.055.
+- Only VinaLLaMA-7B gains significantly (+0.17); no model loses significantly.
+- Caveats:
+  - The set is small and unbalanced (mostly `clean`; 21 offensive, 47 hate before filtering), so the per-model CIs are wide.
+  - Balanced accuracy on these comments (0.31–0.58) is closer to the models' synthetic `strip` accuracy than to `clean`. These are different items, so this is not a causal comparison.
+  - Two explanations remain open: the restorer is weak on informal text (G1), or models already read habitual unaccented writing well. This set cannot separate them.
 
 ## Run it on Colab
 
@@ -300,6 +333,6 @@ The v3 notebook ends with these tables:
   - **It has not yet run on a GPU with the real models.**
 - **v4** then ran on Colab L4 with 16 models (results above).
 - **v4 follow-up** ran on Colab CPU on the real v4 results.
-- **v6** was smoke-tested on CPU with tiny models (including tiny 14B architectures and the tiny restorer) on the v4/v5 smoke outputs: all 57 checks pass. Not yet run on Colab.
+- **v6** was smoke-tested on CPU with tiny models (including tiny 14B architectures and the tiny restorer): all 57 checks pass. It then ran on Colab, L4 for the 16 small models and A100 80 GB for the 14B models: all 62 checks pass (results above).
 - **v5 follow-up** was smoke-tested on CPU on the v4/v5 smoke outputs, then ran on Colab CPU on the real results. All checks pass, including reproducing v5's restoration accuracy and v4's Δ broken coefficient.
 - **v5** was smoke-tested on CPU with tiny models, including a tiny restorer, and then ran on Colab L4 with 16 models. All checks pass except the restoration-accuracy threshold (results above).

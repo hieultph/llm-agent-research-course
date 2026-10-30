@@ -44,6 +44,7 @@ Idea: [[phase-1-ideas]] (1A)
 | [1A_pilot_v4.ipynb](1A_pilot_v4.ipynb) — **use this: clean, step-by-step, GPU then CPU** | 15 open 1.5–8B models (+ Llama-3.2-3B with the `HF_TOKEN` secret) × 5 tasks | `MyDrive/llm-research/1A-pilot-v4/` (figures, LaTeX tables, `conclusions.md`) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v4.ipynb) |
 | [1A_pilot_v5.ipynb](1A_pilot_v5.ipynb) — **new conditions only, GPU; reads v4** | same 16 models × 5 tasks; adds `restored`, `partial25/50/75` seeds 2 and 3 | `MyDrive/llm-research/1A-pilot-v5/` (`debug/` per-item files, `conclusions.md`, fig11–fig12) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v5.ipynb) |
 | [1A_pilot_v6.ipynb](1A_pilot_v6.ipynb) — **prompts, 14B models, natural unaccented text; GPU; reads v4 + v5** | v4's 16 models + Qwen2.5-14B, Qwen3-14B, phi-4 (A100) | `MyDrive/llm-research/1A-pilot-v6/` (`conclusions.md`, fig13–fig16) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v6.ipynb) |
+| [1A_pilot_v7_cpu.ipynb](1A_pilot_v7_cpu.ipynb) — **CPU re-analyses for review 1** | reads v4, v5, v6 | `MyDrive/llm-research/1A-pilot-v7-cpu/` (`conclusions.md`, tables, `data/natural_sample_100.csv`) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v7_cpu.ipynb) |
 | [1A_pilot_v5_followup.ipynb](1A_pilot_v5_followup.ipynb) — **CPU checks on v4 + v5** | reads v4 and v5 | `MyDrive/llm-research/1A-pilot-v5/followup/` (`followup.md`, tables, G1–G2 figures) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v5_followup.ipynb) |
 | [1A_pilot_v4_followup.ipynb](1A_pilot_v4_followup.ipynb) — **CPU checks on the v4 results** | reads v4 | `MyDrive/llm-research/1A-pilot-v4/followup/` (`followup.md`, tables, F1–F3 figures) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v4_followup.ipynb) |
 | [1A_pilot_v3.ipynb](1A_pilot_v3.ipynb) — superseded by v4 | re-scores Qwen3 ×3, bloomz ×3, VinaLLaMA-2.7b; adds ViMMRC question + options NLL for all 16 | `MyDrive/llm-research/1A-pilot-v3/` (same layout as v2.1) | [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1A-pilot/1A_pilot_v3.ipynb) |
@@ -181,13 +182,26 @@ Ran on Colab: L4 for v4's 16 models, then A100 80 GB for the three 14B models. A
 - phi-4's tokenizer behaves like Phi-3.5 and Mistral: it splits 81% of clean syllables and 50% after `strip`. That makes three tokenizers where stripping *reduces* broken syllables, the G2 direction.
 
 **C. Naturally unaccented text: restoration does not help.**
-- 226 ViHSD test comments that their authors wrote without diacritics: 313 had no diacritic after v4's cleaning, and comments where the restorer changed < 20% of words were dropped. On the rest, the restorer adds diacritics to 70% of words.
+- 226 ViHSD test comments that their authors wrote without diacritics: 270 had no diacritic after v4's cleaning, and the 44 where the restorer changed < 20% of words were dropped (an earlier version of this README said 313; v6's `table_natural_items.csv` says 270). On the rest, the restorer adds diacritics to 70% of words.
 - Over 14 valid models, restoration changes balanced accuracy by +0.01 [−0.02, 0.04]. On v4's synthetic ViHSD items, the same models gain +0.055.
 - Only VinaLLaMA-7B gains significantly (+0.17); no model loses significantly.
 - Caveats:
-  - The set is small and unbalanced (mostly `clean`; 21 offensive, 47 hate before filtering), so the per-model CIs are wide.
+  - The set is small and unbalanced (170 clean, 15 offensive, 41 hate), so the per-model CIs are wide.
   - Balanced accuracy on these comments (0.31–0.58) is closer to the models' synthetic `strip` accuracy than to `clean`. These are different items, so this is not a causal comparison.
   - Two explanations remain open: the restorer is weak on informal text (G1), or models already read habitual unaccented writing well. This set cannot separate them.
+
+### v7 CPU (re-analyses for review 1; no new model runs)
+
+Ran on Colab CPU; 9/9 checks pass, including reproducing v6's size slopes and v4's Δ broken coefficient.
+
+| Check | Result |
+|---|---|
+| **B1** few clusters | Size slope −0.086 per doubling with 14B: p = 1e-22 (normal) → 1e-8 (t, G−1) → **0.001 (wild cluster bootstrap)**. Same without Phi (−0.086) and with only families of ≥ 3 sizes (−0.093). Adapted vs general: +0.16, wild p = 0.16 |
+| **B2** prior from the noisy inputs | Recovers 7% [5, 10] of the strip loss (restoration: 65% on the same 74 pairs). Pairs where one label takes > 60% of predictions: 27 → 14 |
+| **B3** natural vs accented ViHSD | Mean balanced accuracy over 14 models: natural 0.45, natural restored 0.46, accented clean 0.56, accented strip 0.45. Natural comments sit at the stripped level (median position 0.12 on a strip = 0, clean = 1 scale) |
+| **B4** 14B, strip → restore vs clean | 14 of 15 valid pairs stay significantly below clean (by 9, 5 and 7 points for Qwen2.5-14B, Qwen3-14B, phi-4) |
+| **B6** mechanism | Without Phi-3.5 and Mistral, Δ broken is −6.3 pp/SD (stronger). ΔNLL per token gives the same same-tokenizer result as per clean syllable (+3.7 vs +3.5 pp/SD). The ambiguity estimate (+2.0 pp/SD) comes from a separate model without item effects |
+| **C** manual sample | 100 of the 270 comments (53 clean, 17 offensive, 30 hate; 85 in the 226) in `data/natural_sample_100.csv`, to be diacritized by hand |
 
 ## Run it on Colab
 

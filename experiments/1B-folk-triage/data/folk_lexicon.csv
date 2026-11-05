@@ -1,0 +1,42 @@
+term,lay_meaning,can_hide_in_this_set,n_cases,case_ids
+trúng gió,"bị 'gió độc' nhập: choáng, ngất, méo miệng, cảm lạnh","đột quỵ, co giật, ngộ độc CO, vỡ thai ngoài tử cung",7,E01 E06 E15 E23 E35 E42 N17
+cảm gió,cảm lạnh nhẹ do gió,đột quỵ,2,E03 N13
+cảm lạnh,cảm do lạnh,"hội chứng vành cấp, ngộ độc CO",2,E09 E34
+nhiễm lạnh,"bị lạnh dẫn tới ho, sốt",viêm phổi nặng ở trẻ,2,E47 N09
+cảm cúm,"cúm, cảm thông thường","viêm màng não, nhiễm khuẩn huyết",3,E13 E46 N01
+cảm nắng,mệt do nắng,sốc nhiệt,2,E25 E27
+say nắng,"mệt, choáng do nắng",sốc nhiệt,2,E26 N20
+trúng thực,ngộ độc hoặc khó tiêu sau ăn,"hội chứng vành cấp, xuất huyết tiêu hóa, mất nước",3,E07 E18 E39
+đau bao tử,đau dạ dày,xuất huyết tiêu hóa,2,E37 N04
+nóng trong,"'nhiệt' trong người: nổi mụn, táo bón, tiểu vàng","sốt xuất huyết có dấu hiệu cảnh báo, sốt ở trẻ dưới 3 tháng, xuất huyết tiêu hóa, tiền sản giật",12,E10 E12 E19 E38 E44 N03 N05 N06 N10 N11 N14 N21
+nóng gan,"'gan nóng': nổi mụn, mẩn ngứa",phản vệ,3,E30 N19 N22
+thiếu máu não,"chóng mặt, đau đầu, mệt mỏi chung chung",đột quỵ,2,E02 E05
+rối loạn tiền đình,chóng mặt nói chung,đột quỵ tuần hoàn sau,2,E04 N07
+xây xẩm,"choáng váng, hoa mắt","đột quỵ, mất máu, sốc",13,E05 E18 E24 E29 E34 E36 E37 E38 E40 N07 N10 N20 N23
+xây xẩm mặt mày,"choáng váng, hoa mắt",đột quỵ,2,E04 E06
+tê bì,tê tay chân,đột quỵ,1,E02
+tức ngực,nặng ngực,hội chứng vành cấp,1,E08
+hụt hơi,thở mệt,"hội chứng vành cấp, phản vệ",4,E08 E09 E28 N09
+sốt phát ban,"sốt kèm nổi ban, thường lành tính ở trẻ","sốt xuất huyết, nhiễm não mô cầu",2,E11 E14
+kinh phong,co giật ở trẻ,co giật kéo dài,1,E22
+lên cơn,lên cơn giật,"co giật lần đầu, co giật kéo dài",2,E22 E23
+rét run,ớn lạnh,nhiễm khuẩn huyết,2,E46 E48
+đi ngoài ra nước,tiêu chảy,mất nước nặng,2,E16 E18
+tào tháo đuổi,tiêu chảy,mất nước nặng,2,E17 N15
+mọc răng,"trẻ mọc răng gây sốt, tiêu chảy",mất nước nặng,1,E16
+sốt mọc răng,sốt nhẹ khi mọc răng,-,1,N18
+sốt vía,"trẻ sốt do 'giật mình, vía yếu'",sốt ở trẻ dưới 3 tháng,1,E20
+sài,bệnh vặt của trẻ nhỏ,sốt ở trẻ dưới 3 tháng,1,E21
+mề đay,nổi mẩn ngứa,phản vệ,2,E28 N19
+say rượu,say rượu thông thường,ngộ độc methanol,4,E31 E32 E33 N24
+nghén,khó chịu do mang thai,ngộ độc CO,1,E36
+đau bụng kinh,đau bụng khi hành kinh,chửa ngoài tử cung vỡ,1,E40
+động thai,dọa sảy thai,chửa ngoài tử cung vỡ,1,E41
+tăng xông,huyết áp tăng cao,cơn tăng huyết áp cấp cứu,3,E43 E45 N12
+bị độc,vết thương 'nhiễm độc',nhiễm khuẩn huyết,1,E48
+giời leo,zona,-,1,N02
+phong thấp,đau nhức khớp,-,1,N08
+nhiệt miệng,loét miệng,-,1,N14
+chuột rút,co cứng cơ,-,1,N16
+đau mắt đỏ,viêm kết mạc,-,1,N11
+say xe,say tàu xe,-,1,N23

@@ -3,7 +3,7 @@
 > [!summary] Tóm tắt (VI)
 > Đo xem cùng một ca bệnh, khi kể bằng lời dân gian hoặc gõ không dấu, LLM có ít khuyên đi cấp cứu hơn không, và có chiều theo cách chữa dân gian không.
 > Bộ dữ liệu: 72 ca dựng theo hướng dẫn chính thức (48 cấp cứu, 24 ca nhẹ để đối chứng). Mỗi ca có 4 cách kể (y khoa / dân gian × có dấu / không dấu), riêng 48 ca cấp cứu có thêm bản "định chữa dân gian" → 336 câu hỏi.
-> Chạy hai notebook trên Colab: **A** (GPU) cho 7 mô hình mở, **B** (CPU) cho 3 mô hình qua Gemini API, giám khảo LLM, kiểm tra bằng người và phân tích.
+> Chạy hai notebook trên Colab: **A** (GPU) cho 7 mô hình mở, **B** (CPU) cho 2 mô hình qua Gemini API (Vertex), giám khảo LLM, kiểm tra bằng người và phân tích.
 > Bài báo: [papers/1B-folk-triage/latex/main.tex](../../papers/1B-folk-triage/latex/main.tex) (mẫu Springer LNCS).
 
 ## Files
@@ -28,7 +28,7 @@ Results go to `MyDrive/llm-research/1B-folk-triage/` (`gen/`, `judge/`, `annotat
    - `cung_trieu_chung`: `co` (cùng triệu chứng) / `A_thieu` / `B_thieu` / `khac`
    - `ghi_chu_trieu_chung`: thiếu/thêm triệu chứng gì
    - `tu_nhien_A`, `tu_nhien_B`: 1–5
-2. **Gemini API:** nạp credit trong AI Studio (key hiện báo 402, hết credit trả trước). Thêm secret `GOOGLE_API_KEY` trong Colab (🔑). Chạy thêm `HF_TOKEN` nếu muốn có Llama-3.1-8B.
+2. **Gemini API:** thêm secret `GOOGLE_API_KEY` trong Colab (🔑) bằng key Google Cloud Agent Platform (`AQ.…`, gọi qua Vertex; `ft.py` tự nhận ra loại key). Gemma 4 không có trên Vertex nên notebook B chỉ chạy gemini-3.5-flash và flash-lite. Chạy thêm `HF_TOKEN` nếu muốn có Llama-3.1-8B.
 3. **Notebook A** trên A100 (hoặc L4) → Run all. Khoảng 1–1,5 giờ trên A100, 2,5–3 giờ trên L4.
 4. **Notebook B** trên CPU → Run all (bước 1 chạy được song song với A). Sau khi A xong, chạy lại B để chấm phần của A.
 5. **Chấm tay:** B tạo `annotation/sheet.csv` (150 câu trả lời). Bạn chấm cả 150 dòng, người thứ hai chấm 60 dòng có `x`. Lưu thành `annotation/rater1.csv` và `annotation/rater2.csv` trên Drive, rồi chạy lại B.

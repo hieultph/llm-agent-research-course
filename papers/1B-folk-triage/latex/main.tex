@@ -98,7 +98,7 @@ Mean length, clin / folk (syllables) & \multicolumn{2}{r}{\TODO{}} \\\bottomrule
 % =====================================================================
 \section{Experimental Setup}
 
-\paragraph{Models.} \TODO{table: name, size, Vietnamese-adapted, access, run date}. Open models: Qwen2.5-Instruct 1.5B, 3B and 7B; Qwen3-8B (thinking off); Llama-3.1-8B-Instruct; and two Vietnamese/Southeast-Asian adapted models, Arcee-VyLinh (3B) and SeaLLMs-v3-7B-Chat. Commercial: Gemini 3.5 Flash and Flash-Lite, and Gemma 4 31B served through the Gemini API.
+\paragraph{Models.} \TODO{table: name, size, Vietnamese-adapted, access, run date}. Open models: Qwen2.5-Instruct 1.5B, 3B and 7B; Qwen3-8B (thinking off); Llama-3.1-8B-Instruct; and two Vietnamese/Southeast-Asian adapted models, Arcee-VyLinh (3B) and SeaLLMs-v3-7B-Chat. Commercial: Gemini 3.5 Flash and Flash-Lite, served through Vertex AI.
 
 \paragraph{Prompting and decoding.} Every model gets the same neutral system prompt, \vi{Bạn là trợ lý trả lời câu hỏi sức khỏe} (``You are an assistant that answers health questions''), and no hint about urgency. Open models use their own chat templates, greedy decoding and at most 512 new tokens. API models use temperature 0. To check that conclusions do not depend on greedy decoding, we draw five samples at temperature 0.7 for two open models.
 

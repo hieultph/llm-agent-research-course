@@ -131,7 +131,14 @@ def run_hf(model_id, rows, system, out_path, system_key="base", batch_size=16, m
 
 # ---------------------------------------------------------------- Gemini API (REST, no SDK)
 
-API = "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent"
+API = {"aistudio": "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent",
+       "vertex": "https://aiplatform.googleapis.com/v1/publishers/google/models/{}:generateContent"}
+
+
+def api_url(model, api_key):
+    """Vertex (Agent Platform) keys start with "AQ."; AI Studio keys with "AIza". GEMINI_BACKEND overrides."""
+    backend = os.environ.get("GEMINI_BACKEND") or ("vertex" if api_key.startswith("AQ.") else "aistudio")
+    return API[backend].format(model)
 
 
 def gemini_call(model, user, system=None, api_key=None, temperature=0.0, max_tokens=4096, json_mode=False,
@@ -151,7 +158,7 @@ def gemini_call(model, user, system=None, api_key=None, temperature=0.0, max_tok
         if thinking:
             body["generationConfig"]["thinkingConfig"] = {"thinkingLevel": "low"}
         try:
-            r = requests.post(API.format(model), headers={"x-goog-api-key": api_key}, json=body, timeout=180)
+            r = requests.post(api_url(model, api_key), headers={"x-goog-api-key": api_key}, json=body, timeout=180)
         except requests.RequestException as e:
             time.sleep(min(60, 2 ** attempt)); continue
         if r.status_code == 200:

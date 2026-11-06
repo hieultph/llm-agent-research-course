@@ -136,8 +136,8 @@ API = [
     ("markdown", r'''
 # 1B · notebook B (CPU): Gemini models, LLM judge, human check, analysis
 
-> **Tóm tắt (VI):** Không cần GPU (Runtime → CPU). Cần secret `GOOGLE_API_KEY` (Colab → 🔑, key từ AI Studio, đã nạp credit).
-> 1. **Bước 1** cho 3 mô hình qua API trả lời 336 câu hỏi (chạy được trong lúc notebook A đang chạy).
+> **Tóm tắt (VI):** Không cần GPU (Runtime → CPU). Cần secret `GOOGLE_API_KEY` (Colab → 🔑, key Vertex/Agent Platform `AQ.…` hoặc key AI Studio `AIza…` đã nạp credit).
+> 1. **Bước 1** cho 2 mô hình qua API trả lời 336 câu hỏi (chạy được trong lúc notebook A đang chạy).
 > 2. **Bước 2** cho giám khảo LLM chấm mọi câu trả lời đang có trên Drive. Chạy lại bước này sau khi notebook A xong.
 > 3. **Bước 3** tạo phiếu chấm tay `annotation/sheet.csv`. Bạn chấm cả 150 dòng, người thứ hai chấm các dòng đánh dấu `x`. Lưu thành `annotation/rater1.csv` và `annotation/rater2.csv` trên Drive.
 > 4. **Bước 4–6** tính kappa, thống kê, vẽ hình, xuất bảng LaTeX và `conclusions.md`.
@@ -149,7 +149,7 @@ os.environ["GOOGLE_API_KEY"] = secret("GOOGLE_API_KEY") or ""
 assert os.environ["GOOGLE_API_KEY"], "❌ add the GOOGLE_API_KEY secret"
 '''),
     ("code", r'''
-API_MODELS = ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemma-4-31b-it"]
+API_MODELS = ["gemini-3.5-flash", "gemini-3.5-flash-lite"]  # Gemma 4 is not served on Vertex for this key
 API_MITIGATION = ["gemini-3.5-flash-lite"]
 JUDGE = "gemini-3.5-flash"      # validated against human labels in step 4
 '''),

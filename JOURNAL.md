@@ -4,6 +4,133 @@ Nhật ký làm việc, mục mới nhất ở trên. Định dạng và quy t�
 
 ---
 
+## 2026-11-08 — 1B: giải thích kappa thấp trong mục Meaning check
+
+**Vấn đề**
+- Hai người chấm đồng ý 83% nhưng Cohen's κ chỉ 0,15. Phản biện có thể hỏi về con số này.
+
+**Đã làm / giải pháp**
+- Bảng 2×2: 42 cặp cả hai chấm cùng nghĩa, 1 cặp cả hai đánh dấu (E03), 9 cặp chỉ người 2 đánh dấu, 0 cặp chỉ người 1 đánh dấu.
+- κ thấp do nghịch lý kappa: nhãn rất lệch nên tỷ lệ đồng ý ngẫu nhiên đã khoảng 0,80.
+- Thêm vào paper hai chỉ số hiệu chỉnh độ lệch nhãn: PABAK = 0,65 (Byrt et al. 1993) và Gwet's AC1 = 0,79 (Gwet 2008). Thêm cả hai nguồn vào `refs.bib`.
+- Nói rõ trong paper rằng hai người khác nhau về độ khắt khe, và mọi cặp bị ít nhất một người đánh dấu đều đã được đối chiếu với bản gốc tiếng Anh.
+- Phần Limitations ghi thêm: hai người chấm khác nhau về độ khắt khe.
+
+**Kết quả**
+- File đã đổi: `papers/1B-folk-triage/latex/main.tex`, `refs.bib`, `main.pdf`. PDF build không lỗi, không còn tham chiếu thiếu.
+- Đồng ý riêng trên nhãn "đánh dấu" ≈ 0,18; trên nhãn "cùng nghĩa" ≈ 0,90.
+
+**Còn lại / bước tiếp**
+- Chưa commit.
+
+## 2026-11-08 — 1B: người 1 chấm 10 cặp, đủ 52/52 cặp chung
+
+**Vấn đề**
+- Muốn hai người chấm cùng một bản chữ cho đủ 52 cặp, để tính độ đồng thuận trên toàn bộ.
+
+**Đã làm / giải pháp**
+- Người 1 chấm `meaning_check_10pairs.csv`. File lưu ở [data/review/meaning_check_10pairs_rater1_2026-11-08.csv](experiments/1B-folk-triage/data/review/meaning_check_10pairs_rater1_2026-11-08.csv). Đã kiểm tra: chữ giống hệt bản người 2 đọc ở cả 52 cặp.
+- E03 "thở không ra hơi": cả hai người cùng đánh dấu. Người 1 xem lại thì thấy đây là cách nói dân gian rõ hơn, không khác bao nhiêu. Hieu quyết định giữ nguyên.
+- Các góp ý khác của người 1 (S13, U02, S02, E06) là khác biệt cách nói, giữ nguyên theo tiêu chí của Hieu.
+- Paper: viết lại mục Meaning check với số liệu trên 52 cặp. Biên dịch lại PDF.
+
+**Kết quả**
+- Đồng ý 43/52 (83%), kappa 0.15. Kappa thấp vì gần như mọi cặp được chấm "co".
+- Số cặp đánh dấu: người 1 có 1, người 2 có 10. Trong 10 cặp bị đánh dấu, 9 cặp chỉ khác cách nói nên giữ, 1 cặp đã sửa (U10). Sửa thêm S01 vì cả hai người chấm độ tự nhiên 3.
+- Độ tự nhiên: dân gian 4.27 / 4.62, lâm sàng 4.98 / 4.85 (người 1 / người 2).
+
+**Còn lại / bước tiếp**
+- Chạy notebook A và B.
+
+## 2026-11-08 — 1B: gộp kết quả 2 người chấm trong paper
+
+**Vấn đề**
+- Hieu muốn paper trình bày 2 người chấm như nhau và không nhắc chuyện người 1 đã sửa chữ. Hieu coi các chỗ người 1 sửa là góp ý.
+
+**Đã làm / giải pháp**
+- Suy ra nhãn của người 1 từ các chỗ đã sửa: pair nào bị sửa thì coi là bị đánh dấu. Kết quả: 10/52 cặp (E02, E03, E06, N07, N10, S01, S02, S05, S13, U02).
+- Hai vòng chấm trên bản chữ khác nhau ở 10 cặp. Vì vậy chỉ so 2 người trên 42 cặp có chữ giống hệt nhau ở cả hai vòng:
+  - đồng ý 36/42 (86%);
+  - 6 cặp lệch đều do người 2 đánh dấu (U08, E08, N08, S11, U07, U10);
+  - người 1 không đánh dấu cặp nào trong 42 cặp này, nên không tính kappa;
+  - độ tự nhiên trên 42 cặp: dân gian 4.3 / 4.6, lâm sàng 5.0 / 4.9 (người 1 / người 2).
+- Paper: viết lại mục Meaning check (2 người chấm mù, có dùng LLM hỗ trợ, chấm lần lượt; số đánh dấu, các chỗ sửa, mức đồng ý trên 42 cặp). Không nhắc chuyện người 1 sửa chữ. Sửa Limitations. Biên dịch lại PDF.
+
+**Kết quả**
+- `main.tex`, `main.pdf`.
+
+**Còn lại / bước tiếp**
+- Tạo `data/meaning_check_10pairs.csv` (đáp án ở `meaning_check_10pairs_key.csv`): đúng 10 cặp đã sửa sau vòng 1, giữ nguyên chữ như người 2 đã đọc. Gửi người 1 chấm để hai người có cùng 52/52 cặp, khi đó tính được kappa.
+- Chạy notebook A và B.
+
+## 2026-11-08 — 1B: kiểm tra nghĩa vòng 2 (chấm mù)
+
+**Vấn đề**
+- Người thứ 2 chấm `meaning_check.csv` bản không có đáp án. Cần xem kết quả và quyết định sửa gì.
+
+**Đã làm / giải pháp**
+- Lưu file vào [data/review/meaning_check_blind_2026-11-08.csv](experiments/1B-folk-triage/data/review/meaning_check_blind_2026-11-08.csv). Văn bản trong file giống hệt bản đã gửi: người chấm không sửa chữ.
+- Chấm theo `meaning_check_key.csv`, rồi đối chiếu 10 cặp bị đánh dấu với ca gốc tiếng Anh.
+- Lần đầu Claude đề xuất sửa 8 cặp. Hieu nhắc: không phải góp ý nào cũng nhận, bản dân gian cần giữ cách nói người Việt hay dùng (ví dụ "ăn không thấy ngon" và "ăn kém" là như nhau). Claude xét lại theo tiêu chí này, và Hieu duyệt sửa 2 chỗ trong bản dân gian:
+  - U10: "co không được" thành "co rất khó" (ca gốc ghi *can barely bend*);
+  - S01: "thấy người cảm giác sốt cao" thành "thấy người sốt cao" (câu lủng củng).
+- Paper: viết kết quả vòng 2 vào mục Meaning check. Biên dịch lại PDF.
+
+**Kết quả**
+- 42/52 cặp được đánh giá cùng triệu chứng.
+- Độ tự nhiên: dân gian 4.62, lâm sàng 4.85; không câu nào dưới 3.
+- 10 cặp bị đánh dấu: 8 cặp chỉ khác cách nói nên giữ nguyên, 2 cặp đã sửa. Các con số trên là trước khi sửa 2 cặp này.
+
+**Còn lại / bước tiếp**
+- Hieu xác nhận người chấm thứ 2 có dùng AI hỗ trợ và tự duyệt lại. Paper đã ghi điều này ở mục Meaning check và Limitations.
+- Chạy notebook A và B.
+
+## 2026-11-08 — 1B: kiểm tra nghĩa vòng 1 (người đọc thứ hai) và sửa chữ
+
+**Vấn đề**
+- Một người bạn của Hieu điền `meaning_check.csv` (có dùng AI hỗ trợ, có duyệt lại). Cần xem có dùng được không.
+
+**Đã làm / giải pháp**
+- Lưu file vào [data/review/meaning_check_friend_2026-11-08.csv](experiments/1B-folk-triage/data/review/meaning_check_friend_2026-11-08.csv). So từng chữ với bản trong repo và với ca gốc tiếng Anh.
+- Nhận định: dùng như góp ý sửa chữ, không dùng làm phép đo. Lý do:
+  - file gửi đi còn cột `_key`, nên Claude nghi người đọc biết đâu là bản gốc (bản lâm sàng 51/52 cặp được 5, bản dân gian 37/52 cặp được 4). Sau đó Hieu xác nhận cả hai vòng đều chấm mù, có dùng AI hỗ trợ rồi tự duyệt lại; paper ghi theo xác nhận này;
+  - chữ bị sửa ngay trong lúc kiểm tra;
+  - có dùng AI.
+- Đưa vào `cases_public.py`:
+  - bản dân gian: lấy bản sửa của người đọc cho E02, S13, N07, S01, N10, E06 (E06 bỏ "tê" và "nhói");
+  - bản lâm sàng U02: "viêm dạ dày ruột" thành "đau bụng, đi ngoài", vì ca gốc ghi *stomach bug*;
+  - E03, S05, S02: người đọc sửa bản lâm sàng cho khớp với bản dân gian. Claude giữ nguyên bản lâm sàng (theo yêu cầu của Hieu: bản lâm sàng phải sát bản dịch) và sửa bản dân gian:
+    - E03: "ngay dưới xương ức";
+    - S05: bỏ "rát";
+    - S02: bỏ "họng sưng".
+- `build_dataset.py`: tách đáp án sang file `meaning_check_key.csv`. `meaning_check.csv` không còn `_key` nên gửi đi được ngay. Đổi seed 7 thành 8 để thứ tự cặp mới.
+- Paper: viết lại mục Meaning check (vòng 1 là góp ý; vòng 2 là 1 người chấm mù trên bản cuối), sửa Limitations và Ethics, độ dài trung bình 46.4 / 50.0 từ. Biên dịch lại `main.pdf`.
+
+**Kết quả**
+- Vẫn 52 ca, 260 prompt, 34 từ dân gian. File đổi: `cases_public.py`, `cases.jsonl`, `review_cases.csv`, `meaning_check.csv`, `meaning_check_key.csv` (mới), `build_dataset.py`, `README.md`, `main.tex`, `main.pdf`.
+
+**Còn lại / bước tiếp**
+- Gửi `meaning_check.csv` mới cho 1 người bản ngữ chưa xem các phiên bản trước. Người đó không sửa chữ, không dùng AI.
+- Bản Sheet "1B review_cases v2" trên Drive giờ đã cũ hơn repo.
+
+## 2026-11-08 — 1B: xuất paper ra PDF
+
+**Vấn đề**
+- Hieu muốn xem bản PDF của paper 1B. Máy chưa có LaTeX.
+
+**Đã làm / giải pháp**
+- Tạo conda env `latex` (conda-forge, `tectonic` 0.17.0). Tectonic dùng XeTeX và tự tải gói (llncs, splncs04).
+- Sửa `main.tex`:
+  - `fontenc` T5 chỉ dùng khi biên dịch bằng pdfLaTeX; với XeLaTeX/LuaLaTeX thì dùng `fontspec`;
+  - placeholder hình/bảng in tên file qua `\detokenize`, vì dấu `_` trong tên file gây lỗi "Missing $" trên mọi engine.
+
+**Kết quả**
+- [papers/1B-folk-triage/latex/main.pdf](papers/1B-folk-triage/latex/main.pdf): 9 trang. Log không còn lỗi, tham chiếu chưa định nghĩa hay ký tự thiếu; chỉ còn vài dòng tràn lề nhỏ (≤10.5pt).
+- Lệnh build lại: `conda run -n latex tectonic -X compile main.tex` (chạy trong `papers/1B-folk-triage/latex`).
+
+**Còn lại / bước tiếp**
+- Hình và bảng vẫn là ô TODO, chờ kết quả từ Colab.
+
 ## 2026-11-08 — 1B: cập nhật phân tích, notebook và paper theo bộ dữ liệu mới
 
 **Vấn đề**

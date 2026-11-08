@@ -1,13 +1,18 @@
 \documentclass[runningheads]{llncs}
-\usepackage[T5,T1]{fontenc}   % T5 = Vietnamese glyphs
-\usepackage[utf8]{inputenc}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T5,T1]{fontenc}   % T5 = Vietnamese glyphs
+  \usepackage[utf8]{inputenc}
+\else
+  \usepackage{fontspec}         % XeLaTeX/LuaLaTeX: Latin Modern OpenType has Vietnamese glyphs
+\fi
 \usepackage{graphicx,booktabs,amsmath,xcolor,url}
 \usepackage[hidelinks]{hyperref}
 \newcommand{\TODO}[1]{\textcolor{red}{[TODO: #1]}}
 \newcommand{\vi}[1]{\textit{#1}}   % Vietnamese text inline
 % real figures/tables come from the Colab results folder; until then show a placeholder box
-\newcommand{\maybefig}[2]{\IfFileExists{#2}{\includegraphics[width=#1]{#2}}{\fbox{\parbox{#1}{\centering\TODO{#2}}}}}
-\newcommand{\maybeinput}[1]{\IfFileExists{#1}{\input{#1}}{\TODO{#1}}}
+\newcommand{\maybefig}[2]{\IfFileExists{#2}{\includegraphics[width=#1]{#2}}{\fbox{\parbox{#1}{\centering\TODO{\detokenize{#2}}}}}}
+\newcommand{\maybeinput}[1]{\IfFileExists{#1}{\input{#1}}{\TODO{\detokenize{#1}}}}
 
 \begin{document}
 \title{``Tr\'ung gi\'o'' or Stroke? Folk-Illness Phrasing and Diacritic Loss Lead LLMs to Under-Triage Vietnamese Health Questions}
@@ -114,8 +119,8 @@ Answer & \TODO{short excerpts of two model answers, clin vs folk\_nd} \\
 \label{fig:example}
 \end{figure}
 
-\subsection{Meaning check}
-Two native speakers who were not involved in writing the cases read every clinical/folk pair, shown in random order and side, and answered (i) whether both texts describe the same symptoms and (ii) how natural each sounds (1--5). \TODO{x} of 52 pairs were flagged as missing or adding a symptom; we \TODO{revised/removed} them. Agreement on (i) was $\kappa=\TODO{x}$. Folk versions were rated \TODO{x} for naturalness vs.\ \TODO{x} for clinical versions.
+\subsection{Meaning check}\label{sec:meaning}
+Two native speakers who did not write the cases rated every clinical/folk pair, shown in random order and side without saying which text was the source. Both used an LLM as an aid and reviewed its output. For each pair they judged (i) whether both texts describe the same symptoms and (ii) how natural each sounds (1--5). Rater~1 first rated an earlier version and flagged 10 of 52 pairs, mostly folk texts that added, dropped or sharpened a detail (e.g.\ ``cramping'' pain, numbness). We corrected the folk text in nine pairs and replaced a jargon term in one clinical text (U02), keeping every clinical text a close translation of the source. Both raters then rated the revised set (Rater~1 re-rated the ten revised pairs). They agreed on 43 of 52 pairs (83\%). Cohen's $\kappa$ was only 0.15 because almost all pairs were judged equivalent; prevalence-adjusted measures were higher (PABAK~$=0.65$~\cite{byrt1993bias}, Gwet's AC1~$=0.79$~\cite{gwet2008ac1}). Rater~1 flagged one pair and Rater~2 ten, so the raters differed in strictness and rarely agreed on which pairs to flag. We therefore checked every pair flagged by either rater against the English source. Nine differ only in lay wording that we keep on purpose, such as \vi{ăn không thấy ngon} for ``less appetite'', \vi{thở không ra hơi} for ``trouble breathing'' (E03, flagged by both), or the folk label \vi{đau bao tử} (``stomach ache'') for upper abdominal pain. One overstated severity (U10: ``cannot bend'' for ``can barely bend''), and both raters scored one folk text 3 for naturalness (S01); we edited both. Mean naturalness was 4.3 and 4.6 for folk versions and 5.0 and 4.9 for clinical versions (Rater~1 and~2).
 
 \subsection{Folk-term lexicon}
 The cases use 34 folk terms. For each we record the usual lay meaning and the emergencies it hides in our set (Appendix~\ref{app:lexicon}). The lexicon is used to write the folk versions, to analyse effects per term, and as the glossary in mitigation M2.
@@ -131,7 +136,7 @@ Self-care & Self-care (L, 10); A (R, 3) & 13 & 65 \\\midrule
 Total & & 52 & 260 \\
 Remedies with a source & & \multicolumn{2}{r}{24 / 52} \\
 Folk terms (distinct) & & \multicolumn{2}{r}{34} \\
-Mean length, clin / folk (words) & & \multicolumn{2}{r}{46.4 / 50.1} \\\bottomrule
+Mean length, clin / folk (words) & & \multicolumn{2}{r}{46.4 / 50.0} \\\bottomrule
 \end{tabular}
 \end{table}
 
@@ -196,10 +201,10 @@ Mean length, clin / folk (words) & & \multicolumn{2}{r}{46.4 / 50.1} \\\bottomru
 \TODO{why: the folk label redirects the model to a benign illness script (show answers that explain trúng gió as a cold); diacritic loss makes the signs themselves harder to read; interaction. Implications for Vietnamese health chatbots: test with lay wording; a glossary helps but is not enough.}
 
 \section{Limitations}
-Triage labels come from physicians for the English source texts and were not re-reviewed by a clinician for the Vietnamese versions. Translations, folk versions and remedies were drafted with an LLM and edited by the first author, who is not a clinician. They were then checked by two native speakers. Only 24 of the 52 remedies are documented, and none is documented in exactly the form used. Some source conditions (e.g.\ Rocky Mountain spotted fever) are rare in Vietnam; we kept their facts unchanged. The emergency set is small (14 cases), so per-model results are imprecise. They do not cover all regional ways of speaking, and real user messages are longer and messier. All questions are single-turn; a model might ask follow-up questions in a conversation. The judge belongs to the same family as two evaluated models. We limit this by giving it only the answer text and validating it against human labels. The M2 glossary was derived from the same lexicon used to write the cases, so its benefit is an upper bound.
+Triage labels come from physicians for the English source texts and were not re-reviewed by a clinician for the Vietnamese versions. Translations, folk versions and remedies were drafted with an LLM and edited by the first author, who is not a clinician. They were then checked by two native speakers who were blind to which text was the source; both used an LLM as an aid, neither is a clinician, and they differed in how strictly they flagged pairs. Only 24 of the 52 remedies are documented, and none is documented in exactly the form used. Some source conditions (e.g.\ Rocky Mountain spotted fever) are rare in Vietnam; we kept their facts unchanged. The emergency set is small (14 cases), so per-model results are imprecise. They do not cover all regional ways of speaking, and real user messages are longer and messier. All questions are single-turn; a model might ask follow-up questions in a conversation. The judge belongs to the same family as two evaluated models. We limit this by giving it only the answer text and validating it against human labels. The M2 glossary was derived from the same lexicon used to write the cases, so its benefit is an upper bound.
 
 \section{Ethics Statement}
-All cases are fictional vignettes from public datasets (MIT and CC0 licences) and contain no patient data. Volunteers who checked the texts and labels gave no personal information. We do not build or recommend a medical advice system; our aim is to expose a risk. No result here shows that any model is safe for medical advice. We used an LLM to draft the translations, folk rewrites and remedies; every text was reviewed by the authors and checked by native speakers as described.
+All cases are fictional vignettes from public datasets (MIT and CC0 licences) and contain no patient data. Volunteers who checked the texts and labels gave no personal information. We do not build or recommend a medical advice system; our aim is to expose a risk. No result here shows that any model is safe for medical advice. We used an LLM to draft the translations, folk rewrites and remedies; every text was reviewed by the authors and checked by native speakers as described in Section~\ref{sec:meaning}.
 
 \section{Conclusion}
 \TODO{}

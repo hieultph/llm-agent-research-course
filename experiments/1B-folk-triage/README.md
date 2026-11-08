@@ -16,7 +16,9 @@
 | [data/build_dataset.py](data/build_dataset.py) | Checks the cases against the source labels and writes the files below (`python3 build_dataset.py`) |
 | `data/cases.jsonl` | 260 prompts (`clin`, `clin_nd`, `folk`, `folk_nd`, `folk_rem`) |
 | `data/review_cases.csv` | Review sheet: English source next to the Vietnamese versions |
-| `data/meaning_check.csv` | Sheet for the 2 native-speaker reviewers (pair order and side randomised; `_key` column = answer key, hide it) |
+| `data/meaning_check.csv` | Blind sheet for the native-speaker check on the final texts (pair order and side randomised, no answer key) |
+| `data/meaning_check_key.csv` | Answer key for that sheet (which side is folk); do not send |
+| `data/review/meaning_check_friend_2026-11-08.csv` | Round 1: second reader's notes and edits (not blind; used as edit suggestions only) |
 | `data/folk_lexicon.csv` | 34 folk terms: lay meaning, what they can hide, which cases use them |
 | [ft.py](ft.py) | Shared code: generation (transformers / Gemini REST), judge, statistics, figures, annotation sheet |
 | [make_notebooks.py](make_notebooks.py) | Writes the two notebooks (edit cells here, not in the .ipynb) |
@@ -27,7 +29,7 @@ Results go to `MyDrive/llm-research/1B-folk-triage/` (`gen/`, `judge/`, `annotat
 
 ## Việc cần làm (theo thứ tự)
 
-1. **Kiểm tra nghĩa (gửi ngay, vì phải chờ người khác):** tải `data/meaning_check.csv` lên Google Sheets, **xóa cột `_key`** trước khi chia sẻ, rồi gửi cho 2 người. Mỗi người điền:
+1. **Kiểm tra nghĩa vòng 2 (gửi ngay, vì phải chờ người khác):** tải `data/meaning_check.csv` lên Google Sheets (file này không còn cột đáp án) và gửi cho 1 người bản ngữ chưa xem các phiên bản trước. Người chấm không sửa chữ, không dùng AI. Họ điền:
    - `cung_trieu_chung`: `co` (cùng triệu chứng) / `A_thieu` / `B_thieu` / `khac`
    - `ghi_chu_trieu_chung`: thiếu/thêm triệu chứng gì
    - `tu_nhien_A`, `tu_nhien_B`: 1–5

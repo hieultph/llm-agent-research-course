@@ -20,6 +20,9 @@
 - **Muốn duyệt trước khi dùng**: phần dịch, chuyển thể và các thay đổi lớn phải gửi Hieu xem trước. *(2026-11-06)*
 - Chấp nhận đánh đổi hợp lý khi được giải thích rõ lý do. Hỏi lại khi con số trông lạ ("sao 52 mà chỉ lấy 14?"), rồi quyết nhanh ("đủ rồi"). *(2026-11-06)*
 - Duyệt kỹ và chủ động mở rộng: tự thêm cột nguồn, phạm vi xác thực và trạng thái xác thực; thêm cách chữa dân gian cho cả ca nhẹ; ghi rõ là nguồn chỉ xác nhận một phần, không phải xác nhận hiệu quả. *(bản duyệt 1B, 2026-11-08)*
+- Bản lâm sàng phải sát bản dịch từ ca gốc: chỉ viết lại cho tự nhiên, không thêm hay bớt thông tin. Khi hai bản lệch nhau thì sửa bản dân gian. *(góp ý cho vòng kiểm tra nghĩa, 2026-11-08)*
+- Không nhận mọi góp ý của người duyệt: chỉ sửa chỗ thật sự đổi dữ kiện hoặc mức độ. Bản dân gian phải giữ cách nói người Việt hay dùng, dù nghe hơi khác bản lâm sàng; ví dụ "ăn không thấy ngon" = "ăn kém". Muốn xem gợi ý trước rồi mới sửa. *(phản hồi về vòng chấm mù, 2026-11-08)*
+- Thực tế về nguồn lực người duyệt: muốn giảm khâu kiểm tra bằng người ngoài khi có thể. Người bạn hỗ trợ có dùng AI. Chấp nhận làm thêm một vòng chấm mù khi được giải thích lý do. *(2026-11-08)*
 - Muốn Claude research từ nguồn trước khi đề xuất, và lưu lại quá trình. *(2026-11-06)*
 - Thích có nhật ký làm việc và tài liệu rõ ràng để nhìn lại. *(yêu cầu tạo JOURNAL, 2026-11-06)*
 

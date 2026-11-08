@@ -1,4 +1,4 @@
-"""Build cases.jsonl, meaning_check.csv, folk_lexicon.csv and review_cases.csv from cases_public.py
+"""Build cases.jsonl, meaning_check.csv (+ _key), folk_lexicon.csv and review_cases.csv from cases_public.py
 (stdlib only).
 
 python3 build_dataset.py            # writes the four files next to this script
@@ -76,18 +76,23 @@ def build():
         for r in rows:
             f.write(json.dumps(r, ensure_ascii=False) + "\n")
 
-    # meaning check: shuffled pairs, side randomised so raters cannot tell which is "folk"
-    rng = random.Random(7)
+    # meaning check: shuffled pairs, side randomised so raters cannot tell which is "folk".
+    # The sheet sent to raters has no answer key; the key goes to a separate file.
+    # Seed 8 (was 7): new order for the round on the final texts (2026-11-08).
+    rng = random.Random(8)
     order = cases[:]
     rng.shuffle(order)
-    with open(HERE / "meaning_check.csv", "w", encoding="utf-8-sig", newline="") as f:
-        w = csv.writer(f)
+    with open(HERE / "meaning_check.csv", "w", encoding="utf-8-sig", newline="") as f, \
+         open(HERE / "meaning_check_key.csv", "w", encoding="utf-8", newline="") as fk:
+        w, wk = csv.writer(f), csv.writer(fk)
         w.writerow(["pair", "doan_A", "doan_B", "cung_trieu_chung (co / A_thieu / B_thieu / khac)",
-                    "ghi_chu_trieu_chung", "tu_nhien_A (1-5)", "tu_nhien_B (1-5)", "_key"])
+                    "ghi_chu_trieu_chung", "tu_nhien_A (1-5)", "tu_nhien_B (1-5)"])
+        wk.writerow(["pair", "case_id", "A_is"])
         for i, c in enumerate(order, 1):
             folk_first = rng.random() < 0.5
             a, b = (c["folk"], c["clin"]) if folk_first else (c["clin"], c["folk"])
-            w.writerow([i, a, b, "", "", "", "", f"{c['id']}:{'folk' if folk_first else 'clin'}_A"])
+            w.writerow([i, a, b, "", "", "", ""])
+            wk.writerow([i, c["id"], "folk" if folk_first else "clin"])
 
     term_counts = Counter(t for c in cases for t in c["folk_terms"])
     with open(HERE / "folk_lexicon.csv", "w", encoding="utf-8", newline="") as f:

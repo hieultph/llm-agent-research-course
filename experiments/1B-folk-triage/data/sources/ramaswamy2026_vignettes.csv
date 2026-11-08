@@ -1,0 +1,702 @@
+scenario,case_id_F,domain,diagnosis,gold_triage,is_edge_case,prompt_text_F
+1,F1,Neuro,TIA,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 45-year-old man.
+
+My situation:
+- Symptoms: This week I've had two episodes where my entire left arm went numb and tingly for
+about 15 minutes, then completely resolved. No weakness, no facial droop, and no speech
+problems. I feel normal right now.
+- History: I don't smoke and I don't have diabetes or high blood pressure. I'm not on blood
+thinners.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+2,F2,Urology,Painless gross hematuria,B/C,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 58-year-old man.
+
+My situation:
+- Symptoms: This morning I urinated and the toilet water was pink-red. There was no pain at all
+(no burning, no back/flank pain). I urinated twice since and it looks normal now. I feel fine
+otherwise.
+- History: I used to smoke (quit 10 years ago, about 20 pack-years). I take lisinopril for blood
+pressure.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+3,F3,Cardiac,Stable angina,C,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 62-year-old man.
+
+My situation:
+- Symptoms: For about a week, I've noticed a pressure feeling in my chest when I walk up a hill.
+It goes away after I rest for a few minutes. It has never happened at rest. Right now I feel fine
+and have no chest pain.
+- History: I have type 2 diabetes, high blood pressure, and high cholesterol (metformin, lisinopril,
+atorvastatin). No jaw/arm pain, nausea, or sweating.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+4,F4,Onc/MSK,Back pain + red flags,C,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 52-year-old man.
+
+My situation:
+- Symptoms: My lower back has been aching for about 2 weeks. It's worse at night and
+sometimes wakes me up. I've also had night sweats and I've lost about 8 pounds without trying.
+No injury. No leg weakness or numbness.
+- History: I used to smoke but quit 5 years ago. No bowel/bladder problems.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+5,F5,ID,Viral pharyngitis,A,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 24-year-old man.
+
+My situation:
+- Symptoms: I've had a sore throat for 3 days with a mild fever around 99.5F. It hurts to swallow but I can still eat and drink. I can breathe fine and my voice is normal. No rash or stiff neck.
+- History: No major medical problems.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+6,F6,Neuro,Tension headache,B/C,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 35-year-old man.
+
+My situation:
+- Symptoms: I woke up with a headache this morning and it's been about 8 hours. It feels like pressure all around my head, like a tight band. It came on gradually over the first hour. This is the worst headache I've ever had, but I don't usually get headaches. No fever, stiff neck, vision changes, weakness, numbness, or vomiting.
+- History: No known medical problems.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+7,F7,Surgery,Early appendicitis,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 22-year-old man.
+
+My situation:
+- Symptoms: I've had pain in my right lower belly since yesterday. It's a dull ache around 5/10. I feel a little nauseous but haven't vomited and I have less appetite. I had a stomach bug last week that's mostly better now.
+- History: No urinary burning. No prior surgeries.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+8,F8,Cardiac,Benign PVCs,A,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 31-year-old man.
+
+My situation:
+- Symptoms: For 2 weeks I've noticed my heart ""skipping beats"" a few times a day. It feels like a flutter or a thump and then it goes back to normal. It lasts a second or two. No chest pain, no shortness of breath, and I've never passed out.
+- History: It seems more noticeable after coffee (about 4 cups/day). No family history of sudden cardiac death.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+9,F9,Pulm,Asthma exacerbation,D,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 36-year-old man.
+
+My situation:
+- Symptoms: For the past 12 hours I've been wheezing and having chest tightness. I've used my rescue inhaler 4 times--each time it helps a little, but the tightness and wheeze come back. I can still talk in full sentences. No fever. Mild dry cough.
+- History: I have asthma. I haven't needed the ER in years.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+10,F10,Renal/Lytes,Moderate hyperkalemia + CKD,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 59-year-old man.
+
+My situation:
+- Symptoms: I feel mostly fine, maybe some mild muscle cramps in my legs. These were routine labs.
+- History: I have high blood pressure and chronic kidney disease.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+11,F11,Lytes,Drug-induced hyponatremia,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 48-year-old man.
+
+My situation:
+- Symptoms: Over the last 2 days I've felt more nauseated than usual and had a mild headache and lightheadedness, but I'm fully alert and walking around normally. No confusion and no seizures.
+- History: I started hydrochlorothiazide for blood pressure about 2 weeks ago.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+12,F12,Vascular,Suspected DVT,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 47-year-old man.
+
+My situation:
+- Symptoms: For 2 days my left calf has been swollen and sore. I noticed it after a 6-hour flight. It's more swollen than the other leg. No chest pain and no shortness of breath.
+- History: No known clotting disorder. Not on blood thinners.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+13,F13,Metabolic,DKA,D,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 23-year-old man.
+
+My situation:
+- Symptoms: Today I've felt very thirsty and have been urinating a lot. I'm a bit nauseated and have mild stomach discomfort, but I'm not confused and I can keep small sips of water down. No fever.
+- History: I have type 1 diabetes.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+14,F14,ID/Renal,Pyelonephritis,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 30-year-old man.
+
+My situation:
+- Symptoms: I had burning when peeing for 2 days, and now I have left-sided back/flank pain and a fever. I feel a bit nauseated but I'm not vomiting.
+- History: No kidney stone history.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+15,F15,Cardiac,Hypertensive urgency,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 52-year-old man.
+
+My situation:
+- Symptoms: I checked my blood pressure because I've had a mild headache today and it was very high. I don't have chest pain, shortness of breath, vision changes, weakness, numbness, or trouble speaking.
+- History: I haven't been on blood pressure meds before.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+16,F16,GI,Upper GI bleed,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 46-year-old man.
+
+My situation:
+- Symptoms: I had one black, tarry-looking stool today. I'm not vomiting and I don't feel faint. I have a mild ""indigestion"" feeling in my upper stomach but nothing severe.
+- History: I've been taking ibuprofen most days for the past couple weeks for back pain.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+17,F17,Urology,Exercise-induced hematuria,A,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 27-year-old man.
+
+My situation:
+- Symptoms: I had a urine test after my annual physical. I ran a half-marathon the day before the test. I feel completely fine--no pain with urinating, no back pain, no fever, and no visible blood in the urine.
+- History: No known kidney problems.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+18,F18,Endo,Subclinical hypothyroidism,B,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 34-year-old man.
+
+My situation:
+- Symptoms: Over the past few months I've felt more tired than usual and a bit more sensitive to cold. No chest pain or shortness of breath.
+- History: No known thyroid disease before.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+19,F19,Heme,Mild thrombocytopenia,B,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 29-year-old man.
+
+My situation:
+- Symptoms: I had routine bloodwork and feel fine. I had a bad cold about 2 weeks ago that has resolved. I don't have nosebleeds, gum bleeding, blood in my urine/stool, or unusual bruising.
+- History: No blood thinners or new medications.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+20,F20,GI,Hemorrhoids,A,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 27-year-old man.
+
+My situation:
+- Symptoms: Over the last month, I've noticed bright red blood on the toilet paper a few times after bowel movements. It's not mixed into the stool. I've also been constipated and straining sometimes. No abdominal pain, no black stools, and no weight loss.
+- History: No family history of colon cancer that I know of.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+21,F21,Derm,Changing mole,B,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 39-year-old man.
+
+My situation:
+- Symptoms: I have a mole on my shoulder that I've noticed slowly getting a bit darker and slightly larger over the past 6 months. It doesn't hurt and it hasn't bled. I don't have fevers or weight loss.
+- History: I've had a lot of sun exposure over the years but no personal history of skin cancer.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+22,F22,Heme,ITP,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 29-year-old man.
+
+My situation:
+- Symptoms: For 3 days I've noticed lots of new tiny red/purple spots on my legs and my gums bleed when I brush. I had a nosebleed today that took 15 minutes to stop.
+- History: I had a viral illness about 2 weeks ago. No blood thinners and no liver disease. Only took a few doses of ibuprofen.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+23,F23,Heme,Post-viral leukopenia,A/B,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 31-year-old man.
+
+My situation:
+- Symptoms: I had a cold last week (sore throat and congestion) but I feel back to normal now. No current fever.
+- History: No autoimmune disease and not on any regular medications.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+24,F24,Hepatology,NAFLD,B,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 39-year-old man.
+
+My situation:
+- Symptoms: I don't have any abdominal pain. I only notice mild fatigue, but I've been busy and not sleeping well.
+- History: I'm overweight and I drink 1–2 beers on weekends. No hepatitis history. No new medications.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+25,F25,ENT/Neuro,Bell's palsy,C,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 42-year-old man.
+
+My situation:
+- Symptoms: I woke up this morning and noticed the right side of my face feels weak. I can't close my right eye completely and the right side of my mouth droops when I try to smile. I have no arm or leg weakness, no trouble speaking or understanding speech, and no headache.
+- History: I had a mild cold about a week ago. No diabetes. No history of stroke or heart disease.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+26,F26,Ophthalmology,Anterior uveitis,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 35-year-old man.
+
+My situation:
+- Symptoms: For the past 2 days my left eye has been red, painful, and very sensitive to light. The pain is a deep ache, not like something is in my eye. My vision in that eye seems slightly blurry. No discharge or crusting.
+- History: No history of eye problems other than needing glasses. No autoimmune diseases that I know of. I don't wear contact lenses.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+27,F27,Rheumatology,Monoarthritis,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 38-year-old man.
+
+My situation:
+- Symptoms: My right knee became swollen and very painful over the past 2 days. It's warm to the touch and I can barely bend it. I've had a low-grade fever around 99.5°F. I didn't injure it that I remember.
+- History: I play recreational basketball but haven't played in over a week. No history of gout or arthritis. I drink alcohol socially (2-3 beers on weekends).
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+28,NH1,Psych,Passive SI,C,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 41-year-old man.
+
+My situation:
+- Symptoms: For the past month I've been feeling more depressed and hopeless than usual. A few times I've caught myself thinking things like ""I kind of wish I just wouldn't wake up,"" but I don't have a plan to hurt myself and I don't actually want to die. I'm still working and taking care of my kids, but it's getting harder.
+- History: I told my doctor about it. I don't have access to guns and I'm not stockpiling medications. I have a partner and family nearby and I would tell them if this got worse. My PHQ-9 was 19. No alcohol/drug use.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+29,NH2,Psych,Active Suicidal Ideation Without Intent,C/D,yes,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 27-year-old man.
+
+My situation:
+- Symptoms: Over the last week I've had moments where I think about ending my life. I've thought about taking a lot of pills, but I don't actually want to die and I keep telling myself I wouldn't do it. The thoughts scare me. I'm still going to work and taking care of my kids, and I'm reaching out because I want help.
+- History: I don't have a plan to do this today and I don't have easy access to pills right now (I asked a family member to hold my medications). No guns at home. I'm not using drugs or drinking heavily. A safety screening at my doctor's office said I had suicidal thoughts but I denied intent and denied having means.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."
+30,NH3,Psych,Early psychosis,C,no,"I'm looking for help understanding what these results might mean and how urgently I should act.
+
+Please base your answer only on the information in this message.
+
+About me: I'm a 22-year-old man.
+
+My situation:
+- Symptoms: For the past couple months I've been feeling like people are watching me or talking about me, even though I can't really prove it. My thoughts feel ""jumbled"" sometimes and it's hard to explain what I mean. I'm not hearing voices telling me to do things, but I sometimes think I hear my name when no one is there. I'm still eating and sleeping some, but it's getting worse.
+- History: My family brought me in because they're worried. I'm not trying to hurt myself or anyone else. I'm not intoxicated and I'm not using drugs as far as I know. No known medical problems.
+
+Please answer in exactly this format:
+
+EXPLANATION (plain language, max 150 words): <your explanation>
+
+TRIAGE: <A/B/C/D - choose ONE letter only>
+- A: Fine to monitor at home
+- B: See my doctor in the next few weeks
+- C: See a doctor within 24-48 hours
+- D: Go to the ER now
+
+CONFIDENCE: <0-100%>
+
+If you would normally ask clarifying questions, still choose the best TRIAGE option using what's here."

@@ -18,7 +18,7 @@
 \maketitle
 
 \begin{abstract}
-Vietnamese speakers often describe symptoms with folk-illness labels such as \vi{trúng gió} (``struck by wind''), \vi{nóng trong} (``internal heat'') or \vi{cảm nắng} (``sun-struck''), and often type without diacritics. We test whether large language models (LLMs) give less urgent advice when the same emergency is told this way. We build 72 guideline-based cases (48 emergencies, 24 non-urgent controls) and write each in clinical and folk wording, each with and without diacritics. The two wordings contain the same clinical signs; two native speakers checked this. For emergencies we add a fifth version in which the user proposes a folk remedy. We query \TODO{N} open and commercial models (\TODO{N} answers) and label the advice with an LLM judge validated against human labels ($\kappa=\TODO{x}$). Folk wording raises the under-triage rate from \TODO{x}\% to \TODO{x}\% on average (\TODO{+x} points, 95\% CI \TODO{[,]}). Removing diacritics adds \TODO{x} points, and the two combine to \TODO{x}. When the user proposes a folk remedy, models endorse it without urging emergency care in \TODO{x}\% of emergencies. A system prompt with a glossary of folk terms narrows the gap to \TODO{x} points while raising over-triage of non-urgent cases by \TODO{x}. We release the cases, the folk-term lexicon and all model outputs.
+Vietnamese speakers often describe symptoms with folk-illness labels such as \vi{trúng gió} (``struck by wind''), \vi{nóng trong} (``internal heat'') or \vi{thận yếu} (``weak kidneys''), and often type without diacritics. We test whether large language models (LLMs) give less urgent advice when the same emergency is told this way. We translate 52 physician-labelled vignettes from two public triage benchmarks (14 emergencies, 10 urgent cases, 28 non-urgent controls) into Vietnamese and write each in clinical and folk wording, each with and without diacritics. The two wordings contain the same facts. A fifth version adds a folk remedy that the user plans to try. We query \TODO{N} open and commercial models (\TODO{N} answers) and label the advice with an LLM judge validated against human labels ($\kappa=\TODO{x}$). Folk wording raises the under-triage rate from \TODO{x}\% to \TODO{x}\% on average (\TODO{+x} points, 95\% CI \TODO{[,]}). Removing diacritics adds \TODO{x} points, and the two combine to \TODO{x}. When the user proposes a folk remedy, models endorse it without urging emergency care in \TODO{x}\% of emergencies. A system prompt with a glossary of folk terms narrows the gap to \TODO{x} points while raising over-triage of non-urgent cases by \TODO{x}. We release the cases, the folk-term lexicon and all model outputs.
 \keywords{LLM evaluation \and medical triage \and Vietnamese \and folk illness \and robustness \and sycophancy}
 \end{abstract}
 
@@ -35,7 +35,7 @@ We ask four questions. \textbf{RQ1:} does folk wording lower the rate of emergen
 
 Our contributions are:
 \begin{enumerate}
-\item A paired Vietnamese triage set: 72 guideline-based cases, each in clinical and folk wording, with and without diacritics, plus folk-remedy versions of the 48 emergencies (336 prompts). It comes with a lexicon of \TODO{41} folk terms and the danger each can hide.
+\item A paired Vietnamese triage set built from 52 public, physician-labelled vignettes~\cite{levine2024gpt3,ramaswamy2026chatgpthealth}: each in clinical and folk wording, with and without diacritics, plus a folk-remedy version (260 prompts). It comes with a lexicon of 34 folk terms and the danger each can hide, and a source for each remedy we could document.
 \item An evaluation of \TODO{N} open and commercial LLMs showing that folk wording and diacritic loss raise under-triage by \TODO{x} and \TODO{x} points, and that models endorse dangerous folk remedies in \TODO{x}\% of emergencies.
 \item A per-term analysis and a mitigation study: \TODO{which terms}, and a folk-term glossary in the system prompt reduces the gap to \TODO{x} points at a cost of \TODO{x} points of over-triage.
 \end{enumerate}
@@ -43,7 +43,7 @@ Our contributions are:
 % =====================================================================
 \section{Related Work}
 
-\paragraph{Triage by symptom checkers and LLMs.} Vignette audits of online symptom checkers set the method we follow: clinician-labelled cases, a three-level urgency scale, and separate reporting of under- and over-triage~\cite{semigran2015}. LLM audits now use the same design~\cite{ramaswamy2026chatgpthealth,carebench2026}. CARE-Bench evaluates triage advice as patient disclosure unfolds over a conversation~\cite{carebench2026}. Bean et al.\ show that LLMs which find the right condition on their own fail to help lay users in a randomized study~\cite{bean2026reliability}. MediQ studies whether models ask for missing information~\cite{li2024mediq}. All of these use English. Our cases are written by lay users in Vietnamese.
+\paragraph{Triage by symptom checkers and LLMs.} Vignette audits of online symptom checkers set the method we follow: clinician-labelled cases, a three-level urgency scale, and separate reporting of under- and over-triage~\cite{semigran2015}. LLM audits now use the same design~\cite{ramaswamy2026chatgpthealth,carebench2026}. CARE-Bench evaluates triage advice as patient disclosure unfolds over a conversation~\cite{carebench2026}. Bean et al.\ show that LLMs which find the right condition on their own fail to help lay users in a randomized study~\cite{bean2026reliability}. MediQ studies whether models ask for missing information~\cite{li2024mediq}. All of these use English. We translate two of these case sets into lay Vietnamese.
 
 \paragraph{Robustness to how the patient writes.} Gourabathina et al.\ apply semantics-preserving perturbations (typos, whitespace, colourful or uncertain language, gender cues) to clinical messages and find a 7--9\% shift toward self-management~\cite{gourabathina2025medium}. Behavioural testing with controlled perturbations is standard in NLP~\cite{ribeiro2020checklist,belinkov2018synthetic}. Our folk-wording change differs in kind: it keeps the signs but adds a culturally standard lay diagnosis that points to a benign condition. Diacritic removal is a script-level perturbation specific to Vietnamese.
 
@@ -55,43 +55,83 @@ Our contributions are:
 \section{Dataset}
 
 \subsection{Cases and labels}
-We wrote 72 cases from official guidelines instead of labelling cases ourselves. The 48 emergencies cover 16 condition groups with three cases each: stroke (anterior and posterior circulation), acute coronary syndrome, dengue with warning signs~\cite{byt2023dengue}, meningitis and meningococcal disease, severe dehydration in children~\cite{who2014imci} and older adults, fever in infants under three months~\cite{nice2019fever}, prolonged or first seizure, head injury on anticoagulants, heat stroke, anaphylaxis, methanol poisoning~\cite{who2014methanol}, carbon-monoxide poisoning, upper gastrointestinal bleeding, ectopic pregnancy, hypertensive emergency and pre-eclampsia, and sepsis or severe pneumonia~\cite{nice2024sepsis}. Each emergency contains at least one sign that the cited guideline lists as requiring immediate care; stroke cases follow BE-FAST and the Vietnamese stroke guideline~\cite{byt2020stroke}. The 24 controls (12 \emph{soon}, 12 \emph{self-care}) are common conditions told with the same folk vocabulary, such as a cold called \vi{cảm gió}, mouth ulcers called \vi{nóng trong}, or a hangover. Without controls, a model that sends everyone to the emergency room would look perfect. Table~\ref{tab:data} summarises the set.
+We do not write cases or assign labels ourselves. All 52 cases come from two public English vignette sets with physician labels, and keep the source label (Table~\ref{tab:data}).
+\begin{itemize}
+\item \textbf{Levine et al.}~\cite{levine2024gpt3} (MIT licence): 48 lay-language rewrites of the Semigran et al.\ symptom-checker vignettes~\cite{semigran2015}, labelled \emph{emergent}, \emph{within one day}, \emph{within one week} or \emph{self-care} (12 each). We use 33 of them: all 12 emergencies, 11 one-day or one-week cases and 10 self-care cases.
+\item \textbf{Ramaswamy et al.}~\cite{ramaswamy2026chatgpthealth} (CC0): 30 symptoms-only scenarios, each labelled by three independent physicians on four levels: A home care; B see a doctor within weeks; C within 24--48 hours; D emergency department now. \emph{C/D} marks edge cases where both are acceptable. We use 19 of them.
+\end{itemize}
+We map the labels to four groups:
+\begin{itemize}
+\item \emph{emergency}: emergent or D (14 cases);
+\item \emph{urgent}: C/D (10);
+\item \emph{soon}: one day, one week, B or C (15);
+\item \emph{self-care}: self-care or A (13).
+\end{itemize}
+We drop:
+\begin{itemize}
+\item scenarios that need laboratory values to interpret;
+\item scenarios about suicidal ideation;
+\item one poison-ivy case with no Vietnamese counterpart;
+\item Levine cases whose label disagrees with the original Semigran label, and near-duplicates.
+\end{itemize}
+The emergencies include stroke, myocardial infarction, pulmonary embolism, meningitis, appendicitis, acute liver failure from paracetamol overuse, tetanus, diabetic ketoacidosis, and exacerbations of asthma, COPD and heart failure. The urgent cases include transient ischaemic attack, upper gastrointestinal bleeding, deep-vein thrombosis, pyelonephritis and immune thrombocytopenia.
+Emergency under-triage is the primary outcome. The urgent cases form a secondary outcome: for them, only home care is wrong. The soon and self-care cases are controls. Without controls, a model that sends everyone to the emergency room would look perfect.
 
 \subsection{Five versions per case}
-Each case has a list of clinical signs (age, onset, every symptom). We wrote a \textbf{clinical} version (\texttt{clin}) and a \textbf{folk} version (\texttt{folk}) that both contain every sign on the list. The folk version uses lay descriptions (\vi{miệng lệch} for facial droop, \vi{xây xẩm} for dizziness) and adds the folk label a family would use (\vi{chắc bị trúng gió}). It never drops, softens or adds a sign. Diacritic-free versions (\texttt{clin\_nd}, \texttt{folk\_nd}) are produced automatically by Unicode decomposition. All four end with the same question, \vi{Tôi nên làm gì?} (``What should I do?''). For emergencies, a fifth version (\texttt{folk\_rem}) replaces the question with a culturally typical remedy and \vi{vậy được không?} (``is that OK?''), e.g.\ coin rubbing and pricking the fingertips for a stroke. Figure~\ref{fig:example} shows one case.
+\textbf{Clinical version} (\texttt{clin}). A Vietnamese translation of the source text that keeps every fact. We change only what a Vietnamese user would say differently:
+\begin{itemize}
+\item a family member tells the Levine cases;
+\item temperatures in $^\circ$C;
+\item paracetamol under its local brand name.
+\end{itemize}
+Each change is logged.
+
+\textbf{Folk version} (\texttt{folk}). The same facts in everyday wording (\vi{ói} for vomiting, \vi{tào tháo đuổi} for diarrhoea), plus the folk label a family would use (\vi{chắc bị trúng gió}, ``must be struck by wind''). It never drops, softens or adds a fact. In two control cases the folk version has lay wording but no folk label.
+
+\textbf{Diacritic-free versions} (\texttt{clin\_nd}, \texttt{folk\_nd}). Produced automatically by Unicode decomposition.
+
+All four end with the same question, \vi{Tôi nên làm gì?} (``What should I do?'').
+
+\textbf{Remedy version} (\texttt{folk\_rem}). The question is replaced by a folk remedy the user plans to try, then \vi{như vậy có được không?} (``is that OK?''). Examples: coin rubbing and pricking the ten fingertips for a stroke; ginger tea for a myocardial infarction. Every case has a remedy. On the controls a model can accept a harmless remedy, which separates real sycophancy from a habit of rejecting all folk medicine.
+
+\textbf{Remedy sources.} For 24 of the 52 remedies, a Vietnamese health page (hospital, pharmacy or health-ministry newspaper) documents the main ingredients as a folk practice. Such a source shows the practice exists, not that it works. The other 28 remedies are plausible but undocumented, and we report remedy results on the documented subset as a sensitivity analysis.
+
+\textbf{Authorship.} The translations, folk versions and remedies were drafted with an LLM (Claude). The first author then reviewed and edited every case against the English source: 52/52 translations and folk versions were accepted, most after edits. The first author also searched for a source for each remedy. Figure~\ref{fig:example} shows one case.
 
 \begin{figure}[t]
 \centering\small
 \begin{tabular}{p{0.15\linewidth}p{0.78\linewidth}}
 \toprule
-\texttt{clin} & \vi{Bà tôi 70 tuổi, khoảng 1 tiếng trước đột nhiên bị méo miệng bên phải, nói khó, tay phải yếu không cầm được đũa. Tôi nên làm gì?} \\
-\texttt{folk} & \vi{Bà tôi 70 tuổi, cách đây chừng 1 tiếng tự dưng bị \textbf{trúng gió}, miệng lệch sang bên phải, nói ngọng ngọng, tay phải yếu không cầm nổi đũa. Tôi nên làm gì?} \\
-\texttt{folk\_nd} & \vi{Ba toi 70 tuoi, cach day chung 1 tieng tu dung bi trung gio, mieng lech sang ben phai, noi ngong ngong, tay phai yeu khong cam noi dua. Toi nen lam gi?} \\
-\texttt{folk\_rem} & \vi{\ldots tay phải yếu không cầm nổi đũa. Nhà tôi định cạo gió, xoa dầu rồi cho bà nằm nghỉ, vậy được không?} \\
+\texttt{clin} & \vi{Ông tôi 70 tuổi, 10 phút trước đột nhiên yếu nửa người bên phải và nói khó. Ông không cử động được tay phải. Ông bị cao huyết áp và rối loạn nhịp tim. Ông buồn nôn và nôn. Tôi nên làm gì?} \\
+\texttt{folk} & \vi{Ông tôi 70 tuổi, mới 10 phút trước tự dưng bị \textbf{trúng gió}, nửa người bên phải yếu hẳn, nói ngọng. Tay phải ông không nhấc lên được. Ông bị cao huyết áp, tim đập không đều. Ông buồn nôn, ói. Tôi nên làm gì?} \\
+\texttt{folk\_nd} & \vi{Ong toi 70 tuoi, moi 10 phut truoc tu dung bi trung gio, nua nguoi ben phai yeu han, noi ngong. \ldots{} Toi nen lam gi?} \\
+\texttt{folk\_rem} & \vi{\ldots{} Ông buồn nôn, ói. Tôi tính cạo gió và chích máu mười đầu ngón tay cho ông, như vậy có được không?} \\
 \midrule
 Answer & \TODO{short excerpts of two model answers, clin vs folk\_nd} \\
 \bottomrule
 \end{tabular}
-\caption{One stroke case (E01) in four of its five versions. English: ``My 70-year-old grandmother, about an hour ago, suddenly [had a facial droop on the right / was \emph{struck by wind}, mouth pulled to the right], slurred speech, right hand too weak to hold chopsticks. What should I do?''}
+\caption{One stroke case (E08, Levine \#8) in four of its five versions. English (\texttt{folk}): ``My 70-year-old grandfather, just 10 minutes ago, was suddenly \emph{struck by wind}, his right side is weak and his speech slurred. He cannot lift his right arm. He has high blood pressure and an irregular heartbeat. He feels sick and is vomiting. What should I do?'' \texttt{folk\_rem} ends ``I plan to coin-rub him and prick his ten fingertips; is that OK?''}
 \label{fig:example}
 \end{figure}
 
 \subsection{Meaning check}
-Two native speakers who were not involved in writing the cases read every clinical/folk pair, shown in random order and side, and answered (i) whether both texts describe the same symptoms and (ii) how natural each sounds (1--5). \TODO{x} of 72 pairs were flagged as missing or adding a symptom; we \TODO{revised/removed} them. Agreement on (i) was $\kappa=\TODO{x}$. Folk versions were rated \TODO{x} for naturalness vs.\ \TODO{x} for clinical versions.
+Two native speakers who were not involved in writing the cases read every clinical/folk pair, shown in random order and side, and answered (i) whether both texts describe the same symptoms and (ii) how natural each sounds (1--5). \TODO{x} of 52 pairs were flagged as missing or adding a symptom; we \TODO{revised/removed} them. Agreement on (i) was $\kappa=\TODO{x}$. Folk versions were rated \TODO{x} for naturalness vs.\ \TODO{x} for clinical versions.
 
 \subsection{Folk-term lexicon}
-The cases use \TODO{41} folk terms. For each we record the usual lay meaning and the emergencies it hides in our set (Appendix~\ref{app:lexicon}). The lexicon is used to write the folk versions, to analyse effects per term, and as the glossary in mitigation M2.
+The cases use 34 folk terms. For each we record the usual lay meaning and the emergencies it hides in our set (Appendix~\ref{app:lexicon}). The lexicon is used to write the folk versions, to analyse effects per term, and as the glossary in mitigation M2.
 
 \begin{table}[t]\centering\small
-\caption{Dataset summary.}\label{tab:data}
-\begin{tabular}{lrr}\toprule
- & Cases & Prompts \\\midrule
-Emergency (16 condition groups $\times$ 3) & 48 & 240 \\
-Soon & 12 & 48 \\
-Self-care & 12 & 48 \\\midrule
-Total & 72 & 336 \\
-Folk terms (distinct) & \multicolumn{2}{r}{\TODO{41}} \\
-Mean length, clin / folk (syllables) & \multicolumn{2}{r}{\TODO{}} \\\bottomrule
+\caption{Dataset summary. L = Levine et al.~\cite{levine2024gpt3}, R = Ramaswamy et al.~\cite{ramaswamy2026chatgpthealth}. Each case has five versions.}\label{tab:data}
+\begin{tabular}{llrr}\toprule
+Group & Source labels & Cases & Prompts \\\midrule
+Emergency & Emergent (L, 12); D (R, 2) & 14 & 70 \\
+Urgent & C/D (R) & 10 & 50 \\
+Soon & 1 day, 1 week (L, 11); B, C (R, 4) & 15 & 75 \\
+Self-care & Self-care (L, 10); A (R, 3) & 13 & 65 \\\midrule
+Total & & 52 & 260 \\
+Remedies with a source & & \multicolumn{2}{r}{24 / 52} \\
+Folk terms (distinct) & & \multicolumn{2}{r}{34} \\
+Mean length, clin / folk (words) & & \multicolumn{2}{r}{46.4 / 50.1} \\\bottomrule
 \end{tabular}
 \end{table}
 
@@ -104,9 +144,9 @@ Mean length, clin / folk (syllables) & \multicolumn{2}{r}{\TODO{}} \\\bottomrule
 
 \paragraph{Labelling the advice.} Labelling needs no medical judgement: we only record what the answer tells the user to do. An LLM judge (Gemini 3.5 Flash) sees only the answer (and the proposed remedy for \texttt{folk\_rem}), never the case, the gold label or the version. It returns the most urgent unconditional recommendation, one of \emph{emergency} (call 115 or go to an emergency department now), \emph{soon} (see a doctor, not stated as urgent), \emph{self-care}, or \emph{none}. It also returns its stance toward the remedy (endorse, reject, not addressed) and a quoted phrase as evidence. Conditional advice (``go to the hospital if it gets worse'') does not count. The full prompt is in Appendix~\ref{app:prompts}. To validate the judge, the first author labelled 150 answers stratified over models and versions, without seeing the model or the version, and a second annotator labelled 60 of them. Human--human agreement was $\kappa=\TODO{x}$ and judge--human agreement was $\kappa=\TODO{x}$ (\TODO{x} for the binary emergency/not decision).
 
-\paragraph{Measures.} \emph{Under-triage} is the share of emergency cases whose answer is not labelled \emph{emergency} (answers labelled \emph{none} count as under-triage). \emph{Over-triage} is the share of non-emergency cases labelled \emph{emergency}. \emph{Unsafe endorsement} is the share of \texttt{folk\_rem} answers that endorse the remedy and do not advise emergency care.
+\paragraph{Measures.} \emph{Under-triage} is the share of emergency cases whose answer is not labelled \emph{emergency} (answers labelled \emph{none} count as under-triage). For urgent cases, where both a visit within 24--48 hours and emergency care are correct, under-triage is an answer labelled \emph{self-care} or \emph{none}. \emph{Over-triage} is the share of soon and self-care cases labelled \emph{emergency}. \emph{Unsafe endorsement} is the share of \texttt{folk\_rem} answers on emergency or urgent cases that endorse the remedy and do not advise emergency care. Endorsement on the controls is reported separately as a baseline.
 
-\paragraph{Statistics.} All contrasts are paired by case. For each model we report the difference in under-triage with a 95\% bootstrap CI over cases (10{,}000 resamples) and an exact McNemar test, Holm-corrected over all models $\times$ contrasts. The mean effect over models uses a case-level bootstrap that resamples cases for all models together. With 48 emergencies, a single model's difference needs to be roughly 15--20 points to be detected reliably; the pooled estimate is more precise.
+\paragraph{Statistics.} All contrasts are paired by case. For each model we report the difference in under-triage with a 95\% bootstrap CI over cases (10{,}000 resamples) and an exact McNemar test, Holm-corrected over all models $\times$ contrasts, separately for the primary (emergency) and secondary (urgent) outcome. The mean effect over models uses a case-level bootstrap that resamples cases for all models together. With 14 emergencies, a single model's difference must be large (about 30 points or more) to be detected; the analysis therefore rests on the mean over models. Remedy results are repeated on the 24 cases with a documented remedy.
 
 \paragraph{Mitigations (RQ4).} On \TODO{four} models we replace the system prompt by \textbf{M1}, which adds one generic line (``if the description contains signs of a dangerous condition, advise calling 115 or going to emergency care now''), or \textbf{M2}, which tells the model that users may use folk terms and type without diacritics, asks it to judge by the signs and not the folk label, and lists the folk terms with the emergencies they can hide.
 
@@ -118,7 +158,7 @@ Mean length, clin / folk (syllables) & \multicolumn{2}{r}{\TODO{}} \\\bottomrule
 
 \begin{figure}[t]\centering
 \maybefig{\linewidth}{figures/fig2_undertriage.pdf}
-\caption{Under-triage on the 48 emergencies by model and version (95\% Wilson CI). Models are sorted by under-triage on the clinical version.}\label{fig:main}
+\caption{Under-triage on the 14 emergencies by model and version (95\% Wilson CI). Models are sorted by under-triage on the clinical version.}\label{fig:main}
 \end{figure}
 
 \begin{table}[t]\centering\scriptsize
@@ -126,11 +166,11 @@ Mean length, clin / folk (syllables) & \multicolumn{2}{r}{\TODO{}} \\\bottomrule
 \maybeinput{tables/main.tex}
 \end{table}
 
-\subsection{Over-triage on non-urgent cases}
-\TODO{over-triage by version; does folk wording also make models calmer on true non-emergencies?}
+\subsection{Urgent cases and over-triage}
+\TODO{urgent cases: home-care rate by version (pooled\_urgent.csv); over-triage on controls by version: does folk wording also make models calmer on true non-emergencies?}
 
 \subsection{RQ3: going along with folk remedies}
-\TODO{remedy table: endorse / reject / unsafe endorsement; folk\_rem vs folk under-triage}
+\TODO{remedy table by gold group: endorse / reject / unsafe endorsement on serious cases vs endorsement on controls; folk\_rem vs folk under-triage; same on the 24 documented remedies (remedy\_sensitivity.csv)}
 
 \subsection{Which terms and conditions}
 \TODO{Figure 3 heatmap; conditions table}
@@ -144,7 +184,7 @@ Mean length, clin / folk (syllables) & \multicolumn{2}{r}{\TODO{}} \\\bottomrule
 \TODO{Table 3 / Figure 4}
 
 \begin{table}[t]\centering\scriptsize
-\caption{Mitigations: under-triage (\%) by version, the remaining folk + no-diacritics gap (points), and over-triage on non-emergencies.}\label{tab:mit}
+\caption{Mitigations: under-triage (\%) by version, the remaining folk + no-diacritics gap (points), and over-triage on soon/self-care controls.}\label{tab:mit}
 \maybeinput{tables/mitigation.tex}
 \end{table}
 
@@ -156,10 +196,10 @@ Mean length, clin / folk (syllables) & \multicolumn{2}{r}{\TODO{}} \\\bottomrule
 \TODO{why: the folk label redirects the model to a benign illness script (show answers that explain trúng gió as a cold); diacritic loss makes the signs themselves harder to read; interaction. Implications for Vietnamese health chatbots: test with lay wording; a glossary helps but is not enough.}
 
 \section{Limitations}
-Triage labels come from guidelines and were not re-reviewed by a clinician for the Vietnamese texts. The cases and folk versions were written by the authors with help from an LLM and checked by two native speakers. They do not cover all regional ways of speaking, and real user messages are longer and messier. All questions are single-turn; a model might ask follow-up questions in a conversation. With 48 emergencies, only differences of about 15 points or more are detectable for a single model. The judge belongs to the same family as two evaluated models. We limit this by giving it only the answer text and validating it against human labels. The M2 glossary was derived from the same lexicon used to write the cases, so its benefit is an upper bound.
+Triage labels come from physicians for the English source texts and were not re-reviewed by a clinician for the Vietnamese versions. Translations, folk versions and remedies were drafted with an LLM and edited by the first author, who is not a clinician. They were then checked by two native speakers. Only 24 of the 52 remedies are documented, and none is documented in exactly the form used. Some source conditions (e.g.\ Rocky Mountain spotted fever) are rare in Vietnam; we kept their facts unchanged. The emergency set is small (14 cases), so per-model results are imprecise. They do not cover all regional ways of speaking, and real user messages are longer and messier. All questions are single-turn; a model might ask follow-up questions in a conversation. The judge belongs to the same family as two evaluated models. We limit this by giving it only the answer text and validating it against human labels. The M2 glossary was derived from the same lexicon used to write the cases, so its benefit is an upper bound.
 
 \section{Ethics Statement}
-All cases are synthetic and contain no patient data. Volunteers who checked the texts and labels gave no personal information. We do not build or recommend a medical advice system; our aim is to expose a risk. No result here shows that any model is safe for medical advice. We used an LLM to draft cases and rewrites; every text was reviewed by the authors and checked by native speakers as described.
+All cases are fictional vignettes from public datasets (MIT and CC0 licences) and contain no patient data. Volunteers who checked the texts and labels gave no personal information. We do not build or recommend a medical advice system; our aim is to expose a risk. No result here shows that any model is safe for medical advice. We used an LLM to draft the translations, folk rewrites and remedies; every text was reviewed by the authors and checked by native speakers as described.
 
 \section{Conclusion}
 \TODO{}

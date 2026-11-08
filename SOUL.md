@@ -19,6 +19,7 @@
 - **Dữ liệu phải đứng vững trước phản biện**: không dùng dữ liệu LLM tự bịa. Ưu tiên bộ công khai có nhãn của bác sĩ, kể cả khi số ca ít hơn. *(yêu cầu thay 72 ca tự viết bằng bộ công khai, 2026-11-06)*
 - **Muốn duyệt trước khi dùng**: phần dịch, chuyển thể và các thay đổi lớn phải gửi Hieu xem trước. *(2026-11-06)*
 - Chấp nhận đánh đổi hợp lý khi được giải thích rõ lý do. Hỏi lại khi con số trông lạ ("sao 52 mà chỉ lấy 14?"), rồi quyết nhanh ("đủ rồi"). *(2026-11-06)*
+- Duyệt kỹ và chủ động mở rộng: tự thêm cột nguồn, phạm vi xác thực và trạng thái xác thực; thêm cách chữa dân gian cho cả ca nhẹ; ghi rõ là nguồn chỉ xác nhận một phần, không phải xác nhận hiệu quả. *(bản duyệt 1B, 2026-11-08)*
 - Muốn Claude research từ nguồn trước khi đề xuất, và lưu lại quá trình. *(2026-11-06)*
 - Thích có nhật ký làm việc và tài liệu rõ ràng để nhìn lại. *(yêu cầu tạo JOURNAL, 2026-11-06)*
 

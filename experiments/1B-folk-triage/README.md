@@ -2,7 +2,7 @@
 
 > [!summary] Tóm tắt (VI)
 > Đo xem cùng một ca bệnh, khi kể bằng lời dân gian hoặc gõ không dấu, LLM có ít khuyên đi cấp cứu hơn không, và có chiều theo cách chữa dân gian không.
-> Bộ dữ liệu: 72 ca dựng theo hướng dẫn chính thức (48 cấp cứu, 24 ca nhẹ để đối chứng). Mỗi ca có 4 cách kể (y khoa / dân gian × có dấu / không dấu), riêng 48 ca cấp cứu có thêm bản "định chữa dân gian" → 336 câu hỏi.
+> Bộ dữ liệu: 52 ca dịch từ hai bộ công khai có nhãn của bác sĩ (Levine 2024, MIT; Ramaswamy 2026, CC0): 14 cấp cứu, 10 khẩn (C/D), 28 ca nhẹ để đối chứng. Mỗi ca có 5 cách kể (y khoa / dân gian × có dấu / không dấu, và bản dân gian kèm "tôi tính chữa dân gian …") → 260 câu hỏi. Bản dịch, bản dân gian và cách chữa do Claude soạn, Hieu duyệt và sửa (2026-11-08).
 > Chạy hai notebook trên Colab: **A** (GPU) cho 7 mô hình mở, **B** (CPU) cho 2 mô hình qua Gemini API (Vertex), giám khảo LLM, kiểm tra bằng người và phân tích.
 > Bài báo: [papers/1B-folk-triage/latex/main.tex](../../papers/1B-folk-triage/latex/main.tex) (mẫu Springer LNCS).
 
@@ -10,11 +10,14 @@
 
 | File | What |
 |---|---|
-| [data/cases_source.py](data/cases_source.py) | **Source of truth.** 72 cases: signs list, clinical text, folk text, folk terms, remedy, guideline |
-| [data/build_dataset.py](data/build_dataset.py) | Checks the cases and writes the three files below (`python3 build_dataset.py`) |
-| `data/cases.jsonl` | 336 prompts (`clin`, `clin_nd`, `folk`, `folk_nd`, `folk_rem`) |
+| [data/cases_public.py](data/cases_public.py) | **Source of truth.** 52 cases: source id, gold, clinical text, folk text, folk terms, remedy, remedy source/status, changes vs source |
+| `data/sources/` | Raw source vignettes and licences (Levine 2024 MIT; Ramaswamy 2026 CC0) |
+| `data/review/cases_reviewed_2026-11-08.csv` | The author's review sheet, as approved (kept for provenance) |
+| [data/build_dataset.py](data/build_dataset.py) | Checks the cases against the source labels and writes the files below (`python3 build_dataset.py`) |
+| `data/cases.jsonl` | 260 prompts (`clin`, `clin_nd`, `folk`, `folk_nd`, `folk_rem`) |
+| `data/review_cases.csv` | Review sheet: English source next to the Vietnamese versions |
 | `data/meaning_check.csv` | Sheet for the 2 native-speaker reviewers (pair order and side randomised; `_key` column = answer key, hide it) |
-| `data/folk_lexicon.csv` | 41 folk terms: lay meaning, what they can hide, which cases use them |
+| `data/folk_lexicon.csv` | 34 folk terms: lay meaning, what they can hide, which cases use them |
 | [ft.py](ft.py) | Shared code: generation (transformers / Gemini REST), judge, statistics, figures, annotation sheet |
 | [make_notebooks.py](make_notebooks.py) | Writes the two notebooks (edit cells here, not in the .ipynb) |
 | [1B_generate_gpu.ipynb](1B_generate_gpu.ipynb) | **A** — open models, GPU [![Open in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/hieultph/llm-agent-research-course/blob/main/experiments/1B-folk-triage/1B_generate_gpu.ipynb) |
@@ -36,9 +39,10 @@ Results go to `MyDrive/llm-research/1B-folk-triage/` (`gen/`, `judge/`, `annotat
 
 ## Design notes
 
-- The folk version keeps every sign in the case's `signs` list; it only changes wording and adds the folk label (`chắc bị trúng gió`). `build_dataset.py` asserts that each folk term appears in the folk text.
-- Labels come from guidelines (Bộ Y tế stroke and dengue guidelines, WHO IMCI, NICE NG143/NG51/NG240/CG141/NG126, WHO methanol, ESC ACS). There was no clinician review: state this as a limitation.
+- Cases and labels come from public physician-labelled vignettes. Gold mapping: Emergent, D → emergency; C/D → urgent; 1 day, 1 week, B, C → soon; Self-care, A → self_care. `build_dataset.py` asserts each case's gold matches its source label.
+- The folk version keeps every fact of the translation; it only changes wording and adds the folk label (`chắc bị trúng gió`). `build_dataset.py` asserts that each folk term appears in the folk text. S12 and N06 have no folk label.
+- Every case has a folk remedy (`folk_rem`). 24/52 remedies have a source documenting the practice (`remedy_status = co_nguon_mot_phan`); remedy results are repeated on that subset (`ft.remedy_sensitivity`).
 - Judge = Gemini 3.5 Flash. It sees only the answer (and remedy), never the case, gold label or version. It is validated against 150 human labels.
-- Main metric: under-triage = emergency case whose answer is not `emergency` (`none` counts as under-triage). Control metric: over-triage on the 24 non-emergencies.
+- Main metric: under-triage = emergency case whose answer is not `emergency` (`none` counts as under-triage). Secondary: urgent (C/D) case answered `self_care` or `none`. Control metric: over-triage on the 28 soon/self-care cases; remedy endorsement on controls is the baseline for remedy sycophancy.
 - Statistics: paired by case. Bootstrap CI over cases plus exact McNemar, Holm across models × contrasts. The pooled effect uses a case-level bootstrap over all models.
-- The analysis pipeline was smoke-tested locally on synthetic judged data (`ft.py`, notebook B end to end). `run_hf` (notebook A) needs a GPU and was not run locally.
+- The analysis pipeline was smoke-tested locally on synthetic judged data (`ft.py`, notebook B steps 5–6; venv: `uv venv .venv && uv pip install -r requirements.txt`). `run_hf` (notebook A) needs a GPU and was not run locally.

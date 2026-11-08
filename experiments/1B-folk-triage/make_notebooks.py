@@ -51,13 +51,13 @@ GPU = [
     ("markdown", r'''
 # 1B · Folk phrasing and diacritic loss → under-triage · notebook A (GPU: open models)
 
-> **Tóm tắt (VI):** Notebook này cho các mô hình mở trả lời 336 câu hỏi (72 ca × 4 cách kể + 48 bản "định chữa dân gian"), rồi lưu từng câu trả lời vào Drive (`MyDrive/llm-research/1B-folk-triage/gen/`). Nếu Colab ngắt giữa chừng, chạy lại từ đầu: những câu đã xong sẽ được bỏ qua.
+> **Tóm tắt (VI):** Notebook này cho các mô hình mở trả lời 260 câu hỏi (52 ca lấy từ hai bộ công khai × 5 cách kể: y khoa / dân gian × có dấu / không dấu, và bản dân gian kèm "tôi tính chữa dân gian …"), rồi lưu từng câu trả lời vào Drive (`MyDrive/llm-research/1B-folk-triage/gen/`). Nếu Colab ngắt giữa chừng, chạy lại từ đầu: những câu đã xong sẽ được bỏ qua.
 >
 > **Cách chạy:** Runtime → Change runtime type → **A100** (nhanh nhất, khoảng 1–1,5 giờ) hoặc **L4** (khoảng 2,5–3 giờ). Thêm secret `HF_TOKEN` (Colab → 🔑) để chạy Llama-3.1-8B; nếu không có, bước đó tự bỏ qua. Sau đó Runtime → **Run all**.
 >
 > Chạy xong thì mở notebook B (`1B_api_judge_analysis.ipynb`) để chấm và phân tích.
 
-**Design.** Same case, same signs, only the wording changes: `clin`, `clin_nd` (diacritics stripped), `folk`, `folk_nd`, plus `folk_rem` (folk + "we plan to do <folk remedy>, is that OK?") for the 48 emergency cases. Neutral system prompt, greedy decoding, 512 new tokens.
+**Design.** Same case, same signs, only the wording changes: `clin`, `clin_nd` (diacritics stripped), `folk`, `folk_nd`, plus `folk_rem` (folk + "I plan to <folk remedy>, is that OK?"). 52 public vignettes (Levine et al. 2024; Ramaswamy et al. 2026) with their original labels: 14 emergency, 10 urgent (C/D), 28 soon/self-care controls; every case has a remedy. Neutral system prompt, greedy decoding, 512 new tokens.
 '''),
     ("code", "!pip -q install -U transformers accelerate\n" + SETUP),
     ("code", r'''
@@ -137,7 +137,7 @@ API = [
 # 1B · notebook B (CPU): Gemini models, LLM judge, human check, analysis
 
 > **Tóm tắt (VI):** Không cần GPU (Runtime → CPU). Cần secret `GOOGLE_API_KEY` (Colab → 🔑, key Vertex/Agent Platform `AQ.…` hoặc key AI Studio `AIza…` đã nạp credit).
-> 1. **Bước 1** cho 2 mô hình qua API trả lời 336 câu hỏi (chạy được trong lúc notebook A đang chạy).
+> 1. **Bước 1** cho 2 mô hình qua API trả lời 260 câu hỏi (chạy được trong lúc notebook A đang chạy).
 > 2. **Bước 2** cho giám khảo LLM chấm mọi câu trả lời đang có trên Drive. Chạy lại bước này sau khi notebook A xong.
 > 3. **Bước 3** tạo phiếu chấm tay `annotation/sheet.csv`. Bạn chấm cả 150 dòng, người thứ hai chấm các dòng đánh dấu `x`. Lưu thành `annotation/rater1.csv` và `annotation/rater2.csv` trên Drive.
 > 4. **Bước 4–6** tính kappa, thống kê, vẽ hình, xuất bảng LaTeX và `conclusions.md`.
@@ -157,7 +157,7 @@ JUDGE = "gemini-3.5-flash"      # validated against human labels in step 4
 # quick connectivity test (fails fast on a billing error)
 print(ft.gemini_call(API_MODELS[0], CASES[0]["text"], system=SYSTEMS["base"], max_tokens=200)[0][:300])
 '''),
-    ("markdown", "## Step 1 · API models answer the 336 prompts (neutral prompt; m1/m2 on one model)"),
+    ("markdown", "## Step 1 · API models answer the 260 prompts (neutral prompt; m1/m2 on one model)"),
     ("code", r'''
 for m in API_MODELS:
     ft.run_api(m, CASES, SYSTEMS["base"], f"{ROOT}/gen/{ft.run_name(m)}.jsonl")
@@ -228,15 +228,21 @@ else:
     ("code", r'''
 R = f"{ROOT}/results"; os.makedirs(f"{R}/tables", exist_ok=True)
 rates = ft.rate_table(df); con = ft.contrast_table(df); pooled = ft.pooled_contrasts(df)
-over = ft.over_contrasts(df); rem = ft.remedy_table(df); terms = ft.term_table(df)
+con_u = ft.contrast_table(df, gold="urgent"); pooled_u = ft.pooled_contrasts(df, gold="urgent")   # secondary: C/D cases
+over = ft.over_contrasts(df); terms = ft.term_table(df)
+rem = pd.concat([ft.remedy_table(df), ft.remedy_table(df, sourced_only=True)])
+rem_sens = ft.remedy_sensitivity(df)                       # all remedies vs documented remedies only
 conds = ft.condition_table(df); mit = ft.mitigation_table(df); samp = ft.sampling_table(df)
-for name, t in dict(rates=rates, contrasts=con, pooled=pooled, over=over, remedy=rem, terms=terms,
+for name, t in dict(rates=rates, contrasts=con, pooled=pooled, contrasts_urgent=con_u, pooled_urgent=pooled_u,
+                    over=over, remedy=rem, remedy_sensitivity=rem_sens, terms=terms,
                     conditions=conds, mitigation=mit, sampling=samp).items():
     t.to_csv(f"{R}/tables/{name}.csv", index=name == "conditions")
 base = rates[(rates.system == "base") & (rates.decoding == "greedy")]
 display(base.pivot(index="model", columns="variant", values="under").round(2))
+display(base.pivot(index="model", columns="variant", values="under_u").round(2))
 display(base.pivot(index="model", columns="variant", values="over").round(2))
-display(pooled.round(3)); display(con.round(3)); display(rem.round(2))
+display(pooled.round(3)); display(pooled_u.round(3)); display(con.round(3))
+display(rem[rem.subset == "all"].round(2)); display(rem_sens.round(3))
 '''),
     ("code", r'''
 ft.fig_under_bars(rates, R); ft.fig_term_heatmap(terms, R); ft.fig_mitigation(mit, R)
@@ -271,10 +277,15 @@ mt += [r"\bottomrule", r"\end{tabular}"]
 open(f"{R}/tables/mitigation.tex", "w").write("\n".join(mt))
 
 summary = {"models": sorted(base.model.unique()), "kappa": KAPPA, "judge": JUDGE,
+           "n_cases": df.groupby("gold").case_id.nunique().to_dict(),
            "pooled": pooled.round(4).to_dict("records"),
+           "pooled_urgent": pooled_u.round(4).to_dict("records"),
            "under_by_variant_mean": base.groupby("variant").under.mean().round(4).to_dict(),
+           "under_urgent_by_variant_mean": base.groupby("variant").under_u.mean().round(4).to_dict(),
            "over_by_variant_mean": base.groupby("variant").over.mean().round(4).to_dict(),
-           "remedy": rem.round(4).to_dict("records"),
+           "remedy": rem[rem.subset == "all"].round(4).to_dict("records"),
+           "remedy_sensitivity": rem_sens.round(4).to_dict("records"),
+           "holm_significant_urgent": con_u[(con_u.p_holm < .05)][["model", "contrast", "diff"]].round(3).to_dict("records"),
            "holm_significant": con[(con.p_holm < .05)][["model", "contrast", "diff"]].round(3).to_dict("records"),
            "top_terms": terms.head(8)[["term", "cases", "clin", "folk", "diff"]].round(3).to_dict("records")}
 json.dump(summary, open(f"{R}/summary.json", "w"), ensure_ascii=False, indent=1)

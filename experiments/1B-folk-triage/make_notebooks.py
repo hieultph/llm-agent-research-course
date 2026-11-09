@@ -144,7 +144,7 @@ API = [
 >
 > Chạy lại toàn bộ notebook bao nhiêu lần cũng được: phần nào đã xong sẽ được bỏ qua.
 '''),
-    ("code", "!pip -q install -U requests pandas scipy matplotlib\n" + SETUP + r'''
+    ("code", "!pip -q install requests pandas scipy matplotlib  # no -U: upgrading preloaded matplotlib breaks it until restart\n" + SETUP + r'''
 os.environ["GOOGLE_API_KEY"] = secret("GOOGLE_API_KEY") or ""
 assert os.environ["GOOGLE_API_KEY"], "❌ add the GOOGLE_API_KEY secret"
 '''),

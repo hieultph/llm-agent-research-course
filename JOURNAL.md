@@ -4,6 +4,22 @@ Nhật ký làm việc, mục mới nhất ở trên. Định dạng và quy t�
 
 ---
 
+## 2026-11-09 — 1B: chạy notebook B trên Colab, sửa lỗi matplotlib
+
+**Vấn đề**
+- Bước judge dừng với lỗi `gave up after 8 retries`. Lỗi API tạm thời, chạy lại cell thì chạy tiếp từ chỗ dừng.
+- Cell vẽ hình lỗi `ImportError: cannot import name 'FontPath'`. Nguyên nhân: cell đầu chạy `pip install -U matplotlib`, nâng cấp matplotlib trong khi Colab đã nạp bản cũ, nên hai phiên bản bị trộn.
+
+**Đã làm / giải pháp**
+- Bỏ `-U` trong lệnh pip của notebook B (`make_notebooks.py`), tạo lại notebook.
+- Cách xử lý ngay trên Colab: Runtime → Restart session rồi Run all. Phần sinh câu trả lời và judge tự bỏ qua những câu đã có.
+
+**Kết quả**
+- File đã đổi: `experiments/1B-folk-triage/make_notebooks.py`, `1B_api_judge_analysis.ipynb`. Chưa commit.
+
+**Còn lại / bước tiếp**
+- Chạy xong notebook B, gửi `summary.json` và `tables/*.csv` để viết Results.
+
 ## 2026-11-08 — 1B: giải thích kappa thấp trong mục Meaning check
 
 **Vấn đề**
@@ -21,7 +37,7 @@ Nhật ký làm việc, mục mới nhất ở trên. Định dạng và quy t�
 - Đồng ý riêng trên nhãn "đánh dấu" ≈ 0,18; trên nhãn "cùng nghĩa" ≈ 0,90.
 
 **Còn lại / bước tiếp**
-- Chưa commit.
+- Đã commit và push: `2ed0d96`.
 
 ## 2026-11-08 — 1B: người 1 chấm 10 cặp, đủ 52/52 cặp chung
 

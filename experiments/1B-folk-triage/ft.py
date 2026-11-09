@@ -189,10 +189,15 @@ def run_api(model, rows, system, out_path, system_key="base", workers=8, api_key
     print(f"  {model} [{system_key}]: {len(todo)} to run")
 
     def one(r):
-        text, meta = gemini_call(model, r["text"], system=system, api_key=api_key)
+        # RECITATION returns an empty answer (output-similarity filter, not a model decision): retry, first at
+        # temperature 0, then 0.7. If it persists the row is kept and excluded in build_frame.
+        for attempt, temp in enumerate([0.0, 0.0, 0.7, 0.7], 1):
+            text, meta = gemini_call(model, r["text"], system=system, api_key=api_key, temperature=temp)
+            if meta["finish"] != "RECITATION":
+                break
         return {"uid": r["uid"], "model": model, "system": system_key, "decoding": "greedy",
                 "response": text, "finish": meta["finish"], "block": meta["block"],
-                "n_tokens": meta["usage"].get("candidatesTokenCount")}
+                "n_tokens": meta["usage"].get("candidatesTokenCount"), "attempts": attempt, "temperature": temp}
 
     with ThreadPoolExecutor(workers) as ex:
         futs = [ex.submit(one, r) for r in todo]
@@ -200,6 +205,40 @@ def run_api(model, rows, system, out_path, system_key="base", workers=8, api_key
             append_jsonl(out_path, [f.result()])
             print(f"  {k}/{len(todo)}", end="\r")
     print()
+
+
+def incomplete(g, max_new_tokens):
+    """Answers cut by a token limit lower than max_new_tokens (open models), or emptied by a non-model stop
+    (Gemini RECITATION / MAX_TOKENS) and not yet retried. Safety blocks are kept: they are the model's own
+    behaviour. Answers already cut at max_new_tokens (e.g. repetition loops) are final."""
+    if g.get("truncated"):
+        return g["n_tokens"] < max_new_tokens
+    return not g.get("response") and "attempts" not in g and g.get("finish") in ("RECITATION", "MAX_TOKENS", None)
+
+
+def reset_incomplete(root, run, max_new_tokens=2048):
+    """Drop incomplete answers of one run from gen/ and their labels from judge/, so the next run_hf / run_api /
+    run_judge call redoes only those. The first call backs up both files to gen_v1/ and judge_v1/; the
+    annotation check uses gen_v1 to find answers that changed. For sampled runs all samples of a prompt go."""
+    import shutil
+    out = {}
+    for sub in ("gen", "judge"):
+        p = Path(root, sub, f"{run}.jsonl")
+        if p.exists() and not Path(root, f"{sub}_v1", p.name).exists():
+            os.makedirs(Path(root, f"{sub}_v1"), exist_ok=True)
+            shutil.copy(p, Path(root, f"{sub}_v1", p.name))
+    gen_p = Path(root, "gen", f"{run}.jsonl")
+    gen = read_jsonl(gen_p)
+    bad = {g["uid"].split("#")[0] for g in gen if incomplete(g, max_new_tokens)}
+    for sub in ("gen", "judge"):
+        p = Path(root, sub, f"{run}.jsonl")
+        rows = read_jsonl(p)
+        keep = [r for r in rows if r["uid"].split("#")[0] not in bad]
+        out[sub] = len(rows) - len(keep)
+        if out[sub]:
+            with open(p, "w", encoding="utf-8") as f:
+                f.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in keep)
+    return out
 
 
 # ---------------------------------------------------------------- LLM judge
@@ -323,6 +362,11 @@ def build_frame(out_dir, cases):
     for p in sorted(Path(out_dir, "judge").glob("*.jsonl")):
         judges += [{**j, "run": p.stem} for j in read_jsonl(p)]
     g, j = pd.DataFrame(gens), pd.DataFrame(judges)
+    if "finish" in g:   # empty after RECITATION retries: no answer was shown, so it is missing, not "none"
+        miss = g.response.fillna("").eq("") & g.finish.eq("RECITATION")
+        if miss.any():
+            print(f"excluded {miss.sum()} empty RECITATION answers:", sorted(g[miss].run + "/" + g[miss].uid))
+        g = g[~miss]
     df = g.merge(j[["run", "uid", "triage", "remedy", "evidence"]].rename(columns={"remedy": "stance"}),
                  on=["run", "uid"], how="left")
     df["base_uid"] = df.uid.str.split("#").str[0]
@@ -623,11 +667,53 @@ def export_annotation(df, path, key_path, n=150, overlap=60, seed=3):
     return sheet
 
 
-def read_annotation(path, key_path):
+def changed_answers(root, key_path):
+    """ann_ids whose answer differs from the one on the original sheet (regenerated after reset_incomplete)."""
     import pandas as pd
-    a = pd.read_csv(path, encoding="utf-8-sig").merge(pd.read_csv(key_path), on="ann_id")
-    a.columns = [c.split(" ")[0] for c in a.columns]
-    a = a.rename(columns={"triage": "h_triage", "remedy": "h_stance"})
-    for c in ("h_triage", "h_stance"):
-        a[c] = a[c].astype(str).str.strip().str.lower().replace({"nan": None, "": None})
-    return a
+    key = pd.read_csv(key_path)
+    old, new = {}, {}
+    for run in key.run.unique():
+        old[run] = {g["uid"]: g["response"] for g in read_jsonl(Path(root, "gen_v1", f"{run}.jsonl"))}
+        new[run] = {g["uid"]: g["response"] for g in read_jsonl(Path(root, "gen", f"{run}.jsonl"))}
+    return [a for a, run, uid in zip(key.ann_id, key.run, key.uid)
+            if old[run] and old[run].get(uid) != new[run].get(uid)]
+
+
+def export_annotation_update(root, sheet_path, key_path, path):
+    """Sheet with only the regenerated answers, same columns and rater-2 marks as the original sheet."""
+    import pandas as pd
+    ids = changed_answers(root, key_path)
+    if not ids:
+        return None
+    key = pd.read_csv(key_path).set_index("ann_id")
+    new = {}
+    for run in key.loc[ids].run.unique():
+        new[run] = {g["uid"]: g["response"] for g in read_jsonl(Path(root, "gen", f"{run}.jsonl"))}
+    sheet = pd.read_csv(sheet_path, encoding="utf-8-sig")
+    upd = sheet[sheet.ann_id.isin(ids)].copy()
+    upd["answer"] = [new[key.loc[a, "run"]].get(key.loc[a, "uid"], "") for a in upd.ann_id]
+    upd[[c for c in upd.columns if c.startswith(("triage", "remedy ("))]] = ""
+    upd.to_csv(path, index=False, encoding="utf-8-sig")
+    return upd
+
+
+def read_annotation(path, key_path, update_path=None, changed=None):
+    """Labels from the original sheet; rows whose answer was regenerated (`changed`) take their label from the
+    update sheet, or are left unlabelled if it has none, so every label refers to the answer now on disk."""
+    import pandas as pd
+
+    def load(p):
+        a = pd.read_csv(p, encoding="utf-8-sig")
+        a.columns = [c.split(" ")[0] for c in a.columns]
+        a = a.rename(columns={"triage": "h_triage", "remedy": "h_stance"})
+        for c in ("h_triage", "h_stance"):
+            a[c] = a[c].astype(str).str.strip().str.lower().replace({"nan": None, "": None})
+        return a.set_index("ann_id")
+
+    a = load(path)
+    for aid in changed or []:
+        a.loc[aid, ["h_triage", "h_stance"]] = None
+    if update_path and os.path.exists(update_path):
+        u = load(update_path)
+        a.loc[u.index, ["h_triage", "h_stance", "answer"]] = u[["h_triage", "h_stance", "answer"]]
+    return a.reset_index().merge(pd.read_csv(key_path), on="ann_id")

@@ -4,6 +4,30 @@ Nhật ký làm việc, mục mới nhất ở trên. Định dạng và quy t�
 
 ---
 
+## 2026-11-09 — 1B: chạy lại các câu trả lời bị cắt, phiếu chấm bổ sung
+
+**Vấn đề**
+- Khi chấm tay, hai người phát hiện một số câu trả lời bị thiếu chữ: A048 rỗng hẳn; A036, A043, A069, A094, A123, A135, A137 thiếu một phần nhưng vẫn chấm được; A014, A016, A060, A092, A132 thiếu một phần và chưa chấm được. A056 cũng bị cắt và chưa có nhãn.
+- Nguyên nhân: notebook A giới hạn 512 token. Bảng kiểm tra cho thấy Qwen3-8B bị cắt 260/260 câu, SeaLLMs 48, Llama 22. A048 là câu Gemini trả rỗng vì bộ lọc RECITATION (3 câu, đều thuộc ca S15 bản dân gian "vong theo").
+- A101, A122 là lỗi thật của model: lặp lại một cụm từ đến hết giới hạn token. Giữ nguyên và chấm `none`.
+- Hieu không muốn loại các câu bị cắt, vì lỗi đến từ cách cài đặt của mình.
+
+**Đã làm / giải pháp**
+- `ft.py`:
+  - `reset_incomplete` xóa các câu bị cắt hoặc rỗng (cả nhãn judge của chúng), lưu bản cũ vào `gen_v1/` và `judge_v1/`. Chạy lại an toàn: câu đã chạm giới hạn mới (lặp vô hạn) được giữ.
+  - `run_api` thử lại câu bị RECITATION tối đa 4 lần (2 lần temperature 0, 2 lần 0,7). Nếu vẫn rỗng thì `build_frame` loại câu đó như dữ liệu thiếu, không tính là `none`.
+  - `changed_answers`, `export_annotation_update`: tạo `sheet_v2.csv` chỉ gồm các dòng trong phiếu chấm có câu trả lời mới. `read_annotation` bỏ nhãn cũ của các dòng này và lấy nhãn từ `rater*_v2.csv`.
+- Notebook A: `MAX_NEW = 2048`, thêm bước 0, batch nhỏ hơn cho câu dài. Notebook B: bước 1 hỏi lại câu rỗng, bước 3 tạo phiếu bổ sung, bước 4 tính κ trên đúng đoạn chữ đang có.
+- Đã chạy thử các hàm mới trên dữ liệu giả ở máy local.
+
+**Kết quả**
+- File đã đổi: `experiments/1B-folk-triage/ft.py`, `make_notebooks.py`, hai notebook, `README.md`. Chưa commit.
+
+**Còn lại / bước tiếp**
+- Commit và push để Colab lấy code mới, chạy lại A rồi B.
+- Hai người chấm `sheet_v2.csv`.
+- Cập nhật paper: giới hạn 2048 token, số câu bị loại vì RECITATION.
+
 ## 2026-11-09 — 1B: chạy notebook B trên Colab, sửa lỗi matplotlib
 
 **Vấn đề**

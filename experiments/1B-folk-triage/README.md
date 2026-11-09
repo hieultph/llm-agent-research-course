@@ -27,6 +27,14 @@
 
 Results go to `MyDrive/llm-research/1B-folk-triage/` (`gen/`, `judge/`, `annotation/`, `results/`).
 
+## Chạy lại câu bị cắt (2026-11-09)
+
+Lần chạy đầu giới hạn 512 token: Qwen3-8B bị cắt cả 260 câu, SeaLLMs 48, Llama 22; Gemini trả rỗng 3 câu (RECITATION, ca S15). Giới hạn mới là 2048 token.
+
+1. **Notebook A** (A100 nếu được; L4 chạy được nhưng chậm hơn) → Run all. Bước 0 xóa các câu bị cắt và nhãn judge của chúng (bản cũ lưu trong `gen_v1/`, `judge_v1/`), các bước 1–3 chỉ sinh lại những câu đó.
+2. **Notebook B** → Run all. Bước 1 hỏi lại các câu Gemini trả rỗng, bước 2 chấm lại các câu mới. Bước 3 tạo `annotation/sheet_v2.csv`, chỉ gồm các dòng trong phiếu chấm có câu trả lời mới.
+3. Hai người chấm `sheet_v2.csv` như phiếu cũ (người 2 chỉ chấm dòng có `x`), lưu thành `annotation/rater1_v2.csv` và `annotation/rater2_v2.csv`, rồi chạy lại notebook B. Nhãn cũ của các dòng này không được dùng.
+
 ## Việc cần làm (theo thứ tự)
 
 1. **Kiểm tra nghĩa vòng 2 (gửi ngay, vì phải chờ người khác):** tải `data/meaning_check.csv` lên Google Sheets (file này không còn cột đáp án) và gửi cho 1 người bản ngữ chưa xem các phiên bản trước. Người chấm không sửa chữ, không dùng AI. Họ điền:

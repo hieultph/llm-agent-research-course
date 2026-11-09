@@ -57,7 +57,7 @@ GPU = [
 >
 > Chạy xong thì mở notebook B (`1B_api_judge_analysis.ipynb`) để chấm và phân tích.
 
-**Design.** Same case, same signs, only the wording changes: `clin`, `clin_nd` (diacritics stripped), `folk`, `folk_nd`, plus `folk_rem` (folk + "I plan to <folk remedy>, is that OK?"). 52 public vignettes (Levine et al. 2024; Ramaswamy et al. 2026) with their original labels: 14 emergency, 10 urgent (C/D), 28 soon/self-care controls; every case has a remedy. Neutral system prompt, greedy decoding, 512 new tokens.
+**Design.** Same case, same signs, only the wording changes: `clin`, `clin_nd` (diacritics stripped), `folk`, `folk_nd`, plus `folk_rem` (folk + "I plan to <folk remedy>, is that OK?"). 52 public vignettes (Levine et al. 2024; Ramaswamy et al. 2026) with their original labels: 14 emergency, 10 urgent (C/D), 28 soon/self-care controls; every case has a remedy. Neutral system prompt, greedy decoding, up to 2048 new tokens (the first run used 512; answers cut by that limit are regenerated in step 0).
 '''),
     ("code", "!pip -q install -U transformers accelerate\n" + SETUP),
     ("code", r'''
@@ -79,7 +79,20 @@ MODELS = {
 }
 MITIGATION_MODELS = ["Qwen/Qwen2.5-7B-Instruct", "SeaLLMs/SeaLLMs-v3-7B-Chat", "meta-llama/Llama-3.1-8B-Instruct"]
 SAMPLING_MODELS = ["Qwen/Qwen2.5-7B-Instruct", "SeaLLMs/SeaLLMs-v3-7B-Chat"]
-MAX_NEW = 512
+MAX_NEW = 2048
+def bsz(bs):             # long answers: smaller batches so the KV cache fits (L4: 4-8, A100: 8-16)
+    return max(4, bs * (2 if BIG else 1) // 4)
+'''),
+    ("markdown", r'''
+## Step 0 · Redo answers cut by the old 512-token limit
+Drops cut answers (and their judge labels) so steps 1–3 regenerate only those. The first call keeps a copy of the old files in `gen_v1/` and `judge_v1/`; notebook B uses it to find annotated answers that changed. Running this again is safe: answers that reach 2048 tokens (repetition loops) are kept.
+'''),
+    ("code", r'''
+from pathlib import Path
+for p in sorted(Path(ROOT, "gen").glob("*.jsonl")):
+    if p.stem.startswith("gemini"): continue        # API runs are reset in notebook B
+    n = ft.reset_incomplete(ROOT, p.stem, MAX_NEW)
+    if n["gen"]: print(f"{p.stem}: redo {n['gen']} answers (dropped {n['judge']} judge labels)")
 '''),
     ("markdown", "## Step 1 · Main run: every model, neutral prompt, greedy"),
     ("code", r'''
@@ -90,7 +103,7 @@ for m, bs in MODELS.items():
     if not gated_ok(m):
         print("skip (no HF_TOKEN):", m); continue
     ft.run_hf(m, CASES, SYSTEMS["base"], f"{ROOT}/gen/{ft.run_name(m)}.jsonl", system_key="base",
-              batch_size=bs * (2 if BIG else 1), max_new_tokens=MAX_NEW, hf_token=HF_TOKEN)
+              batch_size=bsz(bs), max_new_tokens=MAX_NEW, hf_token=HF_TOKEN)
 '''),
     ("code", r'''
 # ✅ checks: every prompt answered once, few empty or truncated answers; show one stroke case per model
@@ -121,7 +134,7 @@ for k in ("m1", "m2"):
     for m in MITIGATION_MODELS:
         if not gated_ok(m): continue
         ft.run_hf(m, CASES, SYSTEMS[k], f"{ROOT}/gen/{ft.run_name(m, k)}.jsonl", system_key=k,
-                  batch_size=MODELS[m] * (2 if BIG else 1), max_new_tokens=MAX_NEW, hf_token=HF_TOKEN)
+                  batch_size=bsz(MODELS[m]), max_new_tokens=MAX_NEW, hf_token=HF_TOKEN)
 '''),
     ("markdown", "## Step 3 · Stability check: 5 samples at temperature 0.7 on two models"),
     ("code", r'''
@@ -159,6 +172,11 @@ print(ft.gemini_call(API_MODELS[0], CASES[0]["text"], system=SYSTEMS["base"], ma
 '''),
     ("markdown", "## Step 1 · API models answer the 260 prompts (neutral prompt; m1/m2 on one model)"),
     ("code", r'''
+# redo answers Gemini returned empty (RECITATION filter); retried up to 4 times, then excluded as missing
+from pathlib import Path
+for p in sorted(Path(ROOT, "gen").glob("gemini*.jsonl")):
+    n = ft.reset_incomplete(ROOT, p.stem)
+    if n["gen"]: print(f"{p.stem}: redo {n['gen']} answers (dropped {n['judge']} judge labels)")
 for m in API_MODELS:
     ft.run_api(m, CASES, SYSTEMS["base"], f"{ROOT}/gen/{ft.run_name(m)}.jsonl")
 for k in ("m1", "m2"):
@@ -190,35 +208,45 @@ print("✅ all answers judged")
 ## Step 3 · Human check of the judge
 Creates `annotation/sheet.csv` (150 answers, stratified over models and variants, model and variant hidden).
 Open it in Google Sheets. **Rater 1** (you) labels all rows; **rater 2** labels the rows marked `x` in column `rater2`. Use the same definitions as the judge prompt above. Download each as CSV to `annotation/rater1.csv` and `annotation/rater2.csv`.
+
+If answers on the sheet were regenerated later (cut by the old 512-token limit, or empty), this step writes `annotation/sheet_v2.csv` with only those rows. Label them the same way and save as `annotation/rater1_v2.csv` and `annotation/rater2_v2.csv`. Labels of regenerated rows on the first sheet are not used.
 '''),
     ("code", r'''
 A = f"{ROOT}/annotation"; os.makedirs(A, exist_ok=True)
 if not os.path.exists(f"{A}/sheet.csv"):
     ft.export_annotation(df, f"{A}/sheet.csv", f"{A}/key.csv", n=150, overlap=60)
 print(pd.read_csv(f"{A}/sheet.csv").head(3).to_string()[:1500])
+CHANGED = ft.changed_answers(ROOT, f"{A}/key.csv")
+if CHANGED and not os.path.exists(f"{A}/sheet_v2.csv"):
+    ft.export_annotation_update(ROOT, f"{A}/sheet.csv", f"{A}/key.csv", f"{A}/sheet_v2.csv")
+if CHANGED:
+    v2 = pd.read_csv(f"{A}/sheet_v2.csv")
+    print(f"📝 {len(v2)} regenerated answers to label in sheet_v2.csv ({(v2.rater2 == 'x').sum()} also for rater 2):",
+          ", ".join(v2.ann_id))
 '''),
     ("markdown", "## Step 4 · Agreement: human–human and judge–human (Cohen's κ)"),
     ("code", r'''
 KAPPA = {}
 if os.path.exists(f"{A}/rater1.csv"):
-    r1 = ft.read_annotation(f"{A}/rater1.csv", f"{A}/key.csv")
+    r1 = ft.read_annotation(f"{A}/rater1.csv", f"{A}/key.csv", f"{A}/rater1_v2.csv", CHANGED)
     j = df.set_index(["run", "uid"])
-    r1["j_triage"] = [j.loc[(a, b), "triage"] for a, b in zip(r1.run, r1.uid)]
-    r1["j_stance"] = [j.loc[(a, b), "stance"] for a, b in zip(r1.run, r1.uid)]
-    ok = r1.h_triage.notna()
+    r1["j_triage"] = [j.triage.get((a, b)) for a, b in zip(r1.run, r1.uid)]
+    r1["j_stance"] = [j.stance.get((a, b)) for a, b in zip(r1.run, r1.uid)]
+    ok = r1.h_triage.notna() & r1.j_triage.notna()
+    print("unlabelled or missing:", ", ".join(r1.ann_id[~ok]) or "none")
     KAPPA["judge_vs_rater1_triage"] = ft.cohen_kappa(r1.h_triage[ok].tolist(), r1.j_triage[ok].tolist())
     KAPPA["judge_vs_rater1_triage_binary"] = ft.cohen_kappa((r1.h_triage[ok] == "emergency").tolist(),
                                                              (r1.j_triage[ok] == "emergency").tolist())
-    rs = r1[(r1.remedy_user_proposed.fillna("").str.len() > 0) & r1.h_stance.notna()]
+    rs = r1[ok & (r1.remedy_user_proposed.fillna("").str.len() > 0) & r1.h_stance.notna()]
     if len(rs):
         KAPPA["judge_vs_rater1_remedy"] = ft.cohen_kappa(rs.h_stance.tolist(), rs.j_stance.tolist())
     if os.path.exists(f"{A}/rater2.csv"):
-        r2 = ft.read_annotation(f"{A}/rater2.csv", f"{A}/key.csv").set_index("ann_id")
+        r2 = ft.read_annotation(f"{A}/rater2.csv", f"{A}/key.csv", f"{A}/rater2_v2.csv", CHANGED).set_index("ann_id")
         both = r1.set_index("ann_id").join(r2[["h_triage"]], rsuffix="_2").dropna(subset=["h_triage", "h_triage_2"])
         KAPPA["rater1_vs_rater2_triage"] = ft.cohen_kappa(both.h_triage.tolist(), both.h_triage_2.tolist())
         KAPPA["n_overlap"] = len(both)
     KAPPA["n_rater1"] = int(ok.sum())
-    display(pd.crosstab(r1.h_triage, r1.j_triage, margins=True))
+    display(pd.crosstab(r1.h_triage[ok], r1.j_triage[ok], margins=True))
     print(json.dumps(KAPPA, indent=1))
     print("✅ judge usable" if KAPPA["judge_vs_rater1_triage_binary"] >= 0.7 else "⚠️ κ < 0.7: tighten the judge prompt")
 else:

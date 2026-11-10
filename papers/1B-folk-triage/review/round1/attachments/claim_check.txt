@@ -1,0 +1,11 @@
+## Attachment: Reviewer Claim Check (advisory, #1002)
+
+The judge answered 39 of 39 findings from 5 reviewers: it marked 2 as contradicted, and 0 cannot be checked from the manuscript alone.
+
+The judge marked these findings as contradicted by the manuscript. The script checked only the words of each quote: that they occur in the manuscript, or, for words the finding quotes, that they do not. The judge gave the locations, and the script did not check them. Read each quote to decide:
+- Reviewer 3 · W4: No data-release safeguards for LLM-drafted remedies and dangerous outputs
+  > “We do not build or recommend a medical advice system; our aim is to expose a risk. No result here shows that any model is safe for medical advice. We used an LLM to draft the translations, folk rewrites and remedies” (Ethics Statement)
+- Journal-Fit Reviewer · W5: Per-condition analysis is claimed as a contribution but reported thinly
+  > “Under-triage varied by condition. Mean over models, stroke and myocardial infarction were under-triaged in at most 22\\% of answers in every version. This held even for stroke told as \\vi{trúng gió}” (Section 5.4 (Which conditions), first paragraph)
+
+The author decides what to do with each row. This check does not change the decision, the consensus counts, or the Revision Roadmap. The judge is the session model; as this judge, the #1002 contrast test passed Claude Opus 5.5 and Claude Fable 5.1 (gpt-6-astra and Gemini 4 Argon passed it in part one, through other transports); other models are untested.

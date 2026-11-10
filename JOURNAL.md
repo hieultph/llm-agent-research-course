@@ -4,6 +4,105 @@ Nhật ký làm việc, mục mới nhất ở trên. Định dạng và quy t�
 
 ---
 
+## 2026-11-10 — 1B: sửa paper theo review, hướng thay đổi tối thiểu
+
+**Vấn đề**
+- Hội nghị nhắm tới chỉ là Q3, nên Hieu muốn sửa ít nhất có thể.
+- Ý kiến của Hieu về từng mục:
+  - R1: điểm mới là thử với từ dân gian;
+  - R2: không cần thiết;
+  - R6: vẫn là đóng góp;
+  - R11: theo journal cũ, hai người chấm đều dùng AI hỗ trợ rồi tự duyệt lại;
+  - R13: cả hai người chấm là người miền Nam;
+  - R20: không quen bác sĩ nào.
+
+**Đã làm / giải pháp**
+- Đổi tiêu đề: "Trúng gió" or Stroke? Testing LLM Triage on Folk-Worded and Unaccented Vietnamese Health Questions.
+- Sửa 34 đoạn trong `main.tex`: abstract, intro (thêm câu về điểm mới), related work, §3.2, §3.4, statistics, RQ3, §5.4, RQ4, discussion, limitations, ethics, conclusion, phụ lục lexicon.
+- Tính khoảng tin cậy Wilson cho tỉ lệ đồng ý với remedy từ `results/tables/remedy.csv`: 13/126 [6, 17], 23/90 [18, 35], SeaLLMs 7/14 [27, 73], Qwen2.5-1.5B 6/10 [31, 83].
+- Thêm trích dẫn Náplava et al. 2018 (LREC). Đã kiểm tra: bài có tồn tại, có đánh giá trên tiếng Việt; BibTeX lấy từ ACL Anthology.
+- Thêm mục Data card vào `experiments/1B-folk-triage/README.md`: content warning, phạm vi sử dụng, cờ nguồn của remedy, nhãn `unsafe_endorse`.
+- Ghi quyết định cho từng mục vào [revision_roadmap.md](papers/1B-folk-triage/review/round1/revision_roadmap.md) mục E: 20 must_fix gồm 19 sửa (một số mục chỉ sửa một phần hoặc giảm mức khẳng định) và R20 từ chối; 11 mục S từ chối, có lý do.
+- Kiểm tra trong code trước khi ghi vào paper: `build_dataset.py` đổi đ thành d; nhóm Holm có 9 model × 4 phép so sánh = 36 test; over-triage trong Table 4 tính trên 28 ca × 4 phiên bản = 112.
+- Bản trước khi sửa lưu ở scratchpad (`main.before_revision.tex`); có thể xem lại thay đổi bằng git diff.
+
+**Kết quả**
+- Paper biên dịch không lỗi, giờ dài 19 trang (trước là 18).
+- Chưa commit.
+
+**Còn lại / bước tiếp**
+- Hieu đọc lại các câu đã sửa.
+- Cần cắt trang khi biết giới hạn trang của hội nghị.
+- Điền thư trả lời reviewer theo `response_letter_skeleton.md`.
+
+## 2026-11-10 — 1B: review mô phỏng 5 reviewer (vòng 1)
+
+**Vấn đề**
+- Hieu muốn review paper 1B trước khi nộp.
+
+**Đã làm / giải pháp**
+- Chạy skill `academic-paper-reviewer`, chế độ full, theo hợp đồng chấm `reviewer_full/v2`:
+  - **Phase 0:** Hieu duyệt 4 thẻ reviewer: Journal-Fit, phương pháp, NLP tiếng Việt, liên ngành (bác sĩ cấp cứu + nhân học). Devil's Advocate là ghế thứ 5, cố định.
+  - **Phase 1:** mỗi reviewer cam kết tiêu chí chấm trước khi đọc paper.
+  - **Phase 2:** mỗi reviewer đọc paper và viết nhận xét, mỗi người chạy trong một subagent riêng.
+- Các bước kiểm tra:
+  - `check_phase_conformance.py` cho cả 10 lượt (Phase 1 và 2 của 5 reviewer): đều PASS;
+  - bản ghi cách chạy (`provenance.json`): validate PASS;
+  - `check_panel_synthesis.py` cho bản tổng hợp: PASS.
+- Ba kiểm tra phụ đính kèm thư quyết định:
+  - tài liệu reviewer gợi ý: 9/9 có trong cơ sở dữ liệu thư mục;
+  - đối chiếu nhận xét với paper: 2 nhận xét bị xem là mâu thuẫn với paper;
+  - kiểm tra từ viết tắt.
+- Các script của skill chạy trong venv uv ở scratchpad (cài `jsonschema` và `pyyaml`), không cài vào Python hệ thống.
+
+**Kết quả**
+- Quyết định: **Major Revision**. Cơ chế quyết định: luật F3 kích hoạt vì 4 tiêu chí bắt buộc (D1, D2, D3, D6) đều bị chấm warn. Không reviewer nào chấm block. Devil's Advocate không nêu vấn đề CRITICAL nào.
+- Roadmap: 20 mục bắt buộc sửa, 22 mục nên sửa hoặc cân nhắc.
+- 3 vấn đề chặn:
+  1. Tiêu đề nói chung về "LLMs" trong khi hiệu ứng chủ yếu nằm ở các model mở ≤8B.
+  2. Hiệu ứng được gán cho từ dân gian, nhưng bản folk còn đổi cả giọng văn và từ địa phương.
+  3. Giải thích "model đọc sai triệu chứng" chỉ dựa trên 2 ví dụ.
+- File: `papers/1B-folk-triage/review/` (phase0_field_analysis.md, round1/*.phase1.md, *.phase2.md, synthesis.md, provenance.json, attachments/).
+- Lưu ý: cả 5 reviewer cùng một họ model (Claude), nên lỗi của chúng có thể tương quan với nhau.
+
+**Còn lại / bước tiếp**
+- Đã lập revision roadmap bằng `academic-paper` revision-coach: [review/round1/revision_roadmap.md](papers/1B-folk-triage/review/round1/revision_roadmap.md) (20 must_fix, 22 should/consider, 12 câu hỏi của reviewer) và [response_letter_skeleton.md](papers/1B-folk-triage/review/round1/response_letter_skeleton.md).
+  - Các câu hỏi của reviewer không có trong bản tổng hợp, nên lấy trực tiếp từ bản review của từng reviewer.
+  - Chưa có JSON `revision-roadmap/1.0`, vì paper chưa được gắn mã block.
+- Hieu cần điền cột quyết định (will_address / wont_address / not_on_point) cho từng mục.
+- Có 2 mục cần dữ liệu mới: một người chấm độ tự nhiên không dùng LLM, và một bác sĩ kiểm tra 24 cặp cấp cứu/khẩn.
+- Chưa commit.
+
+## 2026-11-10 — 1B: kiểm tra trích dẫn (citation-check)
+
+**Vấn đề**
+- Kiểm tra mọi trích dẫn của paper 1B trước khi nộp.
+
+**Đã làm / giải pháp**
+- Chạy skill `academic-paper`, chế độ citation-check:
+  - đối chiếu `\cite` với `refs.bib`;
+  - đối chiếu DOI trên Crossref và preprint trên arXiv;
+  - so nội dung paper viết về từng nguồn với abstract của nguồn đó.
+- Chi tiết ở [research/2026-11-10-1b-citation-check.md](research/2026-11-10-1b-citation-check.md).
+
+**Kết quả**
+- Không có trích dẫn nào thiếu trong bib. Có 1 mục bib không được trích (`internalrep2026`).
+- 9/9 DOI khớp với Crossref.
+- Đã sửa 7 lỗi trong `refs.bib`:
+  - thêm 4 DOI;
+  - bổ sung tác giả Mahdi cho Bean;
+  - sửa tác giả của Sharma theo arXiv;
+  - cập nhật tiêu đề mới của bài Internal Representation.
+- Paper biên dịch không lỗi, 18 trang.
+- Các con số trích từ nguồn đều khớp: Ramaswamy 52%, Gourabathina 7–9%.
+
+**Còn lại / bước tiếp**
+- Theo yêu cầu của Hieu, đã sửa:
+  - câu Related Work thành "LLM triage audits follow the same vignette-based approach, with finer urgency scales";
+  - xóa `internalrep2026` khỏi bib.
+- Xác nhận file Ramaswamy công bố có 30 scenario, khớp với paper.
+- Chưa commit.
+
 ## 2026-11-10 — 1B: thêm hình quy trình và hình các phiên bản
 
 **Vấn đề**

@@ -1,0 +1,16 @@
+Suggested-reference check (script output, not a reviewer finding; #1001)
+Seats read: R2, R3 (complete).
+
+| Seat | # | Reference | Result |
+|---|---|---|---|
+| R2 | 1 | Náplava, J. et al. (2018) "Diacritics Restoration Using Neural Networks" | Found in an index |
+| R2 | 2 | Nguyen, T.-N. et al. (2024) "ViLexNorm: A Lexical Normalization Corpus for Vietnamese Social Media Text" doi:10.18653/v1/2024.eacl-long.85 arXiv:2401.16403 | Found in an index |
+| R2 | 3 | Bui, C. T. et al. (2025) "VMLU Benchmarks: A comprehensive benchmark toolkit for Vietnamese LLMs" | Found in an index |
+| R2 | 4 | Nguyen, T.-H. et al. (2024) "ViLLM-Eval: A Comprehensive Evaluation Suite for Vietnamese Large Language Models" arXiv:2404.11086 | Found in an index |
+| R2 | 5 | Minh, N. et al. (2022) "ViHealthBERT: Pre-trained Language Models for Vietnamese in Health Text Mining" | Found in an index |
+| R2 | 6 | (2021) "ViMQ: A Vietnamese Medical Question Dataset for Healthcare Dialogue System Development" arXiv:2304.14405 | Found in an index |
+| R3 | 1 | Kleinman, A. (1980) "Patients and Healers in the Context of Culture: An Exploration of the Borderland between Anthropology, Medicine, and Psychiatry" | Found in an index |
+| R3 | 2 | Gebru, T. et al. (2021) "Datasheets for Datasets" arXiv:1803.09010 | Found in an index |
+| R3 | 3 | Bender, E. M. et al. (2018) "Data Statements for Natural Language Processing: Toward Mitigating System Bias and Enabling Better Science" | Found in an index |
+
+"Found" means an index holds a record with this DOI or arXiv ID and title, or with this title. It does not show that the work supports the recommendation, or that the authors and year are right.

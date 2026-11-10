@@ -1,0 +1,35 @@
+### Acronym check (advisory; no reply needed)
+Coverage: body (partial)
+Not in this input: English abstract, Chinese abstract.
+Not checked:
+- Body, line 430: RQ4 (the initials before its parentheses do not spell it)
+- Body, line 749: MIT (the initials before its parentheses do not spell it)
+
+| Scope | Line | Rule | Acronym | Uses |
+|---|---|---|---|---|
+| Body | 2 | Defined after first use | LLM | 35 |
+| Body | 71 | Not defined | API | 4 |
+| Body | 104 | Not defined | RQ1 | 3 |
+| Body | 105 | Not defined | RQ2 | 3 |
+| Body | 106 | Not defined | RQ3 | 3 |
+| Body | 134 | Not defined | CARE | 2 |
+| Body | 144 | Not defined | NLP | 3 |
+| Body | 155 | Not defined | OK | 4 |
+| Body | 158 | Not defined | VM14K | 2 |
+| Body | 190 | Not defined | COPD | 2 |
+| Body | 340 | Not defined | AC1 | 1 |
+| Body | 340 | Not defined | PABAK | 1 |
+| Body | 365 | Not defined | AI | 2 |
+| Body | 367 | Not defined | GPU | 1 |
+| Body | 382 | Not defined | SeaLLM | 12 |
+| Body | 488 | Not defined | VyL | 1 |
+| Body | 491 | Not defined | SeaL | 1 |
+| Body | 735 | Not defined | ACM | 1 |
+| Body | 735 | Not defined | FAccT | 1 |
+| Body | 746 | Not defined | GPT | 1 |
+| Body | 766 | Not defined | BMJ | 1 |
+| Body | 798 | Not defined | ANSWER | 1 |
+| Body | 798 | Not defined | REMEDY | 2 |
+| Body | 815 | Not defined | ER | 1 |
+| Body | 829 | Not defined | JSON | 1 |
+| Body | 879 | Not defined | GI | 1 |

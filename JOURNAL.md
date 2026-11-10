@@ -4,6 +4,48 @@ Nhật ký làm việc, mục mới nhất ở trên. Định dạng và quy t�
 
 ---
 
+## 2026-11-10 — 1B: thêm 8 hình minh họa (SVG chỉnh sửa được)
+
+**Vấn đề**
+- Hieu thấy paper ít hình. Người đọc thích xem hình hơn, nên Hieu muốn vẽ thêm mọi chỗ có thể minh họa được. Hình phải ở dạng file có thể sửa lại sau (kiểu XML).
+
+**Đã làm / giải pháp**
+- Chọn SVG làm định dạng chỉnh sửa (là XML; mở được bằng Inkscape, draw.io, Figma). Xuất sang PDF bằng cairosvg để đưa vào LaTeX. Máy không có draw.io CLI hay Inkscape để xuất file `.drawio`.
+- Thư mục mới `papers/1B-folk-triage/figures_src/`:
+  - `make_charts.py`: vẽ biểu đồ từ `results/tables`;
+  - `export.py`: chuyển SVG sang PDF;
+  - `svg/`: các file SVG;
+  - `requirements.txt`, `.venv` (tạo bằng uv), `README.md` hướng dẫn chỉnh sửa.
+- 5 biểu đồ:
+  - hiệu ứng gộp có CI, cho ca cấp cứu và ca khẩn;
+  - (a) thiết kế 2×2 của under-triage, (b) over-triage theo phiên bản;
+  - thái độ với remedy theo từng model;
+  - heatmap theo bệnh (13 bệnh, đủ cả 5 phiên bản);
+  - mitigation (trung bình 4 model).
+- 3 sơ đồ vẽ tay:
+  - quy trình dựng dữ liệu; thay Table 1 cũ, các số liệu của bảng chuyển vào chú thích;
+  - từ câu trả lời đến nhãn và cách tính chỉ số, kèm phần kiểm định giám khảo;
+  - ví dụ E05 (Qwen3-8B): câu trả lời có nhắc lại từng dấu hiệu hay không, theo từng phiên bản.
+- Palette 5 màu đã qua `validate_palette.js` (kiểm tra mù màu: PASS; độ tương phản: WARN, bù bằng nhãn số trên hình).
+- Gộp hai danh sách gạch đầu dòng (kết quả ca khẩn ở §5.2, theo bệnh ở §5.4) thành câu văn có dẫn tới hình.
+
+**Phát hiện lỗi trong paper**
+- Discussion viết rằng với ca viêm màng não, câu trả lời không dấu của Qwen3-8B chỉ nhắc "cổ cứng" và "sợ ánh sáng" trong điều kiện đi viện.
+- Đọc lại câu trả lời thật (`E05_clin_nd`) thì hai dấu hiệu này **không xuất hiện ở đâu cả**. Bản `folk_nd` còn không nhắc tới viêm màng não.
+- Đã sửa câu này. Ví dụ ca đột quỵ E08 (Qwen2.5-1.5B) cũng đã được kiểm tra lại và đúng.
+- Hieu yêu cầu kiểm tra lại trên Drive, vì máy local không phải bản mới nhất. Đã tải lại bản mới nhất: `gen/Qwen3-8B__base__greedy.jsonl` (09/11 19:59) và `judge/...` (10/11 00:13).
+  - Hai file trùng từng byte (sha256) với bản đã dùng để kiểm tra.
+  - Kết quả không đổi: `clin_nd` và `folk_nd` không nhắc tới cổ cứng hay sợ ánh sáng. `folk_nd` không gọi tên viêm màng não, chỉ nhắc "viêm não" trong một danh sách chung. Giám khảo gán nhãn self_care cho cả hai.
+  - Bản cũ `gen_v1` (trước khi sinh lại câu trả lời bị cắt ở 512 token) cũng cho kết quả giống vậy. Câu cũ trong paper vì thế sai ngay từ đầu, không phải do dữ liệu thay đổi.
+
+**Kết quả**
+- Paper có 12 hình, biên dịch không lỗi. Paper giờ dài **22 trang** (trước là 19).
+- Chưa commit.
+
+**Còn lại / bước tiếp**
+- Hieu xem lại các hình.
+- Cắt trang theo giới hạn của hội nghị. Có thể chuyển phụ lục hoặc một số hình (ví dụ Table 3 và Fig. mitigation đang lặp nhau) sang tài liệu bổ sung.
+
 ## 2026-11-10 — 1B: sửa paper theo review, hướng thay đổi tối thiểu
 
 **Vấn đề**

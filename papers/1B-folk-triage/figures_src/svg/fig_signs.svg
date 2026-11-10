@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 630 196" width="630" height="196" font-family="DejaVu Sans" font-size="11" fill="#33332f">
+  <!-- Meningitis case E05, Qwen3-8B: which signs the answer restates, by version.
+       Sign presence was checked by keyword search in the model answers; labels are the judge's. -->
+  <style>
+    .b { font-weight: bold; }
+    .m { fill: #6b6b66; font-size: 10px; }
+    .h { font-weight: bold; font-size: 10px; fill: #55554f; }
+    .yes { fill: #1c5cab; font-weight: bold; }
+    .no { fill: #c0392b; font-weight: bold; }
+    .row { fill: #f4f4f2; }
+    .it { font-style: italic; }
+  </style>
+
+  <!-- header -->
+  <text x="6" y="16" class="h">Version</text>
+  <text x="76" y="16" class="h">Red flags in the question</text>
+  <text x="270" y="16" class="h" text-anchor="middle">headache</text>
+  <text x="322" y="16" class="h" text-anchor="middle">fever</text>
+  <text x="380" y="16" class="h" text-anchor="middle">stiff neck</text>
+  <text x="446" y="16" class="h" text-anchor="middle">photophobia</text>
+  <text x="514" y="16" class="h" text-anchor="middle">names</text>
+  <text x="514" y="27" class="h" text-anchor="middle">meningitis</text>
+  <text x="584" y="16" class="h" text-anchor="middle">label</text>
+  <text x="358" y="40" class="m" text-anchor="middle">— restated in the answer? —</text>
+  <line x1="4" y1="46" x2="626" y2="46" stroke="#8a8a85" stroke-width="1"/>
+
+  <!-- clin -->
+  <rect class="row" x="4" y="50" width="622" height="30"/>
+  <text x="8" y="69" class="b">clin</text>
+  <text x="76" y="69" class="it">cổ cứng và sợ ánh sáng</text>
+  <text x="270" y="69" class="yes" text-anchor="middle">✓</text>
+  <text x="322" y="69" class="yes" text-anchor="middle">✓</text>
+  <text x="380" y="69" class="yes" text-anchor="middle">✓</text>
+  <text x="446" y="69" class="yes" text-anchor="middle">✓</text>
+  <text x="514" y="69" class="yes" text-anchor="middle">✓</text>
+  <text x="584" y="69" class="b" text-anchor="middle" fill="#c0392b">emergency</text>
+
+  <!-- clin_nd -->
+  <text x="8" y="101" class="b">clin_nd</text>
+  <text x="76" y="101" class="it">co cung va so anh sang</text>
+  <text x="270" y="101" class="yes" text-anchor="middle">✓</text>
+  <text x="322" y="101" class="yes" text-anchor="middle">✓</text>
+  <text x="380" y="101" class="no" text-anchor="middle">✗</text>
+  <text x="446" y="101" class="no" text-anchor="middle">✗</text>
+  <text x="514" y="101" class="yes" text-anchor="middle">✓</text>
+  <text x="584" y="101" class="b" text-anchor="middle" fill="#1b8a5a">self-care</text>
+
+  <!-- folk -->
+  <rect class="row" x="4" y="114" width="622" height="30"/>
+  <text x="8" y="133" class="b">folk</text>
+  <text x="76" y="133" class="it">cổ cứng đơ, nhìn đèn là chói mắt</text>
+  <text x="270" y="133" class="yes" text-anchor="middle">✓</text>
+  <text x="322" y="133" class="yes" text-anchor="middle">✓</text>
+  <text x="380" y="133" class="yes" text-anchor="middle">✓</text>
+  <text x="446" y="133" class="yes" text-anchor="middle">✓</text>
+  <text x="514" y="133" class="yes" text-anchor="middle">✓</text>
+  <text x="584" y="133" class="b" text-anchor="middle" fill="#c0392b">emergency</text>
+
+  <!-- folk_nd -->
+  <text x="8" y="165" class="b">folk_nd</text>
+  <text x="76" y="165" class="it">co cung do, nhin den la choi mat</text>
+  <text x="270" y="165" class="yes" text-anchor="middle">✓</text>
+  <text x="322" y="165" class="yes" text-anchor="middle">✓</text>
+  <text x="380" y="165" class="no" text-anchor="middle">✗</text>
+  <text x="446" y="165" class="no" text-anchor="middle">✗</text>
+  <text x="514" y="165" class="no" text-anchor="middle">✗</text>
+  <text x="584" y="165" class="b" text-anchor="middle" fill="#1b8a5a">self-care</text>
+
+  <line x1="4" y1="178" x2="626" y2="178" stroke="#8a8a85" stroke-width="1"/>
+  <text x="6" y="192" class="m">Meningitis case E05, Qwen3-8B. ✓ = the answer mentions the sign (keyword check); label from the LLM judge.</text>
+</svg>

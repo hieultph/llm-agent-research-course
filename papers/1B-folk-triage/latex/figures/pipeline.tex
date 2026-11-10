@@ -1,0 +1,45 @@
+% Overview of the study: dataset construction (top row) and evaluation (bottom row).
+\begin{tikzpicture}[
+  font=\scriptsize,
+  box/.style={draw=black!60, rounded corners=2pt, fill=#1, align=left,
+              text width=2.4cm, minimum height=1.75cm, inner sep=3pt},
+  box/.default=white,
+  head/.style={font=\scriptsize\bfseries},
+  arr/.style={-{Stealth[length=4pt]}, thick, black!70},
+  stage/.style={draw=black!25, dashed, rounded corners=4pt, inner sep=5pt},
+  stagelabel/.style={font=\scriptsize\itshape, text=black!60, anchor=south west},
+  node distance=0.5cm,
+]
+% ---- row 1: dataset ----
+\node[box=blue!6]  (src) {\textbf{Public vignettes}\\Levine et al.\ (33)\\Ramaswamy et al.\ (19)\\physician labels};
+\node[box=blue!6, right=of src] (cases) {\textbf{52 cases}\\14 emergency\\10 urgent\\28 controls (soon,\\self-care)};
+\node[box=blue!6, right=of cases] (ver) {\textbf{5 versions / case}\\\texttt{clin}, \texttt{folk},\\\texttt{clin\_nd}, \texttt{folk\_nd},\\\texttt{folk\_rem} (Fig.~\ref{fig:versions})};
+\node[box=blue!6, right=of ver] (check) {\textbf{Meaning check}\\2 native raters,\\blind pairs;\\10 pairs revised\\$\Rightarrow$ 260 prompts};
+\draw[arr] (src) -- (cases);
+\draw[arr] (cases) -- (ver);
+\draw[arr] (ver) -- (check);
+
+% ---- row 2: evaluation (right to left, continuing the snake) ----
+\node[box=orange!8, below=1.25cm of check] (models) {\textbf{9 LLMs}\\7 open (1.5--8B),\\2 Gemini API;\\greedy, neutral\\system prompt};
+\node[box=orange!8, left=of models] (judge) {\textbf{LLM judge}\\sees answer only;\\triage label +\\remedy stance\\+ quoted evidence};
+\node[box=orange!8, left=of judge] (val) {\textbf{Human check}\\150 answers,\\2 annotators;\\judge--human\\$\kappa=0.94$ (emerg.)\\$\kappa=0.50$ (remedy)};
+\node[box=orange!8, left=of val] (meas) {\textbf{Measures}\\under-/over-triage,\\unsafe\\endorsement;\\paired bootstrap,\\McNemar + Holm};
+\draw[arr] (check.south) -- node[right, font=\tiny] {2{,}340 answers} (models.north);
+\draw[arr] (models) -- (judge);
+\draw[arr] (judge) -- (val);
+\draw[arr] (val) -- (meas);
+
+% mitigation side branch
+\node[draw=black!40, dashed, rounded corners=2pt, align=left, text width=2.45cm,
+      below=0.3cm of models, font=\tiny, inner sep=2pt] (mit)
+      {\textbf{RQ4}: M1 safety line, M2 folk-term glossary; 4 models};
+\draw[arr, dashed] (mit) -- (models);
+
+% stage frames
+\begin{scope}[on background layer]
+\node[stage, fit=(src)(check)] (s1) {};
+\node[stage, fit=(meas)(models)(mit)] (s2) {};
+\end{scope}
+\node[stagelabel] at (s1.north west) {Dataset construction (Sec.~3)};
+\node[stagelabel] at (s2.north west) {Evaluation (Sec.~4--5)};
+\end{tikzpicture}

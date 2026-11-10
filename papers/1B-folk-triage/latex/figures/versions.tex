@@ -1,0 +1,41 @@
+% How the five versions of a case are derived, and which contrast answers which RQ.
+\begin{tikzpicture}[
+  font=\scriptsize,
+  ver/.style={draw=black!60, rounded corners=2pt, fill=#1, align=left,
+              text width=2.85cm, inner sep=3pt, minimum height=1.3cm},
+  ver/.default=white,
+  arr/.style={-{Stealth[length=4pt]}, thick, black!70},
+  op/.style={font=\tiny, text=black!70, align=center, inner sep=1.5pt},
+  rq/.style={{Stealth[length=3pt]}-{Stealth[length=3pt]}, densely dashed, red!70!black, thick},
+  rqlab/.style={font=\tiny\bfseries, text=red!70!black, fill=white, inner sep=1pt, align=left},
+]
+\node[ver=black!4, text width=1.6cm] (src) at (-0.55,0)
+  {\textbf{Source}\\\textbf{vignette}\\English,\\physician\\label};
+
+\node[ver=blue!6]  (clin)   at (3.9, 1.6)
+  {\texttt{clin}\\\vi{Con gái tôi 12 tuổi, đột ngột đau bụng dữ dội. Cháu sốt 40 độ, buồn nôn, nôn và tiêu chảy. Tôi nên làm gì?}};
+\node[ver=green!7] (folk)   at (3.9,-1.6)
+  {\texttt{folk}\\\vi{\ldots{} tự nhiên đau bụng dữ dội, chắc bị \textbf{trúng thực}. Cháu sốt 40 độ, buồn nôn, ói và bị \textbf{tào tháo đuổi}. Tôi nên làm gì?}};
+\node[ver=blue!6]  (clinnd) at (8.55, 1.6)
+  {\texttt{clin\_nd}\\\vi{Con gai toi 12 tuoi, dot ngot dau bung du doi. Chau sot 40 do, buon non, non va tieu chay. Toi nen lam gi?}};
+\node[ver=green!7] (folknd) at (8.55,-1.6)
+  {\texttt{folk\_nd}\\\vi{\ldots{} tu nhien dau bung du doi, chac bi trung thuc. Chau sot 40 do, buon non, oi va bi tao thao duoi. Toi nen lam gi?}};
+\node[ver=yellow!12] (rem)  at (3.9,-4.3)
+  {\texttt{folk\_rem}\\\vi{\ldots{} Tôi tính cho cháu \textbf{uống nước gừng, xoa dầu vào bụng} rồi theo dõi ở nhà, như vậy có được không?}};
+
+% derivations
+\coordinate (split) at ([xshift=0.3cm]src.east);
+\draw[thick, black!70] (src.east) -- (split);
+\draw[arr] (split) |- node[op, pos=0.72, above] {translate,\\same facts} (clin.west);
+\draw[arr] (split) |- node[op, pos=0.72, below] {lay words +\\folk label} (folk.west);
+\draw[arr] (clin) -- node[op, above] {strip\\diacritics} node[op, below] {(automatic)} (clinnd);
+\draw[arr] (folk) -- node[op, above] {strip\\diacritics} node[op, below] {(automatic)} (folknd);
+\draw[arr] (folk.south) -- node[op, right, align=left] {question $\to$ planned folk\\remedy, ``is that OK?''} (rem.north);
+
+% contrasts
+\draw[rq] ([xshift=-0.5cm]clin.south) -- node[rqlab] {RQ1} ([xshift=-0.5cm]folk.north);
+\draw[rq] (clin.east |- 0,0) -- node[rqlab] {RQ2} (clinnd.west |- 0,0);
+\draw[rq] (rem.east) -- ++(0.6,0) node[rqlab, right] {RQ3: does the model\\endorse the remedy?};
+\node[rqlab, anchor=west] at ([xshift=0.6cm, yshift=-0.85cm]rem.east)
+  {RQ4: rerun all versions with\\a safety line (M1) or\\a folk-term glossary (M2)};
+\end{tikzpicture}

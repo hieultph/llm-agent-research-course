@@ -4,6 +4,31 @@ Nhật ký làm việc, mục mới nhất ở trên. Định dạng và quy t�
 
 ---
 
+## 2026-11-10 — 1B: thêm hình quy trình và hình các phiên bản
+
+**Vấn đề**
+- Hieu thấy paper thiếu hình minh họa toàn bộ quy trình thực nghiệm và cách làm.
+
+**Đã làm / giải pháp**
+- Vẽ bằng TikZ (dạng vector, font giống phần chữ của paper), mỗi hình một file riêng, chèn vào bằng `\input`.
+- `figures/pipeline.tex` → Fig. 1 trong phần Introduction:
+  - hàng trên: dựng dữ liệu (vignette công khai → 52 ca → 5 phiên bản → kiểm tra nghĩa → 260 prompt);
+  - hàng dưới: đánh giá (9 LLM → giám khảo LLM → người kiểm tra giám khảo, κ = 0,94 và 0,50 → các chỉ số và kiểm định), kèm nhánh RQ4.
+- `figures/versions.tex` → Fig. 2 trong mục 3.2:
+  - cách tạo 5 phiên bản từ ca gốc E08 (đột quỵ), có trích đoạn tiếng Việt thật;
+  - các phép so sánh tương ứng với RQ1–RQ4.
+- Theo góp ý của Hieu, Fig. 2 đổi sang ca E02 (viêm ruột thừa, Levine #2) để không trùng với ca đột quỵ E08 ở bảng ví dụ. Chữ trong hình lấy nguyên văn từ `cases.jsonl`. Phần giải nghĩa *trúng thực* và *tào tháo đuổi* trong chú thích dùng đúng bản dịch trong lexicon đã duyệt.
+- Kiểm tra trong `make_notebooks.py`: M1/M2 chạy lại cả 260 prompt (`CASES`) trên 4 model, nên hình ghi "rerun all versions".
+- Thêm `tikz` vào phần khai báo gói của `main.tex`.
+
+**Kết quả**
+- Paper biên dịch không lỗi, giờ dài 18 trang. Hai hình được đánh số Fig. 1 và Fig. 2, các hình kết quả cũ chuyển thành Fig. 3 trở đi.
+- Đã xem bản render của từng hình và sửa các chỗ chữ đè lên nhau.
+
+**Còn lại / bước tiếp**
+- Hieu xem lại hình, chưa commit.
+- Số trang tăng lên 18, cần cắt bớt khi chọn được hội nghị.
+
 ## 2026-11-10 — 1B: kết quả chính sau khi chạy lại (summary.json)
 
 **Vấn đề**

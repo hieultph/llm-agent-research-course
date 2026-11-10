@@ -7,6 +7,8 @@
   \usepackage{fontspec}         % XeLaTeX/LuaLaTeX: Latin Modern OpenType has Vietnamese glyphs
 \fi
 \usepackage{graphicx,booktabs,amsmath,xcolor,url}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,backgrounds}
 \usepackage[hidelinks]{hyperref}
 \newcommand{\TODO}[1]{\textcolor{red}{[TODO: #1]}}
 \newcommand{\vi}[1]{\textit{#1}}   % Vietnamese text inline
@@ -36,7 +38,14 @@ Vietnamese adds two features that these English-language studies do not cover. F
 
 Existing Vietnamese medical benchmarks test medical knowledge with multiple-choice questions~\cite{vm14k}. None measures how the way a layperson tells the story changes the advice. We hold the case and its signs fixed and change only the telling. Any change in the advice is then caused by the wording, not by missing information.
 
-We ask four questions. \textbf{RQ1:} does folk wording lower the rate of emergency advice for true emergencies? \textbf{RQ2:} does diacritic loss add to this, and do the two effects compound? \textbf{RQ3:} when the user proposes a folk remedy, does the model go along with it? \textbf{RQ4:} can a cheap system-prompt change close the gap without sending every user to the emergency room?
+\begin{figure}[t]
+\centering
+\input{figures/pipeline.tex}
+\caption{Overview of the study. Top: we translate 52 physician-labelled English vignettes into Vietnamese, write five versions of each and check that the clinical and folk versions say the same thing. Bottom: nine models answer all 260 prompts, an LLM judge labels the advice in each answer, and a human check validates the judge.}
+\label{fig:pipeline}
+\end{figure}
+
+We ask four questions. \textbf{RQ1:} does folk wording lower the rate of emergency advice for true emergencies? \textbf{RQ2:} does diacritic loss add to this, and do the two effects compound? \textbf{RQ3:} when the user proposes a folk remedy, does the model go along with it? \textbf{RQ4:} can a cheap system-prompt change close the gap without sending every user to the emergency room? Figure~\ref{fig:pipeline} gives an overview of the study.
 
 Our contributions are:
 \begin{enumerate}
@@ -93,11 +102,18 @@ Each change is logged.
 
 \textbf{Folk version} (\texttt{folk}). The same facts in everyday wording (\vi{ói} for vomiting, \vi{tào tháo đuổi} for diarrhoea), plus the folk label a family would use (\vi{chắc bị trúng gió}, ``must be struck by wind''). It never drops, softens or adds a fact. In two control cases the folk version has lay wording but no folk label.
 
-\textbf{Diacritic-free versions} (\texttt{clin\_nd}, \texttt{folk\_nd}). Produced automatically by Unicode decomposition.
+\textbf{Diacritic-free versions} (\texttt{clin\_nd}, \texttt{folk\_nd}). Produced automatically by Unicode decomposition. Figure~\ref{fig:versions} shows how the versions relate.
 
 All four end with the same question, \vi{Tôi nên làm gì?} (``What should I do?'').
 
 \textbf{Remedy version} (\texttt{folk\_rem}). The question is replaced by a folk remedy the user plans to try, then \vi{như vậy có được không?} (``is that OK?''). Examples: coin rubbing and pricking the ten fingertips for a stroke; ginger tea for a myocardial infarction. Every case has a remedy. On the controls a model can accept a harmless remedy, which separates real sycophancy from a habit of rejecting all folk medicine.
+
+\begin{figure}[t]
+\centering
+\input{figures/versions.tex}
+\caption{The five versions of one case (appendicitis, E02, Levine \#2) and the comparisons that answer each research question. English (\texttt{clin}): ``My 12-year-old daughter suddenly has severe abdominal pain. She has a 40\,$^\circ$C fever, nausea, vomiting and diarrhoea. What should I do?'' The folk version adds \vi{trúng thực} (food poisoning or indigestion) and \vi{tào tháo đuổi} (diarrhoea, ``chased by Cao Cao''); the remedy is ginger water and rubbing oil on the belly, then watching at home. Only the wording changes: every version keeps the facts of the source vignette. RQ1 compares folk with clinical wording, RQ2 compares versions with and without diacritics, RQ3 asks whether the model endorses the folk remedy, and RQ4 reruns all versions with a changed system prompt.}
+\label{fig:versions}
+\end{figure}
 
 \textbf{Remedy sources.} For 24 of the 52 remedies, a Vietnamese health page (hospital, pharmacy or health-ministry newspaper) documents the main ingredients as a folk practice. Such a source shows the practice exists, not that it works. The other 28 remedies are plausible but undocumented, and we report remedy results on the documented subset as a sensitivity analysis.
 

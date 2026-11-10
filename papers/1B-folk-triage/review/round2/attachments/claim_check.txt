@@ -1,0 +1,11 @@
+## Attachment: Reviewer Claim Check (advisory, #1002)
+
+The judge answered 42 of 42 findings from 5 reviewers: it marked 2 as contradicted, and 5 cannot be checked from the manuscript alone.
+
+The judge marked these findings as contradicted by the manuscript. The script checked only the words of each quote: that they occur in the manuscript, or, for words the finding quotes, that they do not. The judge gave the locations, and the script did not check them. Read each quote to decide:
+- Reviewer 2 · W6: Related work omits cross-lingual health-LLM evaluation and Vietnamese health QA resources
+  > “For Vietnamese, VialectBench rewrites standard text into six dialect groups and finds that no model is fully robust” (Related Work, paragraph 'Robustness to how the patient writes')
+- Reviewer 3 · W5: Mitigation over-triage cost is not interpreted for deployment
+  > “Flash-Lite over-triaged 36--43\\% of controls (average over models: 27\\%), so part of its low under-triage reflects a more cautious operating point.” (Discussion, paragraph 'Which models')
+
+The author decides what to do with each row. This check does not change the decision, the consensus counts, or the Revision Roadmap. The judge is the session model; as this judge, the #1002 contrast test passed Claude Opus 5.5 and Claude Fable 5.1 (gpt-6-astra and Gemini 4 Argon passed it in part one, through other transports); other models are untested.

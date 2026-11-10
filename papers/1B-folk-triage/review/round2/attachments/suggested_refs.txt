@@ -1,0 +1,13 @@
+Suggested-reference check (script output, not a reviewer finding; #1001)
+Seats read: R2, R3 (complete).
+
+| Seat | # | Reference | Result |
+|---|---|---|---|
+| R2 | 1 | Jin, Y. et al. (2024) "Better to Ask in English: Cross-Lingual Evaluation of Large Language Models for Healthcare Queries" | Found in an index |
+| R2 | 2 | Gebru, T. et al. (2021) "Datasheets for Datasets" doi:10.1145/3458723 | Found in an index |
+| R2 | 3 | Bender, E. M. et al. (2018) "Data Statements for Natural Language Processing: Toward Mitigating System Bias and Enabling Better Science" doi:10.1162/tacl\_a\_00041 | Found in an index |
+| R3 | 1 | Kleinman, A. (1980) "Patients and Healers in the Context of Culture: An Exploration of the Borderland between Anthropology, Medicine, and Psychiatry" | Found in an index |
+| R3 | 2 | Gebru, T. et al. (2021) "Datasheets for Datasets" arXiv:1803.09010 | Found in an index |
+| R3 | 3 | Wallace, W. (2022) "The diagnostic and triage accuracy of digital and online symptom checker tools: a systematic review" | Found in an index |
+
+"Found" means an index holds a record with this DOI or arXiv ID and title, or with this title. It does not show that the work supports the recommendation, or that the authors and year are right.

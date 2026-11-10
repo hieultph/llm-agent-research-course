@@ -28,6 +28,7 @@
 - Thích có nhật ký làm việc và tài liệu rõ ràng để nhìn lại. *(yêu cầu tạo JOURNAL, 2026-11-06)*
 
 - Với review, sửa theo mức đầu tư của hội nghị: hội nghị Q3 thì chọn hướng sửa ít thay đổi nhất. Ưu tiên viết lại câu, thu hẹp khẳng định, ghi vào Limitations; không làm thêm thí nghiệm. Có quan điểm riêng về điểm mới của bài (cách nói dân gian) và phản bác góp ý mình thấy thừa, nhưng chấp nhận khi được nêu lý do cụ thể. Không có bác sĩ để nhờ kiểm tra. *(sửa paper 1B theo review, 2026-11-10)*
+- Ở vòng review thứ 2, Hieu giao cho Claude tự chọn: nhận góp ý nào làm bài rõ ràng, mạnh hơn, và mạnh dạn từ chối góp ý nào có lý do hợp lý. Phân tích lại trên dữ liệu đã có thì được làm; thí nghiệm mới thì vẫn không. Hieu muốn paper có nhiều hình để người đọc dễ theo dõi. *(review vòng 2 paper 1B, 2026-11-10)*
 - Hay tự gộp hoặc dọn file dữ liệu cho gọn, ví dụ gộp hai file nhãn giống nhau thành một. Khi gửi file chấm, nhắc giữ bản gốc của từng người. Thẳng thắn nhận khi mình làm sai. *(gộp nhãn hai người chấm, 2026-11-10)*
 
 ## Cách giao tiếp

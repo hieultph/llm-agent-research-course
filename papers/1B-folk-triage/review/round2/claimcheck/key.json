@@ -1,0 +1,266 @@
+{
+  "checker": "audit_panel_claims/1",
+  "seats": [
+    "eic",
+    "methodology",
+    "domain",
+    "perspective",
+    "da"
+  ],
+  "unread": [],
+  "manuscript_sha256": "fce106a693ca3cb61d0ebdf62ccf4adabfb807137cc86243921999e4a065f44a",
+  "items": [
+    {
+      "claim_id": "c001",
+      "seat": "perspective",
+      "finding_id": "W7",
+      "text": "Release plan for unsafe remedies and outputs is underspecified\nFlags and a content warning are good. However, the release pairs 28 undocumented, LLM-drafted remedies with real emergencies, and includes model answers that endorse them. Scraped into training corpora or indexed by search, these texts could spread unsafe advice in Vietnamese. Suggestion: state the release licence and terms of use, and consider gated or research-only access for the remedy and output files. Add a canary string to keep the data out of training sets. In each released unsafe answer, place the content warning next to the text itself, not only in the data card.\n**Severity**: Minor\n**Evidence Anchor**: text: Ethics Statement \"The release is meant for evaluation only\"\n**Confidence**: 3 (dataset-release practice; not a legal specialist)"
+    },
+    {
+      "claim_id": "c002",
+      "seat": "eic",
+      "finding_id": "W8",
+      "text": "Abstract omits the main clinical-validity caveat\nThe abstract calls the vignettes \"physician-labelled\" but does not say that the Vietnamese versions, folk rewrites and remedies were drafted with an LLM and not re-reviewed by a clinician. The body states this candidly. A clinician who reads only the abstract may assume the Vietnamese cases were clinically validated. One clause in the abstract would bring it in line with the body's framing.\n**Severity**: Minor\n**Evidence Anchor**: absence: Abstract — expected a clause that the Vietnamese versions were LLM-drafted and not re-reviewed by a clinician; checked Abstract, §1 contribution list, §3.2 Authorship paragraph, §7 Limitations\n**Confidence**: 4 — clinical-safety framing is within my remit"
+    },
+    {
+      "claim_id": "c003",
+      "seat": "methodology",
+      "finding_id": "W8",
+      "text": "The stated detectable effect does not match the chosen multiplicity correction\n**Severity**: Minor\n**Evidence Anchor**: text: \"a single model's difference must be large (about 30 points or more) to be detected\"\n**Confidence**: 4 — exact McNemar power\n\nWith Holm over 36 tests, the smallest raw p must fall below 0.05/36 ≈ 0.0014. An exact McNemar with all discordant pairs in one direction needs at least 11 of 14 (2 x 0.5^11 ≈ 0.001), which is about 79 points. \"About 30 points\" holds only before correction. The per-model test set is therefore near-powerless by design, and the paper should say so. The paper should also say whether the three pooled primary contrasts (and the urgent outcome) are treated as a family. The folk effect's [4, 18] interval would probably survive a three-way adjustment, but this is not stated."
+    },
+    {
+      "claim_id": "c004",
+      "seat": "eic",
+      "finding_id": "W2",
+      "text": "Title and headline framing do not match the main finding\nThe title sets up \"trúng gió or stroke?\" as the central question. The paper's own results show that this label did not mislead the models, and that diacritic loss, not folk labels, causes most of the harm. A reader who skims the title and first paragraph of the introduction will leave with the opposite message from the one in the results. The abstract does state that diacritics dominate, but only after leading with the folk-label narrative. I suggest retitling to foreground diacritic loss (for example, unaccented and lay Vietnamese input). Then reorder the abstract and contribution list so the diacritic result comes first and the folk-label result is presented as smaller and condition-dependent.\n**Severity**: Major\n**Evidence Anchor**: text: §5.4 Which conditions \"so the best-known folk label did not mislead the models\"\n**Confidence**: 4 — framing and title–finding match is my core remit"
+    },
+    {
+      "claim_id": "c005",
+      "seat": "da",
+      "finding_id": "M4",
+      "text": "D3\n\n\"Less urgent overall\" assumes models give milder advice, but *none* answers count as under-triage and never as over-triage, so more degenerate or off-topic output on unaccented input would raise under-triage and lower over-triage mechanically. The rate of *none* labels by version is not reported (only for Llama on folk_rem). Repair: report the label distribution per version and recompute both rates excluding *none*.\n\nn/a\n\nn/a\n\n**Evidence Anchor**: text: Discussion \"Lay or unaccented text made the advice less urgent across the board, as if such users had milder problems.\" and Measures \"(answers labelled \\emph{none} count as under-triage)\""
+    },
+    {
+      "claim_id": "c006",
+      "seat": "da",
+      "finding_id": "M3",
+      "text": "D3\n\nThe Discussion attributes per-condition harm to folk wording on less specific signs, but the supporting Results numbers are drawn from no-diacritic cells (meningitis on clin_nd, DKA on folk_nd), and folk-only per-condition figures are not reported. The \"less specific signs\" mechanism is post hoc and mixes the two perturbations. Repair: report folk vs clin per condition separately, or drop the attribution.\n\nn/a\n\nn/a\n\n**Evidence Anchor**: text: Discussion \"Folk wording mattered more where the signs are less specific, such as liver failure told as \\vi{bị cảm} (``a cold'')\" and Results \"meningitis rose from 11\\% (clinical) to 78\\% (clinical, no diacritics)\""
+    },
+    {
+      "claim_id": "c007",
+      "seat": "domain",
+      "finding_id": "W4",
+      "text": "Framing claims about Vietnamese folk illness have no source, and \"usually benign\" is questionable for trúng gió\nThe introduction states that \"many Vietnamese\" use folk-illness labels for acute symptoms and that facial droop \"is often called trúng gió\". It cites nothing, not even ethnographic or public-health literature on trúng gió or cạo gió. It also says a folk label \"names a different, usually benign, illness\". In common Vietnamese understanding, trúng gió can be sudden and serious; it is not reliably a benign category. The paper's own result, that models were not misled on the trúng gió stroke case, fits that reading.\n\nFix: cite sources for the prevalence of folk-illness usage, or soften these to stated assumptions. Qualify \"usually benign\" per term; the lexicon split in W2 would support that.\n**Severity**: Minor\n**Evidence Anchor**: text: §1 \"First, many Vietnamese describe acute symptoms with folk-illness labels.\" and §1 \"Unlike a typo, a folk label is not noise: it names a different, usually benign, illness.\"\n**Confidence**: 3 — native-speaker knowledge, no source verified in this session"
+    },
+    {
+      "claim_id": "c008",
+      "seat": "eic",
+      "finding_id": "W5",
+      "text": "Abstract is long and number-dense\nThe abstract runs to about 290 words and carries more than fifteen numeric results, including CIs and kappas. LNCS asks for 150–250 words, and clinical readers will struggle to pick out the main message. Keep the three or four numbers that carry the message (baseline, diacritic effect, combined effect, mitigation gap) and move the rest to the body.\n**Severity**: Minor\n**Evidence Anchor**: text: Abstract, opening \"Vietnamese speakers often describe symptoms with folk-illness labels\"\n**Confidence**: 4 — word count of the abstract source"
+    },
+    {
+      "claim_id": "c009",
+      "seat": "perspective",
+      "finding_id": "W6",
+      "text": "Folk-term lexicon lacks ethnographic grounding and may be read as stereotyping\nThe glosses are LLM-drafted and author-reviewed. The \"Can hide\" column pairs everyday labels with emergencies, and once released it may be read out of context as \"folk term X signals disease Y\". The entry pairing vong theo, a spiritual explanation, with early psychotic disorder is the most sensitive case. Used as a deployment glossary like M2, the lexicon could also lead a model to over-pathologise ordinary folk speech. Suggestion: ground the lay meanings in medical-anthropology or Vietnamese ethnomedical sources, or have them reviewed by community members or Vietnamese clinicians. Rename the column, for example \"Source diagnosis in this dataset\". Add a data-card note that the terms are common, mostly benign descriptions used across the population, not markers of a group.\n**Severity**: Minor\n**Evidence Anchor**: text: §3.4 Folk-term lexicon \"drafted with an LLM and reviewed by the first author, not taken from an ethnographic source\"\n**Confidence**: 4 (clinical work with Vietnamese patients; not an anthropologist)"
+    },
+    {
+      "claim_id": "c010",
+      "seat": "domain",
+      "finding_id": "W7",
+      "text": "The released resource has no stated licence, schema or location\nThe paper releases cases, a lexicon, outputs and labels, and mentions a data card with a content warning and per-remedy flags. It does not say which licence the derived Vietnamese texts and lexicon carry (the sources are MIT and CC0), what fields a record has (case id, source id, gold group, version, remedy-documented flag, source URL for documented remedies), or where the release will live. A placeholder is fine while the paper is anonymised.\n\nThese are the minimum facts another group needs to build on the set. Documentation frameworks such as datasheets and data statements cover them (see references). Whether this venue requires them is unverified.\n**Severity**: Minor\n**Evidence Anchor**: absence: Ethics Statement and Conclusion — expected licence, record schema and release location for the cases, lexicon and outputs; checked abstract, contributions list, §3, Ethics Statement, Conclusion, Appendices A–B\n**Confidence**: 4 — dataset release experience"
+    },
+    {
+      "claim_id": "c011",
+      "seat": "eic",
+      "finding_id": "W7",
+      "text": "Builder takeaway is scattered and its most actionable step is untested\nThe advice an app builder would act on is spread across §6 (test small local models on unaccented input; diacritic restoration \"deserves testing\") and the last lines of the Conclusion. No single paragraph tells a health-app builder what to do. The most concrete remedy, restoring diacritics before inference, is suggested but not evaluated. A short \"Implications for deployment\" paragraph would give readers one actionable takeaway: evaluate on lay, unaccented input; do not rely on prompt-level fixes; consider diacritic restoration with its own safety check. Even a small pilot of restoration on the existing prompts would strengthen it, but that is optional.\n**Severity**: Minor\n**Evidence Anchor**: text: §6 Discussion \"Restoring diacritics before the text reaches the model is a cheap step that deserves testing\"\n**Confidence**: 4 — readership-level judgement within my remit"
+    },
+    {
+      "claim_id": "c012",
+      "seat": "methodology",
+      "finding_id": "W7",
+      "text": "The unsafe-endorsement headline depends on a weakly validated label, and its intervals omit both clustering and misclassification\n**Severity**: Major\n**Evidence Anchor**: text: \"in 7 of 14 emergencies for one model\"\n**Confidence**: 4 — misclassification and agreement statistics\n\nRemedy stance has kappa = 0.50 on 32 answers. The CI for that kappa is wide, roughly 0.2 to 0.8 at this n, and is not reported. Unsafe endorsement combines this weak label with the triage label, so its error compounds both. The Wilson intervals (which reproduce) assume independent answers and perfect labelling, and the authors acknowledge only the first. The abstract and Contribution 2 headline a per-model count (\"7 of 14\") from this label. Report the kappa CI, the confusion matrix for stance, and a bound on unsafe endorsement under the observed judge-human disagreement. Alternatively, report human-labelled unsafe endorsement for the two highlighted models (at most 24 answers each). The per-model count should move out of the abstract unless it is human-verified."
+    },
+    {
+      "claim_id": "c013",
+      "seat": "methodology",
+      "finding_id": "W5",
+      "text": "Per-model and adaptation claims over-read 14-case intervals\n**Severity**: Major\n**Evidence Anchor**: text: \"language adaptation did not make the model more robust to unaccented input\"\n**Confidence**: 4 — subgroup inference\n\nThe paper rightly says no per-model contrast survives correction. The Discussion and abstract still draw model-level conclusions:\n- \"the effects concentrate in small open models\";\n- Gemini \"barely affected\";\n- \"Qwen2.5-7B showed no effect\", where Table 2's Δfolk_nd is +0 with a CI of [-43, +36] (absence of evidence, not evidence of absence);\n- a conclusion about language adaptation from a single pair evaluated on 14 cases.\n\nNo model-by-version heterogeneity test is reported. The Gemini models sit at a 0% floor on clin, so their effects can only be zero or positive, and one of them is the judge (W2). Gemini Flash-Lite's low under-triage partly reflects a more cautious operating point, which the authors do note. These statements should be recast as descriptive, with per-model intervals shown in the text. If heterogeneity is claimed, a model x version interaction test (e.g. random slopes) should support it."
+    },
+    {
+      "claim_id": "c014",
+      "seat": "domain",
+      "finding_id": "W6",
+      "text": "Related work omits cross-lingual health-LLM evaluation and Vietnamese health QA resources\nThe scoped novelty claim (first triage test on folk-worded and unaccented Vietnamese) is plausible, and nothing I know of undercuts it. But the Vietnamese side has a single cited benchmark (VM14K). Vietnamese consumer-health and medical QA datasets are left out, as is cross-lingual work showing that LLM health answers degrade in non-English languages. The latter is the closest context for the \"English-only prior work\" framing. The diacritic-restoration paragraph cites a multilingual neural model but no Vietnamese-specific restoration work.\n\nFix: add a short paragraph on cross-lingual health-LLM evaluation and on Vietnamese health QA, and cite at least one Vietnamese diacritic-restoration study. See the references below; the Vietnamese items are search leads.\n**Severity**: Minor\n**Evidence Anchor**: text: §2 \"We are not aware of work that measures lay phrasing, folk-illness terms or missing diacritics in Vietnamese health questions.\"\n**Confidence**: 3 — field familiarity; no literature search run in this session"
+    },
+    {
+      "claim_id": "c015",
+      "seat": "da",
+      "finding_id": "M1",
+      "text": "D3\n\nThe folk effect is presented as an effect of folk telling, but the folk version bundles a folk label, lay register and Southern vocabulary, and there is no neutral paraphrase control. The +11 points cannot be attributed to folk-illness content over generic distance from the source-like clinical text; the title and introduction frame it as the former. Repair: narrow the claim to \"lay/folk rewording\", or add a neutral paraphrase arm.\n\nn/a (severity rests on the paper's own causal claim, not a field norm)\n\nn/a\n\n**Evidence Anchor**: text: Introduction \"We hold the case and its signs fixed and change only the telling.\" and Limitations \"Any paraphrase may move small greedy-decoded models; we have no neutral clinical-paraphrase control.\""
+    },
+    {
+      "claim_id": "c016",
+      "seat": "domain",
+      "finding_id": "W1",
+      "text": "The folk register is LLM-authored and has no anchor in real Vietnamese user text\nThe treatment condition for RQ1 is the folk version. An LLM drafted it, and a non-clinician first author edited it. The two raters who checked equivalence and naturalness also used an LLM as an aid, which the paper itself says makes their ratings \"not fully independent\". Agreement on equivalence was κ = 0.15. Nothing shows that the folk wording matches how Vietnamese laypeople actually write health questions online, for example through a comparison with public Vietnamese health forum or consumer-QA text in lexical choice, length and folk-label frequency.\n\nAs written, RQ1 measures the effect of LLM-imagined folk Vietnamese. That is a real but narrower claim than the title and abstract suggest. Folk-label usage in particular may be over- or under-represented compared with real messages. The paper does name some of this: the limitations say real messages are \"longer and messier\" and that the vocabulary is Southern only. But the main text and abstract present the folk effect without this qualifier.\n\nMinimum fix: state in the abstract and introduction that the folk versions are author-constructed, LLM-assisted rewrites. Stronger option, at moderate cost: sample real public Vietnamese health questions and report how often the lexicon terms appear and how long such questions are, so the register is anchored externally.\n**Severity**: Major\n**Evidence Anchor**: text: §3.2 Authorship \"The translations, folk versions, remedies and lexicon glosses were drafted with an LLM (Claude).\"\n**Confidence**: 4 — Vietnamese NLP and dataset-construction experience"
+    },
+    {
+      "claim_id": "c017",
+      "seat": "methodology",
+      "finding_id": "W14",
+      "text": "Denominator of the Llama \"no usable advice\" share is not stated\n**Severity**: Minor\n**Evidence Anchor**: text: \"because 35\\% of its remedy answers gave no usable advice\"\n**Confidence**: 3 — denominator check\n\n35% is reachable from all 52 remedy answers (18/52) but not from 14 emergencies or 24 serious cases. State the denominator, because the sentence explains an emergency-only rise from 43% to 86%."
+    },
+    {
+      "claim_id": "c018",
+      "seat": "domain",
+      "finding_id": "W2",
+      "text": "The \"folk-term lexicon\" mixes folk-illness categories with ordinary colloquial and standard vocabulary\nThe paper presents 34 \"folk terms\" as folk-illness labels. Several are true folk or traditional explanatory categories: trúng gió, nóng trong, thận yếu, phong thấp, vong theo, máu huyết không lưu thông. Many others are not. Chuột rút (cramp), tức ngực (chest tightness), hụt hơi (shortness of breath), lẹo (stye), giời leo (shingles), nhiệt miệng (mouth ulcer), đau mắt đỏ (conjunctivitis) and tăng xông (hypertension) are standard or colloquial Vietnamese symptom and disease words, not folk explanations. Đau bao tử is Southern lay vocabulary, as the paper itself notes.\n\nThe \"lay meaning\" column was LLM-drafted and reviewed by the first author. It cites no ethnographic or medical-anthropology source. This bears directly on the released resource, which contribution 1 lists as \"a lexicon of 34 folk terms\", and on how the per-condition findings are read. For example, \"folk wording mattered more where the signs are less specific\" depends on whether the label is explanatory (nóng trong) or merely colloquial.\n\nFix: split the lexicon into (a) folk-illness or explanatory labels and (b) lay or dialectal symptom vocabulary. Add a source for each gloss where one exists, and mark the rest as author-provided.\n**Severity**: Major\n**Evidence Anchor**: table: Appendix B, Table 4 (tab:lexicon), rows chuột rút, tức ngực, hụt hơi, lẹo, giời leo, nhiệt miệng\n**Confidence**: 4 — native-level knowledge of Vietnamese lay medical vocabulary; no ethnographic source consulted"
+    },
+    {
+      "claim_id": "c019",
+      "seat": "eic",
+      "finding_id": "W6",
+      "text": "Introduction overstates what the folk contrast can isolate\nThe introduction says that any change in the advice is caused by the wording and not by missing information. The paper then explains that the folk versions bundle the label with lay register and Southern vocabulary, and that there is no neutral clinical-paraphrase control. For clinicians this can read as a stronger causal claim about folk labels than the design supports. Change the sentence to \"by the change in telling (register, vocabulary and folk label together)\". The methodology seat is better placed to judge the design point itself.\n**Severity**: Minor\n**Evidence Anchor**: text: §1 Introduction \"Any change in the advice is then caused by the wording, not by missing information.\"\n**Confidence**: 3 — framing judgement; I defer to the methodology seat on the design"
+    },
+    {
+      "claim_id": "c020",
+      "seat": "methodology",
+      "finding_id": "W13",
+      "text": "Reproducibility identifiers incomplete\n**Severity**: Minor\n**Evidence Anchor**: absence: Experimental Setup and release statements — expected analysis code, Hugging Face model revision hashes, Gemini model version identifiers and bootstrap seed; checked abstract, Table 1 caption, Prompting and decoding, Statistics, Ethics Statement, Conclusion\n**Confidence**: 4 — reproducibility audit\n\nThe release covers cases, lexicon, answers and labels. Code is not mentioned. Hosted model aliases can change behind the same name, so the exact identifiers and run dates matter."
+    },
+    {
+      "claim_id": "c021",
+      "seat": "methodology",
+      "finding_id": "W3",
+      "text": "No neutral-paraphrase control, so folk-specific attribution is not identified\n**Severity**: Major\n**Evidence Anchor**: text: \"Any change in the advice is then caused by the wording, not by missing information.\"\n**Confidence**: 3 — design inference; acknowledged by the authors in Limitations\n\nGreedy small models flip under any rewording. Table 2 shows this directly for Qwen2.5-7B: a +0 folk_nd effect with a CI of [-43, +36] implies many cases flipping in both directions. When baseline under-triage is low, symmetric perturbation noise alone pushes under-triage upward, toward the model's marginal rate. The observed fall in over-triage argues against pure noise, which is a real point in the authors' favour. Still, the folk effect cannot be separated from a generic paraphrase effect without a clinical-paraphrase arm. The Introduction's causal sentence should be narrowed, either to \"the rewording, including register and dialect\" or by adding that control. The Limitations already concede the point. The Introduction and abstract do not."
+    },
+    {
+      "claim_id": "c022",
+      "seat": "domain",
+      "finding_id": "W3",
+      "text": "The headline diacritic effect comes from a full-strip worst case whose prevalence the paper does not document\nEvery diacritic and đ is removed by Unicode decomposition. The paper calls this \"a controlled worst case\" in §3.2 only. It gives no evidence of how often Vietnamese users type health questions with no diacritics at all, as opposed to partly accented text, Telex or VNI residue, or abbreviations and teencode (ko, k, dc). The limitations section does not return to the point.\n\nYet the abstract (\"Missing diacritics cause most of the harm\") and the conclusion turn this condition into the main practical finding and recommendation. Fully stripped Vietnamese is also much more lexically ambiguous than typical real unaccented input, which often keeps some marks. The 25-point effect may therefore be an upper bound.\n\nFix: qualify the abstract and conclusion (\"fully unaccented\"). Add a sentence with whatever evidence exists on how common unaccented Vietnamese input is, or state that it is unknown. A partial-diacritic condition (for example, random removal at 30–70% of syllables) would bound the effect, but that is optional.\n**Severity**: Major\n**Evidence Anchor**: text: §3.2 \"This is a controlled worst case; real users may type with partial or inconsistent diacritics.\" and Abstract \"Missing diacritics cause most of the harm\"\n**Confidence**: 4 — diacritic restoration and unaccented-Vietnamese processing experience"
+    },
+    {
+      "claim_id": "c023",
+      "seat": "perspective",
+      "finding_id": "W5",
+      "text": "Mitigation over-triage cost is not interpreted for deployment\nOver-triage rose by 6 to 8 points, pooled over soon and self-care controls. Clinically and operationally, sending a \"within a week\" case to the ED is different from sending a self-care case there. Vietnamese public hospitals already face severe crowding, so extra ED referrals have a real system cost and can erode user trust in the advice. Suggestion: split over-triage into soon→emergency and self-care→emergency. Then add a short discussion of what the observed trade-off would mean per 1,000 queries. The paper should note that Gemini Flash-Lite's low under-triage partly reflects a cautious operating point, which a deployer would pay for in referrals.\n**Severity**: Minor\n**Evidence Anchor**: table: Table 4 (tab:mit), column \"over\"\n**Confidence**: 3 (health-system cost reasoning is outside the paper's data)"
+    },
+    {
+      "claim_id": "c024",
+      "seat": "perspective",
+      "finding_id": "W4",
+      "text": "Recommendations to health-app developers are generic\nThe practical guidance amounts to testing on lay and unaccented input and considering diacritic restoration. A deployer reading this paper still does not know what to do about the roughly 20-point residual gap. Concrete, evidence-proportionate guidance could include:\n- what acceptance threshold a test should use, for example zero under-triage on a red-flag set such as this one;\n- whether to add a deterministic red-flag layer (keyword or symptom-pattern routing to \"call 115\") that does not rely on the LLM reading the signs;\n- whether to require unconditional emergency wording in safety-netting templates, given that conditional advice was the failure mode in the folk stroke example;\n- that a model failing on unaccented input should not be deployed to users who type that way.\nThe paper should also say plainly that none of M1, M2 or diacritic restoration has been shown to be adequate as the sole safeguard.\n**Severity**: Minor\n**Evidence Anchor**: text: §6 Discussion \"A health app built on a small local model should be tested on unaccented, lay input before use.\"\n**Confidence**: 4 (digital-health deployment and symptom-checker governance)"
+    },
+    {
+      "claim_id": "c025",
+      "seat": "eic",
+      "finding_id": "W4",
+      "text": "Three overlapping schematic method figures\nFig. 1 (study overview) already shows the sources, the 52 cases with their groups, the five versions, the 260 prompts, the judge and the human check. Fig. 4 (dataset construction) and Fig. 5 (answer to measure) repeat most of this, and Fig. 2 repeats the version derivation. One overview plus the worked version example (Fig. 2) would be enough for this readership.\n**Severity**: Minor\n**Evidence Anchor**: figure: Fig. 4 — source counts, case groups, 260 prompts and 2,340 answers, all already shown in Fig. 1\n**Confidence**: 4 — compared figures directly"
+    },
+    {
+      "claim_id": "c026",
+      "seat": "eic",
+      "finding_id": "W3",
+      "text": "Result figures repeat tables\nFig. 6 plots the same per-model, per-version under-triage values given in Table 2. Fig. 11 plots the four-model means of the rows in Table 3. Fig. 8a repeats the four headline percentages already in the abstract, Results and Conclusion. In a page-limited proceedings paper each repeat costs space without adding information. I suggest keeping one of each pair: for example, Fig. 6 in the main text with Table 2 in the appendix, and Table 3 alone, with its mean row added.\n**Severity**: Minor\n**Evidence Anchor**: figure: Fig. 11 — panels (a) and (b) give the means of Table 3's clin, folk_nd and over columns\n**Confidence**: 4 — compared the figure images with the tables directly"
+    },
+    {
+      "claim_id": "c027",
+      "seat": "domain",
+      "finding_id": "W5",
+      "text": "The Discussion heading states the diacritic mechanism as fact, and a Vietnamese-specific alternative is not discussed\nThe next paragraph correctly calls the account a hypothesis (S3). But the heading \"the model misreads the signs\" and the sentence \"they failed to read them\" state it as established. The conclusion repeats it (\"in our examples made models drop the signs\").\n\nThere is also a plausible alternative specific to Vietnamese that the paper does not raise. Stripping diacritics makes many syllables ambiguous, since several distinct accented words collapse onto one unaccented form. Subword tokenisation of unaccented Vietnamese also differs from that of accented text. The model may decode a different but coherent reading rather than fail to read at all. These alternatives predict different remedies: restoration helps under ambiguity, tokenizer-level fixes under fragmentation.\n\nFix: soften the heading and the conclusion sentence. Name ambiguity and tokenisation as competing explanations.\n**Severity**: Minor\n**Evidence Anchor**: text: §6 \"The answers suggest that the models did not weigh the signs differently; they failed to read them.\"\n**Confidence**: 4 — Vietnamese tokenisation and diacritic ambiguity are within my expertise"
+    },
+    {
+      "claim_id": "c028",
+      "seat": "da",
+      "finding_id": "M2",
+      "text": "D3\n\nThe Conclusion states as a finding that folk labels such as trúng gió were not the main problem, and Contribution 3 states it as a result, but it rests on one stroke case (nine answers per version), labelled exploratory in Results, and that case (E08) is one of the pairs flagged in the meaning check. A single case cannot support a general statement about the best-known folk label. Repair: present it as a single-case observation.\n\nn/a\n\nn/a\n\n**Evidence Anchor**: text: Conclusion \"The main problem was not folk labels such as \\vi{trúng gió}.\" and Results \"each condition has one case (nine answers per version)\""
+    },
+    {
+      "claim_id": "c029",
+      "seat": "da",
+      "finding_id": "M5",
+      "text": "D3\n\nRQ3 is framed as sycophancy, but adding the remedy did not change under-triage on average, and unsafe endorsement requires no emergency advice, which the same models already withhold on the folk version (SeaLLMs 86 percent under-triage on folk, then 7 of 14 unsafe endorsements). Unsafe endorsement is therefore largely downstream of existing under-triage, not deference to the user. Repair: report endorsement conditional on the model's folk-version triage, or drop the sycophancy framing.\n\nn/a\n\nn/a\n\n**Evidence Anchor**: text: Dataset \"which separates real sycophancy from a habit of rejecting all folk medicine.\" and Results \"Adding a remedy and asking ``is that OK?'' did not change under-triage on average\""
+    },
+    {
+      "claim_id": "c030",
+      "seat": "eic",
+      "finding_id": "W1",
+      "text": "Main text exceeds a typical proceedings page limit\nIn the compiled PDF the Conclusion ends and the References begin on page 18, the references run to about page 20, and the appendices fill pages 20–22. A typical LNCS AI-in-health conference allows 12–16 pages, usually including references. A paper this long risks a desk rejection on format before anyone reads it. There is a clear path to trimming (see W3, W4): merge the overlapping schematics, drop figures that repeat tables, shorten the meaning-check paragraph in §3.3, and move the per-condition analysis (Fig. 10) and the robustness details to the appendix or supplementary material.\n**Severity**: Major\n**Evidence Anchor**: text: §8 Conclusion, last sentence, p. 18 of manuscript.pdf \"We release the cases, the lexicon, all answers and labels.\"\n**Confidence**: 4 — page count read directly from the typeset PDF; the exact limit depends on the venue chosen"
+    },
+    {
+      "claim_id": "c031",
+      "seat": "methodology",
+      "finding_id": "W11",
+      "text": "The mitigation gap was already about 20 points at baseline\n**Severity**: Minor\n**Evidence Anchor**: text: \"Neither prompt closed the gap between the two versions.\"\n**Confidence**: 4 — direct recomputation from Table 3\n\nFrom Table 3, the four-model base means are 28.5% (clin) and 48.25% (folk_nd), a gap of 19.75 points. With M1 and M2 the gaps are 19.75 and 17.75. The mitigations therefore shifted both versions down roughly in parallel and left the gap essentially unchanged, a stronger and clearer statement than \"did not close\". The abstract's \"lowered under-triage\" should carry the paper's own descriptive qualifier (one greedy run, four models, no CI)."
+    },
+    {
+      "claim_id": "c032",
+      "seat": "perspective",
+      "finding_id": "W8",
+      "text": "Vietnamese care-seeking context is missing from the harm framing\nThe advice categories assume a US-style pathway. In Vietnam, many people go to pharmacies first, buy medicines without a prescription, use private clinics and traditional practitioners, and access to the 115 ambulance service varies. These shape how a \"soon\" or \"self-care\" answer turns into delay. Briefly placing the results in that pathway would make the harm argument more convincing to health-system and public-health readers. Suggestion: one paragraph in the Discussion, with sources on care-seeking in Vietnam.\n**Severity**: Minor\n**Evidence Anchor**: absence: Introduction and Discussion — expected description of Vietnamese care-seeking pathways (pharmacy-first self-medication, 115 access, traditional practitioners) where the advice would be acted on; checked Introduction, Discussion, Limitations, Ethics Statement\n**Confidence**: 3 (regional clinical experience; no cited source checked in this session)"
+    },
+    {
+      "claim_id": "c033",
+      "seat": "methodology",
+      "finding_id": "W6",
+      "text": "Discussion claim about folk wording for liver failure and DKA conflicts with the condition heat map\n**Severity**: Major\n**Evidence Anchor**: figure: Fig. 10 (fig:conditions), rows \"Liver failure (paracetamol)\" and \"Diabetic ketoacidosis\"\n**Confidence**: 5 — direct read-off of the figure\n\nThe Discussion states that folk wording \"mattered more\" for paracetamol liver failure and DKA. In the figure, liver failure is 22% in both clin and folk, and lower in folk_nd (56%) than in clin_nd (78%). DKA is 56% in both clin and folk. The only folk-associated rise for DKA appears in folk_nd vs clin_nd (89 vs 56, i.e. 3 of 9 answers). These are the very cases offered as examples of folk-wording harm. The figure shows a diacritic effect, and for liver failure the folk effect runs the other way. The sentence should be corrected, or replaced by conditions where clin-to-folk does rise (e.g. meningitis 11 to 44, heart failure 0 to 33). Even then, each cell rests on nine non-independent answers from one case."
+    },
+    {
+      "claim_id": "c034",
+      "seat": "methodology",
+      "finding_id": "W9",
+      "text": "Zero-width bootstrap intervals at the floor imply false certainty\n**Severity**: Minor\n**Evidence Anchor**: table: Table 2 (tab:main), Gemini rows \"+0 [+0, +0]\"\n**Confidence**: 4 — resampling at boundaries\n\nWhen no case is discordant, the percentile bootstrap returns [0, 0]. That describes the sample, not the uncertainty: 0/14 vs 0/14 is compatible with a true difference of several points. Mark these cells as degenerate, or use an exact or Newcombe-type interval for paired proportions."
+    },
+    {
+      "claim_id": "c035",
+      "seat": "perspective",
+      "finding_id": "W3",
+      "text": "Lenient secondary outcome for the urgent tier\nThe urgent tier includes TIA, upper GI bleeding, DVT, pyelonephritis and immune thrombocytopenia, and counts only home care or no advice as under-triage. The C/D edge-case label comes from the source. Even so, many emergency clinicians would want same-day assessment for TIA and suspected upper GI bleeding, and a \"see a doctor sometime\" answer is a meaningful risk there. Suggestion: also report, for the urgent tier, the share of answers labelled soon or worse versus emergency. State clearly that the secondary outcome is a lower bound on clinically concerning advice.\n**Severity**: Minor\n**Evidence Anchor**: text: §3.1 \"The urgent cases form a secondary outcome: for them, only home care is wrong.\"\n**Confidence**: 4 (clinical urgency conventions vary by guideline and country)"
+    },
+    {
+      "claim_id": "c036",
+      "seat": "methodology",
+      "finding_id": "W4",
+      "text": "The interaction claimed under RQ2 is never estimated with uncertainty\n**Severity**: Major\n**Evidence Anchor**: text: \"The two changes do not add up.\"\n**Confidence**: 4 — factorial contrasts in paired designs\n\nRQ2 asks whether the effects compound, and the abstract and conclusion state that missing diacritics \"cause most of the harm\". Two quantities settle this. One is the interaction, (folk_nd - clin_nd) - (folk - clin), which is about -8 points from the pooled counts (36 - 14 - 32 = -10 of 126). The other is the paired difference between the diacritic effect and the folk effect (about +14 points). Neither has a reported CI. Both are available from the same case-level bootstrap and should be reported before \"do not add up\" and \"most of the harm\" are stated as findings. \"Causes\" should also be softened to \"accounts for\"."
+    },
+    {
+      "claim_id": "c037",
+      "seat": "perspective",
+      "finding_id": "W2",
+      "text": "Unsafe-endorsement definition can understate harm\nAn answer that endorses coin rubbing and pricking the ten fingertips for a stroke, and also advises emergency care, is counted as safe. In practice families often do the endorsed remedy first, and minutes matter for thrombolysis, myocardial infarction and DKA. Some remedies also carry direct harm, such as bleeding from pricking in anticoagulated patients, or burns and bruising from coin rubbing. The paper reports 23% endorsement on serious cases but puts only 10% in the abstract. Suggestion: report a three-way split on serious cases with the existing labels (endorse without emergency advice, endorse with emergency advice, reject or not addressed). Classify remedies by whether they cause direct harm or only delay care, and discuss which endorsements a clinician would regard as unsafe. The moderate judge agreement on stance (κ = 0.50) makes a human-labelled check of the serious-case endorsements more important, not less.\n**Severity**: Major\n**Evidence Anchor**: text: §4 Measures \"endorse the remedy and do not advise emergency care\"\n**Confidence**: 4 (ED experience with delayed presentation after home remedies; not a statistician)"
+    },
+    {
+      "claim_id": "c038",
+      "seat": "methodology",
+      "finding_id": "W12",
+      "text": "Per-condition analysis described as one case per condition, but asthma has two\n**Severity**: Minor\n**Evidence Anchor**: text: \"each condition has one case (nine answers per version)\"\n**Confidence**: 5 — direct read-off\n\nThe figure caption says that asthma has two cases (18 answers), which the results text omits. Align the two."
+    },
+    {
+      "claim_id": "c039",
+      "seat": "perspective",
+      "finding_id": "W1",
+      "text": "No clinician check that the Vietnamese emergency texts still meet the source urgency level\nThe primary outcome assumes that each clin, folk and diacritic-free version still warrants the physician label of the English source. The checks of equivalence were done by non-clinicians, aided by an LLM. Lay renderings can move urgency for a clinician reader in either direction: \"thở không ra hơi\" for trouble breathing, the U10 severity overstatement, and Southern lay terms for the pain site. The flagged-pair sensitivity analysis helps but does not replace a clinical read. Suggestion: have one or two Vietnamese-speaking emergency or primary-care physicians rate the urgency of the clin and folk texts of the 24 emergency and urgent cases, blind to the source label. Then report agreement with the source label and rerun the primary analysis on the confirmed set. This is a small job. Until it is done, the Limitations wording should be echoed in the abstract.\n**Severity**: Major\n**Evidence Anchor**: text: §6 Limitations \"Triage labels come from physicians for the English source texts and were not re-reviewed by a clinician for the Vietnamese versions.\"\n**Confidence**: 4 (emergency triage practice; cannot judge Vietnamese lexical nuance as a native speaker would)"
+    },
+    {
+      "claim_id": "c040",
+      "seat": "methodology",
+      "finding_id": "W10",
+      "text": "\"Less urgent overall\" rests on an over-triage change reported without an interval\n**Severity**: Minor\n**Evidence Anchor**: text: \"The models therefore did not compensate by becoming more cautious.\"\n**Confidence**: 3 — paired proportions\n\nThe fall from 27% to 21% (-6, range -21 to 0) supports the paper's interpretive claim that both groups shift toward less urgency. It has no paired CI over the 28 control cases, and should get one, as the emergency contrasts do."
+    },
+    {
+      "claim_id": "c041",
+      "seat": "methodology",
+      "finding_id": "W1",
+      "text": "Pooled confidence intervals rest on a percentile bootstrap over 14 clusters\n**Severity**: Major\n**Evidence Anchor**: text: \"The mean effect over models uses a case-level bootstrap that resamples cases for all models together.\"\n**Confidence**: 4 — small-sample resampling inference\n\nEvery confirmatory claim (+11 [4, 18], +25 [13, 37], +29 [20, 37]) is a percentile bootstrap over 14 emergency cases. With so few clusters and discrete outcomes, percentile intervals are known to undercover, because the bootstrap variance is biased downward by about (n-1)/n and the resampling distribution is lumpy. The lower bound of 4 for the folk effect is therefore the number most at risk. Two analyses would show whether the conclusions depend on this choice. One is an exact sign-flip permutation test on the 14 case-level mean differences, which needs only 2^14 relabellings. The other is a t-interval or BCa interval on those same 14 values, or a crossed random-effects logistic model with case and model random effects. The paper should also state that inference is conditional on these nine models (models are fixed, not sampled), so \"on average\" means over this model set, not over LLMs."
+    },
+    {
+      "claim_id": "c042",
+      "seat": "methodology",
+      "finding_id": "W2",
+      "text": "Judge validation lacks intervals, a confusion matrix, and stratification by diacritic status and model family\n**Severity**: Major\n**Evidence Anchor**: text: \"Judge--human agreement on triage was $\\kappa=0.90$ over the four labels and $\\kappa=0.94$ for the binary emergency/not decision.\"\n**Confidence**: 4 — LLM-as-judge validation in clinical NLP\n\nThe paper's main effect is a contrast between versions, so what matters is whether the judge errs differently across versions. Overall kappa cannot show that. Answers to unaccented prompts are likely to be partly unaccented or degraded themselves, and the judge prompt explicitly anticipates this. If the judge misses emergency advice in such text more often, part of the diacritic effect is measurement error. The judge is also Gemini 3.5 Flash, which is one of the two evaluated models with near-zero under-triage. Blinding to the answer's source does not remove style familiarity. Please report the following:\n- the 2x2 judge-human confusion matrix for emergency vs not, with a CI for kappa;\n- agreement separately for with- and without-diacritic versions, and for Gemini vs non-Gemini answers;\n- the human-labelled under-triage contrast on the 150-answer sample next to the judge-labelled one.\n\nThe primary human annotator is the first author, who was blind to model and version but not to the hypothesis. Unaccented answers may also reveal their version to the reader."
+    }
+  ]
+}

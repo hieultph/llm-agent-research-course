@@ -4,6 +4,76 @@ Nhật ký làm việc, mục mới nhất ở trên. Định dạng và quy t�
 
 ---
 
+## 2026-11-10 — 1B: sửa paper theo review vòng 2
+
+**Vấn đề**
+- Hieu nhờ chọn những góp ý của review vòng 2 làm bài hay hơn, rõ ràng và mạnh hơn rồi sửa luôn. Góp ý nào có lý do hợp lý thì từ chối.
+
+**Đã làm / giải pháp**
+- Viết [extra_analyses.py](experiments/1B-folk-triage/extra_analyses.py) chạy trên bản Drive (gen, judge, annotation), ghi ra `results/tables/extra_*.csv`. Script tính:
+  - kiểm định sign-flip chính xác và khoảng tin cậy t trên 14 ca cấp cứu;
+  - interaction và hiệu (mất dấu − folk);
+  - CI cho over-triage;
+  - phân bố nhãn, gồm nhãn *none*;
+  - κ của giám khảo theo từng nhóm, ma trận nhầm lẫn;
+  - chia câu trả lời remedy thành 3 loại.
+- Sửa `main.tex`, 31 chỗ: abstract (264 từ), Introduction, Related Work (thêm Jin et al. 2024, đã kiểm tra trên Crossref và arXiv), §4, §5, Discussion (thêm đoạn về khuyến nghị triển khai), Limitations, Ethics, Conclusion, bảng lexicon.
+- Bảng quyết định cho cả 50 mục và 11 câu hỏi của reviewer: [revision_roadmap.md](papers/1B-folk-triage/review/round2/revision_roadmap.md).
+  - Từ chối, có lý do: đổi tiêu đề, bác sĩ kiểm tra lại mức khẩn, thí nghiệm mới (khôi phục dấu, bỏ dấu một phần), gắn nguồn dân tộc học cho từ dân gian.
+  - Hoãn đến khi biết giới hạn trang của hội nghị: cắt trang và gộp hình.
+
+**Kết quả**
+- Kết quả chính vẫn đứng vững khi kiểm định cho mẫu nhỏ: sign-flip p = 0.02 (folk), 0.003 (bỏ dấu), < 0.001 (folk + bỏ dấu).
+- Mất dấu làm tăng under-triage nhiều hơn folk wording 14 điểm, CI [6, 24]. Interaction là −8 [−21, 5].
+- Giám khảo khớp người chấm với κ = 1.00 trên câu trả lời cho prompt không dấu, nên hiệu ứng mất dấu không phải do giám khảo chấm sai.
+- Nhãn remedy: giám khảo gán *endorse* cho 8 câu mà người chấm gán *reject*, không có trường hợp ngược lại. Vì vậy tỷ lệ endorse không an toàn có lẽ đang bị đếm cao; paper đã ghi rõ.
+- Sửa 3 lỗi sai số liệu:
+  - ví dụ suy gan/DKA trong Discussion;
+  - câu "mỗi bệnh một ca" (hen suyễn có 2 ca);
+  - ngưỡng phát hiện hiệu ứng cho từng model: ghi "about 30 points", đúng là 43 điểm (chưa hiệu chỉnh) và 79 điểm (bước Holm đầu tiên).
+- Paper biên dịch không lỗi, 23 trang.
+- Chưa commit.
+
+**Còn lại / bước tiếp**
+- Hieu xác nhận giấy phép CC BY 4.0 cho lexicon, output và code.
+- Chọn hội nghị để biết giới hạn trang, rồi cắt theo danh sách đã chuẩn bị ở mục R1 của roadmap.
+
+## 2026-11-10 — 1B: review mô phỏng vòng 2 trước khi nộp
+
+**Vấn đề**
+- Hieu muốn kiểm tra lại paper 1B lần nữa trước khi nộp một hội nghị Q3 về AI trong y tế. Hieu chưa chọn hội nghị cụ thể.
+
+**Đã làm / giải pháp**
+- Chạy `academic-paper-reviewer`, chế độ full, theo hợp đồng `reviewer_full/v2`. Hieu đã duyệt 4 thẻ reviewer ([phase0_field_analysis.md](papers/1B-folk-triage/review/round2/phase0_field_analysis.md)):
+  - Journal-Fit: area chair của một hội nghị AI-y tế;
+  - R1: nhà thống kê sinh học;
+  - R2: NLP tiếng Việt và NLP y tế;
+  - R3: bác sĩ cấp cứu.
+  - Ghế thứ 5 là Devil's Advocate.
+- Các bước kiểm tra:
+  - `check_phase_conformance.py`: PASS cho cả 10 lượt.
+  - `provenance.json`: PASS.
+  - `check_panel_synthesis.py`: PASS.
+  - Đã đính kèm 3 kiểm tra phụ (tài liệu reviewer gợi ý, đối chiếu nhận xét với paper, từ viết tắt).
+
+**Kết quả**
+- Quyết định: **Major Revision**. Đây là kết quả cơ học: cả 6 tiêu chí ở mức warn, không tiêu chí nào block hay fatal, Devil's Advocate không nêu vấn đề CRITICAL nào.
+  - Mọi reviewer có nhận xét về kết quả chính đều cho là kết quả đó vững. R1 tính lại được mọi con số gộp.
+- Roadmap có 50 mục: 16 must_fix, 28 should_fix, 6 consider. Ba vấn đề chặn:
+  - bootstrap chỉ trên 14 cụm ca;
+  - kiểm định giám khảo chưa tách theo nhóm (có dấu/không dấu, Gemini/không Gemini);
+  - chưa có bác sĩ xác nhận mức khẩn của bản tiếng Việt.
+- Đã tự kiểm tra lại với `results/tables/conditions.csv`. Hai lỗi thật trong paper:
+  - **R9:** Discussion viết folk wording "mattered more" cho suy gan do paracetamol và DKA, nhưng clin→folk không đổi (22→22, 56→56); tỷ lệ chỉ tăng ở bản không dấu.
+  - **S15:** text ghi "each condition has one case", nhưng hen suyễn có 2 ca.
+- Kiểm tra đối chiếu đánh dấu 2/42 nhận xét mâu thuẫn với paper: R2:W6 (paper có trích VialectBench) và R3:W5 (paper có nói Flash-Lite over-triage 36–43%).
+- File: [synthesis.md](papers/1B-folk-triage/review/round2/synthesis.md), các file `*.phase1.md` / `*.phase2.md`, `provenance.json` và `attachments/` trong `papers/1B-folk-triage/review/round2/`.
+
+**Còn lại / bước tiếp**
+- Hieu chọn mục nào sửa, theo hướng ít thay đổi nhất như vòng 1.
+- Chọn hội nghị cụ thể để biết giới hạn số trang. Paper hiện 22 trang; reviewer ước giới hạn phổ biến là 12–16 trang.
+- Chưa commit thư mục round2.
+
 ## 2026-11-10 — 1B: thêm 8 hình minh họa (SVG chỉnh sửa được)
 
 **Vấn đề**

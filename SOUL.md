@@ -27,6 +27,8 @@
 - Muốn Claude research từ nguồn trước khi đề xuất, và lưu lại quá trình. *(2026-11-06)*
 - Thích có nhật ký làm việc và tài liệu rõ ràng để nhìn lại. *(yêu cầu tạo JOURNAL, 2026-11-06)*
 
+- Hay tự gộp hoặc dọn file dữ liệu cho gọn, ví dụ gộp hai file nhãn giống nhau thành một. Khi gửi file chấm, nhắc giữ bản gốc của từng người. Thẳng thắn nhận khi mình làm sai. *(gộp nhãn hai người chấm, 2026-11-10)*
+
 ## Cách giao tiếp
 - Viết tiếng Việt, ngắn gọn, thân mật. Thường gửi tin nhắn ngắn và có thể có lỗi gõ. *(toàn bộ hội thoại)*
 - Thích câu trả lời có bảng, con số cụ thể, và biết bước tiếp theo bạn ấy cần làm gì.

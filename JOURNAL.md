@@ -4,6 +4,32 @@ Nhật ký làm việc, mục mới nhất ở trên. Định dạng và quy t�
 
 ---
 
+## 2026-11-10 — 1B: rút ngắn paper
+
+**Vấn đề**
+- Hieu thấy paper dài (23 trang).
+
+**Đã làm / giải pháp**
+- Bỏ 3 hình trùng lặp:
+  - sơ đồ dựng dữ liệu (trùng Fig. 1; số liệu chuyển vào câu văn);
+  - biểu đồ cột theo model (trùng Table 2);
+  - hình mitigation (trùng Table 3).
+  - File nguồn SVG và PDF của 3 hình vẫn giữ trong `figures_src/`, `latex/figures/`.
+- Chuyển các danh sách gạch đầu dòng ở §3.1, §3.2, §4, §5.3, §5.5, §5.6 thành câu văn.
+- Rút gọn §3.3 Meaning check, Related Work, Discussion (gộp đoạn Folk remedies vào đoạn Less urgent overall) và Limitations (bỏ các ý lặp).
+- Phụ lục A: hướng dẫn chấm của người chỉ còn một đoạn, vì nội dung trùng với prompt của giám khảo.
+- Thu nhỏ hình remedy và hình theo bệnh.
+- Không bỏ số liệu hay kết luận nào.
+
+**Kết quả**
+- Từ 23 xuống **20 trang**. Phần chính kết thúc ở trang 16, tài liệu tham khảo ở trang 16–18, phụ lục ở trang 18–20.
+- Biên dịch không lỗi, không có tham chiếu hỏng.
+- Bản trước khi cắt: `scratchpad/main.before_shorten.tex`.
+- Chưa commit.
+
+**Còn lại / bước tiếp**
+- Nếu hội nghị giới hạn khoảng 15 trang kể cả tài liệu tham khảo, cần cắt thêm. Các cách: chuyển phụ lục ra tài liệu bổ sung, bỏ Fig. 2 (sơ đồ 5 phiên bản) hoặc Fig. 4 (sơ đồ giám khảo).
+
 ## 2026-11-10 — 1B: sửa paper theo review vòng 2
 
 **Vấn đề**

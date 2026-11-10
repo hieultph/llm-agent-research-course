@@ -57,48 +57,22 @@ Our contributions are:
 % =====================================================================
 \section{Related Work}
 
-\paragraph{Triage by symptom checkers and LLMs.} Vignette audits of online symptom checkers set the method we follow: clinician-labelled cases, a three-level urgency scale, and separate reporting of under- and over-triage~\cite{semigran2015}. LLM triage audits follow the same vignette-based approach, with finer urgency scales~\cite{ramaswamy2026chatgpthealth,carebench2026}. CARE-Bench evaluates triage advice as patient disclosure unfolds over a conversation~\cite{carebench2026}. Bean et al.\ show that LLMs which find the right condition on their own fail to help lay users in a randomized study~\cite{bean2026reliability}. MediQ studies whether models ask for missing information~\cite{li2024mediq}. All of these use English. Across languages, LLM answers to health questions are less correct and less consistent in Spanish, Chinese and Hindi than in English~\cite{jin2024better}. We translate two of the triage case sets into lay Vietnamese.
+\paragraph{Triage by symptom checkers and LLMs.} Vignette audits of online symptom checkers set the method we follow: clinician-labelled cases, a three-level urgency scale, and separate reporting of under- and over-triage~\cite{semigran2015}. LLM triage audits use the same approach with finer urgency scales~\cite{ramaswamy2026chatgpthealth}, also over a conversation~\cite{carebench2026}; LLMs that find the right condition alone can still fail to help lay users~\cite{bean2026reliability}, and may not ask for missing information~\cite{li2024mediq}. All of these use English. Across languages, LLM answers to health questions are less correct and less consistent in Spanish, Chinese and Hindi than in English~\cite{jin2024better}. We translate two of the triage case sets into lay Vietnamese.
 
-\paragraph{Robustness to how the patient writes.} Gourabathina et al.\ apply semantics-preserving perturbations (typos, whitespace, colourful or uncertain language, gender cues) to clinical messages and find a 7--9\% shift toward self-management~\cite{gourabathina2025medium}. Behavioural testing with controlled perturbations is standard in NLP~\cite{ribeiro2020checklist,belinkov2018synthetic}. Our folk-wording change differs in kind: it keeps the signs but adds a culturally standard lay diagnosis that points to a benign condition. Diacritic removal is a script-level perturbation specific to Vietnamese. Stripping diacritics in preprocessing is known to hurt NLP systems~\cite{gorman2024diacritics}, and Vietnamese diacritics can be restored automatically with character-level neural models~\cite{naplava2018diacritics}, a possible defence we return to in Section~\ref{sec:discussion}. For Vietnamese, VialectBench rewrites standard text into six dialect groups and finds that no model is fully robust~\cite{tran2026vialect}, but it covers general tasks, not health advice, and does not test missing diacritics.
+\paragraph{Robustness to how the patient writes.} Gourabathina et al.\ apply semantics-preserving perturbations (typos, whitespace, colourful or uncertain language, gender cues) to clinical messages and find a 7--9\% shift toward self-management~\cite{gourabathina2025medium}. Such controlled perturbations are standard in NLP~\cite{ribeiro2020checklist,belinkov2018synthetic}. Our folk-wording change differs in kind: it keeps the signs but adds a lay diagnosis that points to a minor illness. Diacritic removal is a script-level perturbation; stripping diacritics hurts NLP systems~\cite{gorman2024diacritics}, and Vietnamese diacritics can be restored automatically~\cite{naplava2018diacritics}, a possible defence (Section~\ref{sec:discussion}). For Vietnamese, VialectBench rewrites standard text into six dialect groups and finds that no model is fully robust~\cite{tran2026vialect}, but it covers general tasks, not health advice, and does not test missing diacritics.
 
-\paragraph{Sycophancy in health advice.} LLMs tend to agree with the user's stated view~\cite{sharma2024sycophancy}, also in clinical settings~\cite{overalignment2026}. Our remedy condition tests a culturally specific form: the user proposes a folk treatment and asks ``is that OK?''.
-
-\paragraph{Vietnamese medical LLM evaluation.} VM14K and related benchmarks test medical knowledge with multiple-choice questions~\cite{vm14k}. We are not aware of work that measures lay phrasing, folk-illness terms or missing diacritics in Vietnamese health questions.
+\paragraph{Sycophancy and Vietnamese medical evaluation.} LLMs tend to agree with the user's stated view~\cite{sharma2024sycophancy}, also in clinical settings~\cite{overalignment2026}; our remedy condition tests a culturally specific form. Vietnamese medical benchmarks test knowledge with multiple-choice questions~\cite{vm14k}. We are not aware of work that measures lay phrasing, folk-illness terms or missing diacritics in Vietnamese health questions.
 
 % =====================================================================
 \section{Dataset}
 
 \subsection{Cases and labels}
-We do not write cases or assign labels ourselves. All 52 cases come from two public English vignette sets with physician labels, and keep the source label (Fig.~\ref{fig:dataset}).
-\begin{itemize}
-\item \textbf{Levine et al.}~\cite{levine2024gpt3} (MIT licence): 48 lay-language rewrites of the Semigran et al.\ symptom-checker vignettes~\cite{semigran2015}, labelled \emph{emergent}, \emph{within one day}, \emph{within one week} or \emph{self-care} (12 each). We use 33 of them: all 12 emergencies, 11 one-day or one-week cases and 10 self-care cases.
-\item \textbf{Ramaswamy et al.}~\cite{ramaswamy2026chatgpthealth} (CC0): 30 symptoms-only scenarios, each labelled by three independent physicians on four levels: A home care; B see a doctor within weeks; C within 24--48 hours; D emergency department now. \emph{C/D} marks edge cases where both are acceptable. We use 19 of them.
-\end{itemize}
-We map the labels to four groups:
-\begin{itemize}
-\item \emph{emergency}: emergent or D (14 cases);
-\item \emph{urgent}: C/D (10);
-\item \emph{soon}: one day, one week, B or C (15);
-\item \emph{self-care}: self-care or A (13).
-\end{itemize}
-We drop:
-\begin{itemize}
-\item scenarios that need laboratory values to interpret;
-\item scenarios about suicidal ideation;
-\item one poison-ivy case with no Vietnamese counterpart;
-\item Levine cases whose label disagrees with the original Semigran label, and near-duplicates.
-\end{itemize}
+We do not write cases or assign labels ourselves. All 52 cases come from two public English vignette sets with physician labels and keep the source label. \textbf{Levine et al.}~\cite{levine2024gpt3} (MIT licence) give 48 lay-language rewrites of the Semigran et al.\ symptom-checker vignettes~\cite{semigran2015}, labelled \emph{emergent}, \emph{within one day}, \emph{within one week} or \emph{self-care}; we use 33 (all 12 emergencies, 11 one-day or one-week and 10 self-care cases). \textbf{Ramaswamy et al.}~\cite{ramaswamy2026chatgpthealth} (CC0) give 30 symptoms-only scenarios, each labelled by three physicians as A (home care), B (doctor within weeks), C (within 24--48 hours) or D (emergency department now), with \emph{C/D} for edge cases where both are acceptable; we use 19. We map the labels to four groups: \emph{emergency} (emergent or D, 14 cases), \emph{urgent} (C/D, 10), \emph{soon} (one day, one week, B or C, 15) and \emph{self-care} (self-care or A, 13). We drop scenarios that need laboratory values or concern suicidal ideation, one poison-ivy case with no Vietnamese counterpart, Levine cases whose label disagrees with the original Semigran label, and near-duplicates.
 The emergencies include stroke, myocardial infarction, pulmonary embolism, meningitis, appendicitis, acute liver failure from paracetamol overuse, tetanus, diabetic ketoacidosis, and exacerbations of asthma, COPD and heart failure. The urgent cases include transient ischaemic attack, upper gastrointestinal bleeding, deep-vein thrombosis, pyelonephritis and immune thrombocytopenia.
 Emergency under-triage is the primary outcome. The urgent cases form a secondary outcome: for them, only home care is wrong. The soon and self-care cases are controls. Without controls, a model that sends everyone to the emergency room would look perfect.
 
 \subsection{Five versions per case}
-\textbf{Clinical version} (\texttt{clin}). A Vietnamese translation of the source text that keeps every fact. We change only what a Vietnamese user would say differently:
-\begin{itemize}
-\item a family member tells the Levine cases;
-\item temperatures in $^\circ$C;
-\item paracetamol under its local brand name.
-\end{itemize}
-Each change is logged.
+\textbf{Clinical version} (\texttt{clin}). A Vietnamese translation of the source text that keeps every fact. We change only what a Vietnamese user would say differently (a family member tells the Levine cases, temperatures are in $^\circ$C, paracetamol has its local brand name), and log each change.
 
 \textbf{Folk version} (\texttt{folk}). The same facts in everyday wording (\vi{ói} for vomiting, \vi{tào tháo đuổi} for diarrhoea), plus the folk label a family would use (\vi{chắc bị trúng gió}, ``must be struck by wind''). It never drops, softens or adds a fact. In two control cases the folk version has lay wording but no folk label. The folk version thus changes the register as well as adding the label, and its lay vocabulary is Southern Vietnamese (e.g.\ \vi{ói}, \vi{bao tử}); we do not separate these parts.
 
@@ -137,26 +111,15 @@ Answer, \texttt{folk\_nd} & Same model (\emph{self-care}): \vi{\ldots{} nguyên 
 \end{figure}
 
 \subsection{Meaning check}\label{sec:meaning}
-Two native speakers who did not write the cases rated every clinical/folk pair, shown in random order and side without saying which text was the source. Both used an LLM as an aid and reviewed its output. For each pair they judged (i) whether both texts describe the same symptoms and (ii) how natural each sounds (1--5). Rater~1 first rated an earlier version and flagged 10 of 52 pairs, mostly folk texts that added, dropped or sharpened a detail (e.g.\ ``cramping'' pain, numbness). We corrected the folk text in nine pairs and replaced a jargon term in one clinical text (U02), keeping every clinical text a close translation of the source. Both raters then rated the revised set (Rater~1 re-rated the ten revised pairs). They agreed on 43 of 52 pairs (83\%). Cohen's $\kappa$ was only 0.15 because almost all pairs were judged equivalent; prevalence-adjusted measures were higher (PABAK~$=0.65$~\cite{byrt1993bias}, Gwet's AC1~$=0.79$~\cite{gwet2008ac1}). Rater~1 flagged one pair and Rater~2 ten, so the raters differed in strictness and rarely agreed on which pairs to flag. We therefore checked every pair flagged by either rater against the English source. Nine differ only in lay wording that we keep on purpose, such as \vi{ăn không thấy ngon} for ``less appetite'', \vi{thở không ra hơi} for ``trouble breathing'' (E03, flagged by both), or the folk label \vi{đau bao tử} (``stomach ache'') for upper abdominal pain. One overstated severity (U10: ``cannot bend'' for ``can barely bend''), and both raters scored one folk text 3 for naturalness (S01); we edited both. Mean naturalness was 4.3 and 4.6 for folk versions and 5.0 and 4.9 for clinical versions (Rater~1 and~2).
+Two native speakers who did not write the cases rated every clinical/folk pair, shown in random order and side without saying which text was the source. Both used an LLM as an aid and reviewed its output. For each pair they judged (i) whether both texts describe the same symptoms and (ii) how natural each sounds (1--5). A first round flagged 10 of 52 pairs, mostly folk texts that added, dropped or sharpened a detail; we corrected them and had them re-rated. On the final set the raters agreed on 43 of 52 pairs (83\%; Cohen's $\kappa=0.15$ because almost all pairs were judged equivalent, PABAK~$=0.65$~\cite{byrt1993bias}, Gwet's AC1~$=0.79$~\cite{gwet2008ac1}). Rater~1 flagged one pair and Rater~2 ten, so we checked every flagged pair against the English source. Nine differ only in lay wording we keep on purpose (e.g.\ \vi{thở không ra hơi} for ``trouble breathing''); one overstated severity and one sounded unnatural, and we edited both. Mean naturalness was 4.3--4.6 for folk and 4.9--5.0 for clinical versions.
 
 \subsection{Folk-term lexicon}
-The cases use 34 folk terms. For each we record the usual lay meaning (drafted with an LLM and reviewed by the first author, not taken from an ethnographic source) and the source diagnoses of the cases that use the term (Appendix~\ref{app:lexicon}). The second column describes our data only; it does not claim that the term usually hides that condition. The lexicon is used to write the folk versions, to analyse effects per term, and as the glossary in mitigation M2.
-
-\begin{figure}[t]\centering
-\includegraphics[width=\linewidth]{figures/fig_dataset.pdf}
-\caption{Dataset construction. All labels come from the physician-labelled sources. Five versions per case give 260 prompts, and nine models give 2{,}340 answers. 24 of the 52 remedies have a documented source; the cases use 34 distinct folk terms; mean length is 46.4 words (clinical) and 50.0 words (folk).}\label{fig:dataset}
-\end{figure}
+The cases use 34 folk terms. For each we record the usual lay meaning (drafted with an LLM and reviewed by the first author, not taken from an ethnographic source) and the source diagnoses of the cases that use the term (Appendix~\ref{app:lexicon}). The second column describes our data only; it does not claim that the term usually hides that condition. The lexicon is used to write the folk versions, to analyse effects per term, and as the glossary in mitigation M2. Mean case length is 46.4 words (clinical) and 50.0 words (folk).
 
 % =====================================================================
 \section{Experimental Setup}
 
-\paragraph{Models.} We test nine models (Table~\ref{tab:models}):
-\begin{itemize}
-\item five general open models of 1.5B to 8B parameters;
-\item two open models adapted to Vietnamese or Southeast-Asian languages;
-\item two commercial models served through Vertex AI.
-\end{itemize}
-The open models run on a single GPU, which is the scale a local health app could deploy.
+\paragraph{Models.} We test nine models (Table~\ref{tab:models}): five general open models of 1.5B to 8B parameters, two open models adapted to Vietnamese or Southeast-Asian languages, and two commercial models. The open models run on a single GPU, the scale a local health app could deploy.
 
 \begin{table}[t]\centering\small
 \caption{Models. Open models were run from the Hugging Face Hub with \texttt{transformers}; Gemini through the Vertex AI API. All runs took place on 8--10 November 2026.}\label{tab:models}
@@ -193,14 +156,9 @@ Gemini 3.5 Flash-Lite & n/a & & API \\\bottomrule
 \section{Results}
 
 \subsection{RQ1--RQ2: folk wording and diacritic loss}
-Figure~\ref{fig:main} and Table~\ref{tab:main} show under-triage on the 14 emergencies, and Fig.~\ref{fig:effects} the pooled differences. With clinical wording and diacritics, models under-triaged 22\% of emergencies on average, from 0\% for both Gemini models to 57\% for SeaLLMs. Folk wording raised this to 33\% (+11 points, 95\% CI [4, 18]; higher in 6 of 9 models). Removing diacritics from the clinical text raised it to 48\% (+25 [13, 37]), and folk wording without diacritics to 51\% (+29 [20, 37]; higher in 8 of 9 models). The small-sample checks agree: exact sign-flip $p=0.02$, $0.003$ and $<0.001$, and $t$ intervals [3, 19], [12, 39] and [19, 39].
+Table~\ref{tab:main} shows under-triage on the 14 emergencies per model, and Fig.~\ref{fig:effects} the pooled differences. With clinical wording and diacritics, models under-triaged 22\% of emergencies on average, from 0\% for both Gemini models to 57\% for SeaLLMs. Folk wording raised this to 33\% (+11 points, 95\% CI [4, 18]; higher in 6 of 9 models). Removing diacritics from the clinical text raised it to 48\% (+25 [13, 37]), and folk wording without diacritics to 51\% (+29 [20, 37]; higher in 8 of 9 models). The small-sample checks agree: exact sign-flip $p=0.02$, $0.003$ and $<0.001$, and $t$ intervals [3, 19], [12, 39] and [19, 39].
 
 The two changes do not add up. The \texttt{folk\_nd} version is only 3 points above \texttt{clin\_nd}; the interaction is $-8$ points [$-21$, 5], so we cannot say whether folk wording adds anything once diacritics are gone. Diacritic loss raised under-triage 14 points more than folk wording ([6, 24], sign-flip $p=0.015$) and accounts for most of the increase. Per model (descriptive, given 14 cases each), the largest effects were in small and Vietnamese-adapted models: diacritic loss raised under-triage by 64 points in both Qwen2.5-3B and Arcee-VyLinh. The Gemini models under-triaged at most 1 of 14 emergencies in any version, and Qwen2.5-7B showed no effect. With 14 cases per model, no single-model contrast survives Holm correction (smallest corrected $p=0.14$). The evidence therefore rests on the mean over models.
-
-\begin{figure}[t]\centering
-\maybefig{\linewidth}{figures/fig2_undertriage.pdf}
-\caption{Under-triage on the 14 emergencies by model and version (95\% Wilson CI). Models are sorted by under-triage on the clinical version.}\label{fig:main}
-\end{figure}
 
 \begin{table}[t]\centering\scriptsize
 \caption{Under-triage (\%) on emergencies by version, and paired differences in percentage points with 95\% bootstrap CI over cases. No per-model difference is significant after Holm correction (exact McNemar). An interval of [+0, +0] means no case changed, not a precise estimate.}\label{tab:main}
@@ -225,16 +183,11 @@ Over-triage on the 28 controls did not rise (Fig.~\ref{fig:underover}b). It fell
 \subsection{RQ3: going along with folk remedies}
 Adding a remedy and asking ``is that OK?'' did not change under-triage on average (\texttt{folk\_rem} vs \texttt{folk}: +4 points [$-3$, 12] on emergencies, $-3$ [$-16$, 8] on urgent cases). Llama-3.1-8B is the exception: its under-triage rose from 43\% to 86\%, because 18 of its 52 remedy answers (35\%) gave no usable advice (label \emph{none}).
 
-Models often rejected the remedy on serious cases (61\% of answers on emergency and urgent cases). They endorsed remedies less often on serious cases (23\%) than on controls (44\%), so on average they distinguished between the two. Unsafe endorsement, meaning the model endorses the remedy and does not advise emergency care, occurred in 10\% of emergency answers (13/126, Wilson 95\% CI [6, 17]) and 26\% of urgent answers (23/90, [18, 35]). These intervals treat answers as independent and are therefore approximate. A further 13 answers (7 emergency, 6 urgent) endorsed the remedy but also advised emergency care; we count these as safe. Unsafe endorsement was concentrated in a few models (Fig.~\ref{fig:remedy}):
-\begin{itemize}
-\item SeaLLMs: 7 of 14 emergencies (50\%, [27, 73]);
-\item Qwen2.5-1.5B: 6 of 10 urgent cases (60\%, [31, 83]);
-\item Gemini 3.5 Flash, Flash-Lite and Qwen3-8B: never.
-\end{itemize}
+Models often rejected the remedy on serious cases (61\% of answers on emergency and urgent cases). They endorsed remedies less often on serious cases (23\%) than on controls (44\%), so on average they distinguished between the two. Unsafe endorsement, meaning the model endorses the remedy and does not advise emergency care, occurred in 10\% of emergency answers (13/126, Wilson 95\% CI [6, 17]) and 26\% of urgent answers (23/90, [18, 35]). These intervals treat answers as independent and are therefore approximate. A further 13 answers (7 emergency, 6 urgent) endorsed the remedy but also advised emergency care; we count these as safe. Unsafe endorsement was concentrated in a few models (Fig.~\ref{fig:remedy}): SeaLLMs on 7 of 14 emergencies and Qwen2.5-1.5B on 6 of 10 urgent cases, while Gemini 3.5 Flash, Flash-Lite and Qwen3-8B never did it.
 On the 10 serious cases with a documented remedy the pattern was the same (23\% endorse, 62\% reject). Agreement between the judge and the human labels on remedy stance was only moderate ($\kappa=0.50$ on 32 answers), and the judge called endorsement more often than the annotator, so we treat these figures as secondary and probably too high.
 
 \begin{figure}[t]\centering
-\includegraphics[width=\linewidth]{figures/fig_remedy.pdf}
+\includegraphics[width=0.85\linewidth]{figures/fig_remedy.pdf}
 \caption{Stance toward the proposed remedy on the 24 emergency and urgent cases, per model. Right: number of unsafe endorsements (endorses the remedy and does not advise emergency care). Llama-3.1-8B mostly gave no usable advice. Judge--human agreement on stance was moderate ($\kappa=0.50$).}\label{fig:remedy}
 \end{figure}
 
@@ -242,30 +195,20 @@ On the 10 serious cases with a documented remedy the pattern was the same (23\% 
 This analysis is exploratory: each condition has one case (asthma has two), so nine answers per version, and we report the conditions with the largest shifts. Under-triage varied by condition. Mean over models, stroke and myocardial infarction were under-triaged in at most 22\% of answers in every version. This held even for stroke told as \vi{trúng gió}, so in this one case the best-known folk label did not mislead the models. The largest shifts were for conditions with less specific signs (Fig.~\ref{fig:conditions}): meningitis rose from 11\% (clinical) to 78\% (clinical, no diacritics), paracetamol-induced liver failure from 22\% to 78\%, and diabetic ketoacidosis from 56\% to 89\% (folk, no diacritics).
 
 \begin{figure}[t]\centering
-\includegraphics[width=\linewidth]{figures/fig_conditions.pdf}
+\includegraphics[width=0.8\linewidth]{figures/fig_conditions.pdf}
 \caption{Exploratory: under-triage per emergency condition (\% of the nine answers per version; asthma has two cases), sorted by \texttt{folk\_nd}. Each condition rests on one case, so single cells are imprecise.}\label{fig:conditions}
 \end{figure}
 Only two folk terms occur in more than one emergency, too few for a per-term analysis, so we report results per condition.
 
 \subsection{RQ4: mitigation}
-We tested the mitigations on four models: Llama-3.1-8B, Qwen2.5-7B, SeaLLMs and Gemini 3.5 Flash-Lite (Table~\ref{tab:mit}, Fig.~\ref{fig:mitigation}). These results are descriptive: one greedy run per model, without confidence intervals, and per-model rows move in different directions.
-\begin{itemize}
-\item \textbf{Clinical version.} M1 and M2 both halved under-triage, from 29\% to 14\%.
-\item \textbf{Folk version without diacritics.} Under-triage fell from 48\% to 34\% with M1 and to 32\% with M2.
-\item \textbf{Gap.} Neither prompt closed the gap between the two versions. Both prompts shifted the two versions down by similar amounts: the \texttt{folk\_nd} under-triage stayed 20 points above clinical with M1 and 18 points above with M2, as without mitigation (20).
-\item \textbf{Over-triage.} It rose from 24\% to 30\% with M1 and to 32\% with M2.
-\end{itemize}
+We tested the mitigations on four models: Llama-3.1-8B, Qwen2.5-7B, SeaLLMs and Gemini 3.5 Flash-Lite (Table~\ref{tab:mit}). These results are descriptive: one greedy run per model, without confidence intervals, and per-model rows move in different directions.
+Mean over the four models, M1 and M2 both halved under-triage on the clinical version (29\% to 14\%) and lowered it on the folk version without diacritics (48\% to 34\% and 32\%). Both shifted the two versions down by similar amounts, so the gap stayed at 20 and 18 points (20 without mitigation). Over-triage rose from 24\% to 30\% (M1) and 32\% (M2).
 The folk-term glossary in M2 therefore gave no clear benefit over the one-line instruction in M1, even though the glossary was built from the same lexicon as the cases.
 
 \begin{table}[t]\centering\scriptsize
 \caption{Mitigations: under-triage (\%) on the 14 emergencies by version, the remaining folk + no-diacritics gap (points), and over-triage on the 28 soon/self-care controls pooled over the four versions without remedy ($n=112$ per row).}\label{tab:mit}
 \maybeinput{tables/mitigation.tex}
 \end{table}
-
-\begin{figure}[t]\centering
-\includegraphics[width=0.85\linewidth]{figures/fig_mitigation.pdf}
-\caption{Mitigations, mean over the four models. (a) Under-triage falls with M1 and M2, but \texttt{folk\_nd} stays about 20 points above \texttt{clin}. (b) Over-triage of the controls rises. One greedy run per model; no confidence intervals.}\label{fig:mitigation}
-\end{figure}
 
 \subsection{Robustness}\label{sec:robust}
 \paragraph{Sampling.} With five samples at temperature 0.7 for Qwen2.5-7B and SeaLLMs, majority-vote under-triage kept the same direction. The \texttt{folk\_nd} version was above the clinical version for both models: 43\% vs 29\% for Qwen2.5-7B and 93\% vs 71\% for SeaLLMs.
@@ -274,40 +217,29 @@ The folk-term glossary in M2 therefore gave no clear benefit over the one-line i
 
 \paragraph{Empty answers.} Gemini Flash-Lite returned empty answers for three prompts because of its recitation filter. A retry produced answers for all three.
 
-\paragraph{Flagged pairs.} We repeated the pooled analysis without the ten cases whose clinical/folk pair was flagged by either rater in the meaning check (Section~\ref{sec:meaning}). This removes 2 emergencies (E03, E08) and 4 urgent cases. On the remaining 12 emergencies the effects were slightly larger:
-\begin{itemize}
-\item folk wording: +12 points [5, 19];
-\item clinical, no diacritics: +29 [16, 42];
-\item folk, no diacritics: +32 [22, 41].
-\end{itemize}
+\paragraph{Flagged pairs.} We repeated the pooled analysis without the ten cases whose clinical/folk pair was flagged by either rater in the meaning check (Section~\ref{sec:meaning}). This removes 2 emergencies (E03, E08) and 4 urgent cases. On the remaining 12 emergencies the effects were slightly larger: +12 points [5, 19] for folk wording, +29 [16, 42] without diacritics and +32 [22, 41] for both.
 On the 6 remaining urgent cases the folk effect held (+15 [7, 24]). The diacritic effects were no longer distinguishable from zero (+9 [$-2$, 19] and +9 [$-6$, 24]).
 
 % =====================================================================
 \section{Discussion}\label{sec:discussion}
-\paragraph{Diacritic loss: the signs may be lost.} Removing diacritics did more harm than folk wording. In the answers we read, the models did not seem to weigh the signs differently; they seemed not to read them.
-\begin{itemize}
-\item \textbf{Meningitis, Qwen3-8B.} With diacritics, the answer lists ``headache, high fever, stiff neck, photophobia'' and sends the patient to hospital immediately. Without diacritics, the same model lists only fever, headache and tiredness, suggests a viral infection and advises rest and antipyretics. Stiff neck and photophobia do not appear anywhere in the answer, and in the folk version without diacritics meningitis is not named either (Fig.~\ref{fig:signs}).
-\item \textbf{Stroke, Qwen2.5-1.5B.} Without diacritics, the answer addresses the user instead of the grandfather and attributes the symptoms to stress and lack of sleep (Fig.~\ref{fig:example}).
-\end{itemize}
+\paragraph{Diacritic loss: the signs may be lost.} Removing diacritics did more harm than folk wording. In the answers we read, the models did not seem to weigh the signs differently; they seemed not to read them. For meningitis, Qwen3-8B with diacritics lists ``headache, high fever, stiff neck, photophobia'' and sends the patient to hospital; without diacritics it lists only fever, headache and tiredness, suggests a viral infection and advises rest. Stiff neck and photophobia appear nowhere in the answer, and in \texttt{folk\_nd} meningitis is not named either (Fig.~\ref{fig:signs}). For stroke, Qwen2.5-1.5B without diacritics addresses the user instead of the grandfather and blames stress and lack of sleep (Fig.~\ref{fig:example}).
 \begin{figure}[t]\centering
 \includegraphics[width=\linewidth]{figures/fig_signs.pdf}
 \caption{Which signs the answer restates. Meningitis case E05, Qwen3-8B. With diacritics, the answers repeat the two red flags and advise emergency care; without diacritics, the red flags disappear from the answers and the advice becomes self-care.}\label{fig:signs}
 \end{figure}
 
-We read this as a hypothesis: the emergency may be lost before any triage reasoning starts. Two mechanisms could produce it. Without diacritics, many syllables collapse onto one spelling (\vi{co cung} can be read in several ways), and unaccented text is split into different, less familiar tokens. Two examples cannot separate these or show the general pattern; a systematic check, such as whether answers restate the red-flag signs, is left for future work. The hypothesis fits the mitigation result: M1 and M2 lowered under-triage on every version but left the gap of about 20 points. Restoring diacritics before the text reaches the model is a cheap step that deserves testing, with its own safety check, since a restoration error could change a sign.
+We read this as a hypothesis: the emergency may be lost before any triage reasoning starts. Two mechanisms could produce it: without diacritics many syllables collapse onto one spelling (\vi{co cung} has several readings), and unaccented text is split into different, less familiar tokens. Two examples cannot separate these or show the general pattern; a systematic check of whether answers restate the red-flag signs is future work. The hypothesis fits the mitigation result, where prompts lowered under-triage on every version but left the gap.
 
-\paragraph{Folk wording: smaller, and not where we expected.} The best-known label, \vi{trúng gió}, did not mislead the models on stroke. In that case the folk text still states one-sided weakness and slurred speech, and these signs are enough. Folk wording mattered more where the signs are less specific: with diacritics kept, it raised under-triage for meningitis told as \vi{cảm cúm} (``flu'') from 11\% to 44\%, and for heart failure from 0\% to 33\%. For liver failure told as \vi{bị cảm} (``a cold'') and diabetic ketoacidosis told as \vi{nóng trong} (``internal heat''), folk wording alone changed nothing; under-triage rose only when diacritics were also removed (Fig.~\ref{fig:conditions}). It also mattered through softer advice. For the folk version of the stroke case, Qwen2.5-1.5B suggested phoning a doctor and calling an ambulance ``if needed''. The judge counts such conditional advice as not emergency.
+\paragraph{Folk wording: smaller, and not where we expected.} In our single stroke case, \vi{trúng gió} did not mislead the models: the folk text still states one-sided weakness and slurred speech. With diacritics kept, folk wording mattered for conditions with less specific signs, such as meningitis told as \vi{cảm cúm} (``flu''; 11\% to 44\%) and heart failure (0\% to 33\%). For liver failure (\vi{bị cảm}, ``a cold'') and diabetic ketoacidosis (\vi{nóng trong}, ``internal heat''), under-triage rose only when diacritics were also removed (Fig.~\ref{fig:conditions}). Folk wording also softened advice into conditional form (``call an ambulance if needed''), which the judge does not count as emergency.
 
-\paragraph{Less urgent overall.} Over-triage of non-urgent controls fell as under-triage rose. The models did not trade accuracy on one group for the other. Lay or unaccented text made the advice less urgent across the board, as if such users had milder problems. This matches the shift toward self-management after non-clinical changes to English patient messages~\cite{gourabathina2025medium}. The shift we see is larger, possibly because the change hides the signs instead of only changing the style, but the models and metrics differ from that study, so the sizes are not directly comparable.
+\paragraph{Less urgent overall.} Over-triage fell as under-triage rose: lay or unaccented text made the advice less urgent across the board, as if such users had milder problems. This matches the shift toward self-management after non-clinical changes to English patient messages~\cite{gourabathina2025medium}; our shift is larger, possibly because the change hides the signs, but models and metrics differ, so the sizes are not directly comparable. Most models rejected dangerous remedies and endorsed them less often on serious cases than on controls; unsafe endorsement was high only for SeaLLMs and Qwen2.5-1.5B, and these rates are indicative.
 
-\paragraph{Which models.} The two Gemini models were barely affected, although Flash-Lite over-triaged 36--43\% of controls (average over models: 27\%), so part of its low under-triage reflects a more cautious operating point. The small open models were most affected, including the two adapted to Vietnamese or Southeast-Asian languages: Arcee-VyLinh lost 64 points to diacritic loss, and SeaLLMs had the highest under-triage on every version. In the one matched pair we have (Qwen2.5-3B and its Vietnamese adaptation Arcee-VyLinh), language adaptation did not make the model more robust to unaccented input. A health app built on a small local model should be tested on unaccented, lay input before use.
+\paragraph{Which models.} The Gemini models were barely affected, although Flash-Lite over-triaged 36--43\% of controls (average over models: 27\%), so part of its low under-triage reflects a more cautious operating point. Small open models were most affected, including the two adapted to Vietnamese or Southeast-Asian languages. In our one matched pair (Qwen2.5-3B and its Vietnamese adaptation Arcee-VyLinh), adaptation did not make the model more robust to unaccented input.
 
-\paragraph{Implications for deployment.} Our results support three concrete steps for teams building Vietnamese health chatbots. First, test on unaccented and lay versions of known emergencies, not only on clean clinical text, and report under- and over-triage separately. Second, do not rely on a system-prompt instruction alone: in our test it lowered under-triage but left the gap and raised over-triage. Third, consider restoring diacritics before the model sees the text, and check that the restored text keeps the red-flag signs. None of these steps is shown here to make a model safe.
-
-\paragraph{Folk remedies.} Most models rejected dangerous remedies and endorsed them less often on serious cases than on controls. Unsafe endorsement was rare on average but high for two models (SeaLLMs and Qwen2.5-1.5B). Because the judge agreed only moderately with the human labels on remedy stance, these rates are indicative.
+\paragraph{Implications for deployment.} Our results support three steps for teams building Vietnamese health chatbots, especially on small local models. First, test on unaccented and lay versions of known emergencies, not only on clean clinical text, and report under- and over-triage separately. Second, do not rely on a system-prompt instruction alone: it lowered under-triage but left the gap and raised over-triage. Third, consider restoring diacritics before the model sees the text, with a check that the restored text keeps the red-flag signs, since a restoration error could change a sign. None of these steps is shown here to make a model safe.
 
 \section{Limitations}
-Triage labels come from physicians for the English source texts and were not re-reviewed by a clinician for the Vietnamese versions. Translations, folk versions and remedies were drafted with an LLM and edited by the first author, who is not a clinician. They were then checked by two native speakers who were blind to which text was the source; both used an LLM as an aid and reviewed its output, so their equivalence and naturalness ratings are not fully independent human judgements; neither is a clinician, and they differed in how strictly they flagged pairs. A clinician check of the Vietnamese emergency and urgent cases is left for future work. Only 24 of the 52 remedies are documented, and none is documented in exactly the form used. Some source conditions (e.g.\ Rocky Mountain spotted fever) are rare in Vietnam; we kept their facts unchanged. Conversely, emergencies common in Vietnam, such as dengue warning signs, heat stroke or methanol poisoning, are not in the source sets and are not tested. The emergency set is small (14 cases), so per-model results are imprecise. Our unaccented versions remove every diacritic. Real users may type with partial or inconsistent diacritics, and we know of no estimate of how often Vietnamese health questions are typed fully unaccented, so the 25-point effect is a worst case. The folk versions bundle the folk label with lay register and use Southern vocabulary, and both native-speaker raters are from the South; Northern and Central ways of speaking are not covered, and real user messages are longer and messier. Any paraphrase may move small greedy-decoded models; we have no neutral clinical-paraphrase control. The open models are 8B or smaller, so the results may not hold for larger open models. All questions are single-turn; a model might ask follow-up questions in a conversation. The judge belongs to the same family as two evaluated models. We limit this by giving it only the answer text and validating it against human labels. The two annotators followed one written guideline and agreed on every overlapping answer. Such perfect agreement may partly reflect how explicit the guideline is. The judge agreed with them only moderately on remedy stance ($\kappa=0.50$). Mitigations were tested on four models only. The M2 glossary was derived from the same lexicon used to write the cases, so its benefit is an upper bound.
+Triage labels come from physicians for the English source texts and were not re-reviewed by a clinician for the Vietnamese versions. The Vietnamese texts were drafted with an LLM and edited by the first author, who is not a clinician, then checked by two native speakers who used an LLM as an aid, were not clinicians and differed in strictness. Only 24 of the 52 remedies are documented, none in exactly the form used. Some source conditions (e.g.\ Rocky Mountain spotted fever) are rare in Vietnam, while common Vietnamese emergencies such as dengue warning signs, heat stroke or methanol poisoning are not tested. With 14 emergencies, per-model results are imprecise. Our unaccented versions remove every diacritic; real users may type with partial diacritics, and we know of no estimate of how often health questions are typed fully unaccented, so the 25-point effect is a worst case. The folk versions bundle the folk label with lay register and Southern vocabulary (both raters are from the South), we have no neutral-paraphrase control, and real messages are longer and messier. The open models are 8B or smaller, and all questions are single-turn. The judge belongs to the same family as two evaluated models; it sees only the answer and is validated against human labels, but only moderately on remedy stance. The two annotators' perfect agreement may partly reflect an explicit guideline. Mitigations were tested on four models, and the M2 glossary comes from the same lexicon as the cases, so its benefit is an upper bound.
 
 \section{Ethics Statement}
 All cases are fictional vignettes from public datasets (MIT and CC0 licences) and contain no patient data. Volunteers who checked the texts and labels gave no personal information. We do not build or recommend a medical advice system; our aim is to expose a risk. No result here shows that any model is safe for medical advice. We used an LLM to draft the translations, folk rewrites and remedies; every text was reviewed by the authors and checked by native speakers as described in Section~\ref{sec:meaning}. The release is meant for evaluation only: each remedy is flagged as documented or undocumented, answers that endorse a remedy without advising emergency care are labelled as unsafe, and the data card carries a content warning and a note that the folk terms describe usage, not the beliefs of any group. The derived cases keep the licences of their sources (MIT and CC0); the lexicon, model outputs, labels and analysis code are released under CC BY 4.0 for research use, with model identifiers and the bootstrap seed. The repository link is withheld for review.
@@ -367,23 +299,7 @@ Return only JSON: {"triage": "...", "remedy": "...", "evidence": "..."}
 }
 \noindent (Vietnamese phrases in the actual prompt carry diacritics; they are shown without them here for typesetting.)
 
-\paragraph{Human annotation guideline} (given in Vietnamese; English translation).
-\begin{itemize}
-\item \textbf{triage}: the most urgent action the answer recommends \emph{without a condition}.
-  \begin{itemize}
-  \item \emph{emergency}: call 115, go to the emergency department, go to hospital now; words such as ``now'', ``immediately'', ``urgent'', ``emergency'', ``as soon as possible''.
-  \item \emph{soon}: see a doctor or hospital, not stated as urgent (``you should get checked'', ``see a doctor within 1--2 days'').
-  \item \emph{self-care}: only home care, medicines or monitoring; a doctor visit appears only with a condition (``if it does not improve, see a doctor'').
-  \item \emph{none}: refusal, off-topic, empty or unreadable.
-  \end{itemize}
-  Most important rule: conditional advice does not count. ``Drink ginger water; if it gets worse, go to the emergency room'' is \emph{self-care}, not \emph{emergency}.
-\item \textbf{remedy}: \emph{na} if the user proposed no remedy. Otherwise:
-  \begin{itemize}
-  \item \emph{endorse}: the answer agrees or explains how to do it without discouraging it;
-  \item \emph{reject}: it says not to do it, that it is useless or harmful, or that it does not replace seeing a doctor;
-  \item \emph{not addressed}: it does not mention the remedy.
-  \end{itemize}
-\end{itemize}
+\paragraph{Human annotation guideline} (given in Vietnamese). It uses the same four triage labels and three stance labels as the judge prompt, with the same definitions. Its main rule is that conditional advice does not count: ``Drink ginger water; if it gets worse, go to the emergency room'' is \emph{self-care}, not \emph{emergency}.
 Annotators saw only the answer and the proposed remedy, not the model, the case or the version, and did not use AI tools.
 
 \section{Folk-term lexicon}\label{app:lexicon}
